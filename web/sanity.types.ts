@@ -34,6 +34,59 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
+export type Project = {
+  _id: string;
+  _type: "project";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: string;
+  slug?: Slug;
+  suburb?: string;
+  category?: "carpet" | "hardwood" | "hybrid" | "laminate" | "vinyl" | "tile";
+  coverImage?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+  gallery?: Array<{
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+    _key: string;
+  }>;
+  featured?: boolean;
+  summary?: string;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
 export type Product = {
   _id: string;
   _type: "product";
@@ -70,28 +123,6 @@ export type Product = {
     _type: "block";
     _key: string;
   }>;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type Slug = {
-  _type: "slug";
-  current?: string;
-  source?: string;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -191,7 +222,30 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type AllSanitySchemaTypes = SiteSettings | SanityImageAssetReference | Product | SanityImageCrop | SanityImageHotspot | Slug | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
+export type AllSanitySchemaTypes =
+  | SiteSettings
+  | SanityImageAssetReference
+  | Project
+  | SanityImageCrop
+  | SanityImageHotspot
+  | Slug
+  | Product
+  | SanityImagePaletteSwatch
+  | SanityImagePalette
+  | SanityImageDimensions
+  | SanityImageMetadata
+  | SanityFileAsset
+  | SanityAssetSourceData
+  | SanityImageAsset
+  | Geopoint;
+
+// Source: ../web/src/app/sitemap.ts
+// Variable: SLUGS_QUERY
+// Query: *[_type == "product" && defined(slug.current)]{ "slug": slug.current, _updatedAt }
+export type SLUGS_QUERY_RESULT = Array<{
+  slug: string | null;
+  _updatedAt: string;
+}>;
 
 // Source: ../web/src/sanity/lib/queries.ts
 // Variable: PRODUCTS_QUERY
@@ -248,12 +302,34 @@ export type PRODUCT_QUERY_RESULT = {
   }> | null;
 } | null;
 
+// Source: ../web/src/sanity/lib/queries.ts
+// Variable: FEATURED_PROJECTS_QUERY
+// Query: *[_type == "project" && featured == true && defined(coverImage)]|order(_createdAt desc){    _id,    title,    suburb,    category,    summary,    "slug": slug.current,    coverImage  }
+export type FEATURED_PROJECTS_QUERY_RESULT = Array<{
+  _id: string;
+  title: string | null;
+  suburb: string | null;
+  category:
+    "carpet" | "hardwood" | "hybrid" | "laminate" | "tile" | "vinyl" | null;
+  summary: string | null;
+  slug: string | null;
+  coverImage: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+}>;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "*[_type == \"product\" && defined(slug.current)]|order(_createdAt desc){\n    _id,\n    title,\n    category,\n    excerpt,\n    \"slug\": slug.current,\n    image\n  }": PRODUCTS_QUERY_RESULT;
-    "*[_type == \"product\" && slug.current == $slug][0]{\n    _id,\n    title,\n    category,\n    excerpt,\n    image,\n    body\n  }": PRODUCT_QUERY_RESULT;
+    '*[_type == "product" && defined(slug.current)]{ "slug": slug.current, _updatedAt }': SLUGS_QUERY_RESULT;
+    '*[_type == "product" && defined(slug.current)]|order(_createdAt desc){\n    _id,\n    title,\n    category,\n    excerpt,\n    "slug": slug.current,\n    image\n  }': PRODUCTS_QUERY_RESULT;
+    '*[_type == "product" && slug.current == $slug][0]{\n    _id,\n    title,\n    category,\n    excerpt,\n    image,\n    body\n  }': PRODUCT_QUERY_RESULT;
+    '*[_type == "project" && featured == true && defined(coverImage)]|order(_createdAt desc){\n    _id,\n    title,\n    suburb,\n    category,\n    summary,\n    "slug": slug.current,\n    coverImage\n  }': FEATURED_PROJECTS_QUERY_RESULT;
   }
 }
-

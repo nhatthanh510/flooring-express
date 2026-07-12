@@ -21,3 +21,15 @@ export const PRODUCT_QUERY = defineQuery(
     body
   }`,
 )
+
+export const FEATURED_PROJECTS_QUERY = defineQuery(
+  `*[_type == "project" && featured == true && defined(coverImage)]|order(_createdAt desc){
+    _id,
+    title,
+    suburb,
+    category,
+    summary,
+    "slug": slug.current,
+    coverImage
+  }`,
+)

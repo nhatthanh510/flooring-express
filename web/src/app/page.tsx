@@ -1,46 +1,71 @@
-import Link from "next/link";
-import { sanityFetch } from "@/sanity/lib/live";
-import { PRODUCTS_QUERY } from "@/sanity/lib/queries";
+import { SiteHeader } from "@/components/landing/site-header";
+import { Hero } from "@/components/landing/hero";
+import { TrustBar } from "@/components/landing/trust-bar";
+import { Services } from "@/components/landing/services";
+import { Gallery } from "@/components/landing/gallery";
+import { Ranges } from "@/components/landing/ranges";
+import { Process } from "@/components/landing/process";
+import { QuoteCta } from "@/components/landing/quote-cta";
+import { Faq } from "@/components/landing/faq";
+import { SiteFooter } from "@/components/landing/site-footer";
+import { site, siteUrl, faqs } from "@/lib/site";
 
-export default async function Home() {
-  const { data: products } = await sanityFetch({ query: PRODUCTS_QUERY });
+function StructuredData() {
+  const localBusiness = {
+    "@context": "https://schema.org",
+    "@type": "HomeAndConstructionBusiness",
+    name: site.name,
+    description: site.description,
+    url: siteUrl,
+    telephone: site.phone,
+    email: site.email,
+    priceRange: "$$",
+    areaServed: site.serviceAreas.map((name) => ({
+      "@type": "City",
+      name,
+    })),
+  };
+
+  const faqPage = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-6 py-16">
-      <h1 className="text-3xl font-semibold tracking-tight">Flooring Express</h1>
-      <p className="mt-2 text-neutral-500">Flooring and carpet for every room.</p>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusiness) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPage) }}
+      />
+    </>
+  );
+}
 
-      <h2 className="mt-12 text-sm font-medium uppercase tracking-wide text-neutral-500">
-        Products
-      </h2>
-
-      {products.length === 0 ? (
-        <p className="mt-4 text-neutral-500">
-          No products yet. Add one in the Studio at{" "}
-          <code className="rounded bg-neutral-100 px-1 py-0.5 dark:bg-neutral-800">
-            localhost:3333
-          </code>
-          .
-        </p>
-      ) : (
-        <ul className="mt-4 divide-y divide-neutral-200 dark:divide-neutral-800">
-          {products.map((product) => (
-            <li key={product._id} className="py-3">
-              <Link
-                href={`/products/${product.slug}`}
-                className="flex items-baseline justify-between gap-4 hover:underline"
-              >
-                <span>{product.title}</span>
-                {product.category && (
-                  <span className="text-xs uppercase tracking-wide text-neutral-400">
-                    {product.category}
-                  </span>
-                )}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </main>
+export default function Home() {
+  return (
+    <>
+      <StructuredData />
+      <SiteHeader />
+      <main className="flex-1">
+        <Hero />
+        <TrustBar />
+        <Services />
+        <Gallery />
+        <Ranges />
+        <Process />
+        <QuoteCta />
+        <Faq />
+      </main>
+      <SiteFooter />
+    </>
   );
 }
