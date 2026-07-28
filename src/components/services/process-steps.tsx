@@ -7,7 +7,7 @@ export function ProcessSteps() {
     <section id="process" className="container-page scroll-mt-24 py-section">
       <div className="flex flex-col gap-12 md:flex-row md:gap-16">
         <div className="md:sticky md:top-32 md:h-fit md:basis-1/3">
-          <h2 className="text-balance text-headline-lg text-primary md:text-display-lg">
+          <h2 className="text-balance text-headline-lg-mobile text-primary md:text-display-lg">
             Our 4-Step Craftsmanship Process.
           </h2>
           <p className="mt-6 text-body-lg text-muted-foreground">

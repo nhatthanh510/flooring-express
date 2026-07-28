@@ -35,8 +35,14 @@ export default async function GalleryPage({
       <CtaBanner
         title="Ready to transform your floors?"
         description="Get a free, no-obligation quote from Hobart's flooring specialists today."
-        primary={{ href: "/contact", label: "Start Your Project" }}
-        secondary={{ href: "/services", label: "Browse Collections" }}
+        primary={{
+          href: "/contact?enquiry=quote",
+          label: "Start Your Project",
+        }}
+        secondary={{
+          href: "/contact?enquiry=commercial",
+          label: "Contact Sales",
+        }}
         texture="dots"
         align="split"
       />

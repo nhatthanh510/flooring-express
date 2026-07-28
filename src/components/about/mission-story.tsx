@@ -11,15 +11,15 @@ export function MissionStory() {
           <span className="rounded-full bg-accent px-4 py-1.5 text-label-sm uppercase text-accent-foreground">
             Our Mission
           </span>
-          <h2 className="text-balance text-headline-lg text-primary md:text-display-lg">
+          <h2 className="text-balance text-headline-lg-mobile text-primary md:text-display-lg">
             Transforming homes with floors that tell a story.
           </h2>
           <p className="text-pretty text-body-lg text-muted-foreground">
             At Flooring Express Hobart, we believe a floor is more than just a
-            surface to walk on—it’s the foundation of your family’s
-            daily life. Since our inception, our goal has been to provide
-            Tasmanian homeowners with premium flooring solutions that combine
-            aesthetic beauty with rugged durability.
+            surface to walk on—it’s the foundation of your family’s daily life.
+            Since our inception, our goal has been to provide Tasmanian
+            homeowners with premium flooring solutions that combine aesthetic
+            beauty with rugged durability.
           </p>
           <p className="text-pretty text-body-md text-muted-foreground">
             Our journey started 15 years ago with a single van and a passion for
@@ -28,7 +28,7 @@ export function MissionStory() {
             Hobart area from Kingston to Glenorchy and beyond.
           </p>
           <Button asChild size="xl">
-            <Link href="/contact">
+            <Link href="/contact?enquiry=consultation">
               Meet The Team
               <ArrowRight data-icon="inline-end" />
             </Link>

@@ -10,7 +10,6 @@ export function ServiceCards() {
       <SectionHeading
         eyebrow="Our Expertise"
         title="Tailored Flooring Options"
-        description="Three surfaces, one standard of installation. Every floor is measured, prepared and laid by our own certified Hobart team."
       />
 
       <div className="mt-16 grid gap-gutter md:grid-cols-3">
@@ -18,7 +17,7 @@ export function ServiceCards() {
           const Icon = service.icon;
           return (
             <Reveal key={service.slug} delay={index * 100}>
-              <article className="group flex h-full flex-col gap-5 rounded-2xl border border-border bg-card p-8 shadow-ambient transition-[transform,box-shadow] duration-300 hover:-translate-y-2 hover:shadow-ambient-lifted">
+              <article className="group flex h-full flex-col gap-5 rounded-2xl border border-border bg-card p-8 card-lift">
                 <span className="flex size-14 items-center justify-center rounded-xl bg-cream text-secondary transition-colors group-hover:bg-secondary group-hover:text-secondary-foreground">
                   <Icon className="size-6" aria-hidden="true" />
                 </span>
@@ -46,7 +45,7 @@ export function ServiceCards() {
                 </ul>
 
                 <Link
-                  href={`/services#${service.slug}`}
+                  href={`/contact?enquiry=samples&flooring=${service.slug}`}
                   className="mt-auto inline-flex items-center gap-2 pt-2 text-label-md font-semibold text-secondary transition-[gap] hover:gap-3"
                 >
                   Request Sample

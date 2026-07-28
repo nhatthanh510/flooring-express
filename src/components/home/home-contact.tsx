@@ -36,10 +36,17 @@ export function HomeContact() {
             Request Your Free Quote
           </h2>
           <p className="mt-2 text-body-md text-muted-foreground">
-            Tell us about your space and we’ll come back within 24 hours
-            with a detailed estimate.
+            Tell us about your space and we’ll come back within 24 hours with a
+            detailed estimate.
           </p>
-          <QuoteForm idPrefix="home-quote" className="mt-8" />
+          {/* The home form is the shorter variant in the mockup: three flooring
+              options and a "Submit Request" button. */}
+          <QuoteForm
+            idPrefix="home-quote"
+            submitLabel="Submit Request"
+            interests={["hybrid", "timber", "laminate"]}
+            className="mt-8"
+          />
         </div>
 
         <div className="flex flex-col gap-8">

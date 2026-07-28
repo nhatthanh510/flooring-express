@@ -1,4 +1,4 @@
-import type { NewsletterFormValues, QuoteFormValues } from "./schemas/quote";
+import type { QuoteFormValues } from "./schemas/quote";
 
 export type SubmitResult = { ok: true } | { ok: false; error: string };
 
@@ -10,24 +10,13 @@ export type SubmitResult = { ok: true } | { ok: false; error: string };
  * action, or a direct CRM request. Nothing else in the app needs to change:
  * this is the only place the app talks to the outside world about a quote.
  */
-export async function submitQuote(values: QuoteFormValues): Promise<SubmitResult> {
+export async function submitQuote(
+  values: QuoteFormValues,
+): Promise<SubmitResult> {
   await new Promise((resolve) => setTimeout(resolve, 900));
 
   if (process.env.NODE_ENV === "development") {
     console.info("[submitQuote] captured enquiry", values);
-  }
-
-  return { ok: true };
-}
-
-/** Same contract as `submitQuote`, for the footer newsletter field. */
-export async function subscribeToNewsletter(
-  values: NewsletterFormValues,
-): Promise<SubmitResult> {
-  await new Promise((resolve) => setTimeout(resolve, 700));
-
-  if (process.env.NODE_ENV === "development") {
-    console.info("[subscribeToNewsletter] captured subscriber", values);
   }
 
   return { ok: true };

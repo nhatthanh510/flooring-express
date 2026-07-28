@@ -1,7 +1,12 @@
 import Image from "next/image";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
-import { siteConfig } from "@/lib/site-config";
+import { Clock, Mail, Phone } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { fullAddress, siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
+
+const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+  `${fullAddress}, Australia`,
+)}`;
 
 export function ContactInfoCards() {
   return (
@@ -66,7 +71,12 @@ export function ContactInfoCards() {
               Residential &amp; Commercial
             </span>
           </div>
-          <MapPin className="size-5 shrink-0 text-secondary" aria-hidden="true" />
+          <Button asChild size="lg" variant="default">
+            <a href={directionsHref} target="_blank" rel="noopener noreferrer">
+              Directions
+              <span className="sr-only"> to our Hobart showroom</span>
+            </a>
+          </Button>
         </div>
       </div>
     </div>

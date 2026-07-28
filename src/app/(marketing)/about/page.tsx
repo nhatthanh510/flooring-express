@@ -34,7 +34,10 @@ export default function AboutPage() {
       <CtaBanner
         title="Ready to start your transformation?"
         description="Book a free on-site consultation with our Hobart team today. We'll bring samples to your door."
-        primary={{ href: "/contact", label: "Request Free Quote" }}
+        primary={{
+          href: "/contact?enquiry=quote",
+          label: "Request Free Quote",
+        }}
         align="split"
       />
     </>

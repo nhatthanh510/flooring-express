@@ -10,11 +10,14 @@ export type GalleryProject = {
   /** Tailwind aspect-ratio class driving the masonry rhythm */
   aspect: string;
   image: { src: string; alt: string };
+  /** Slug of the full case study, where one exists */
+  caseStudy?: string;
 };
 
 export const galleryProjects: readonly GalleryProject[] = [
   {
     slug: "sandy-bay-modern",
+    caseStudy: "contemporary-hybrid-oak",
     title: "Sandy Bay Modern",
     subtitle: "Hybrid Plank Installation",
     category: "hybrid",
@@ -22,7 +25,7 @@ export const galleryProjects: readonly GalleryProject[] = [
     aspect: "aspect-[3/4]",
     image: {
       src: "/images/gallery/sandy-bay-modern.webp",
-      alt: "Modern Hobart living room with premium light oak hybrid flooring and floor-to-ceiling windows.",
+      alt: "Sandy Bay living room with light oak hybrid flooring and floor-to-ceiling windows over the marina.",
     },
   },
   {
@@ -63,6 +66,7 @@ export const galleryProjects: readonly GalleryProject[] = [
   },
   {
     slug: "mount-nelson-estate",
+    caseStudy: "classic-tasmanian-timber",
     title: "Mount Nelson Estate",
     subtitle: "Solid Timber Wide Plank",
     category: "timber",
@@ -70,11 +74,12 @@ export const galleryProjects: readonly GalleryProject[] = [
     aspect: "aspect-[3/2]",
     image: {
       src: "/images/gallery/mount-nelson-estate.webp",
-      alt: "Open-plan living area in a luxury Hobart residence with wide-plank French Oak timber flooring.",
+      alt: "Mount Nelson living room with wide-plank French Oak timber flooring framing a mountain view.",
     },
   },
   {
     slug: "salamanca-boutique",
+    caseStudy: "zenith-commercial-laminate",
     title: "Salamanca Boutique",
     subtitle: "Premium Commercial Laminate",
     category: "laminate",
@@ -96,48 +101,46 @@ export const galleryFilters = [
 
 export type GalleryFilter = (typeof galleryFilters)[number]["value"];
 
-export function isGalleryFilter(value: string | undefined): value is GalleryFilter {
+export function isGalleryFilter(
+  value: string | undefined,
+): value is GalleryFilter {
   return galleryFilters.some((f) => f.value === value);
 }
 
-/** The four bento tiles on the home page. `span` drives the grid placement. */
+/**
+ * The home page bento grid. Tiles reference gallery projects by slug rather
+ * than carrying their own copy and imagery — that way the thumbnail a visitor
+ * clicks on the home page is the same one they land on in the gallery, and the
+ * two can never drift apart.
+ */
+const bentoLayout = [
+  { slug: "sandy-bay-modern", span: "md:col-span-2 md:row-span-2" },
+  { slug: "mount-nelson-estate", span: "md:col-span-2" },
+  { slug: "kingston-family-home", span: "" },
+  { slug: "macquarie-st-offices", span: "" },
+] as const;
+
 export type BentoTile = {
   caption: string;
   span: string;
+  href: string;
   image: { src: string; alt: string };
 };
 
-export const bentoTiles: readonly BentoTile[] = [
-  {
-    caption: "Modern Kitchen - Hybrid Ash",
-    span: "md:col-span-2 md:row-span-2",
-    image: {
-      src: "/images/home/bento-kitchen-hybrid-ash.webp",
-      alt: "Open-plan Hobart kitchen with seamless hybrid flooring in a light ash grey tone.",
-    },
+export const bentoTiles: readonly BentoTile[] = bentoLayout.map(
+  ({ slug, span }) => {
+    const project = galleryProjects.find((p) => p.slug === slug);
+    if (!project)
+      throw new Error(`Bento tile references unknown project: ${slug}`);
+    return {
+      caption: `${project.title} - ${project.subtitle}`,
+      span,
+      // Deep-link to the full case study where one exists, otherwise to the
+      // gallery filtered to that flooring type.
+      href: project.caseStudy
+        ? `/gallery/${project.caseStudy}`
+        : `/gallery?category=${project.category}`,
+      image: project.image,
+    };
   },
-  {
-    caption: "Classic Sunroom - Walnut Timber",
-    span: "md:col-span-2",
-    image: {
-      src: "/images/home/bento-sunroom-walnut.webp",
-      alt: "Sun-drenched cottage sunroom with rich warm walnut timber flooring.",
-    },
-  },
-  {
-    caption: "Home Office - Oak Laminate",
-    span: "",
-    image: {
-      src: "/images/home/bento-office-oak-laminate.webp",
-      alt: "Perfectly aligned oak laminate boards in a sleek home office.",
-    },
-  },
-  {
-    caption: "Master Suite - Smoked Oak",
-    span: "",
-    image: {
-      src: "/images/home/bento-master-suite-smoked-oak.webp",
-      alt: "Master bedroom with dark smoked oak timber floors and a luxury hotel feel.",
-    },
-  },
-];
+);

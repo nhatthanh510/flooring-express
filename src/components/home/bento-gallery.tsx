@@ -10,7 +10,7 @@ export function BentoGallery() {
       <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
         <div className="flex flex-col gap-3">
           <p className="text-label-sm uppercase text-secondary">Portfolio</p>
-          <h2 className="text-headline-lg text-primary md:text-display-lg">
+          <h2 className="text-headline-lg-mobile text-primary md:text-display-lg">
             Our Recent Work
           </h2>
         </div>
@@ -25,11 +25,13 @@ export function BentoGallery() {
 
       <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 md:h-[800px] md:grid-cols-4 md:grid-rows-2">
         {bentoTiles.map((tile) => (
-          <figure
+          <Link
             key={tile.caption}
+            href={tile.href}
             className={cn(
-              "group relative overflow-hidden rounded-2xl",
+              "group relative block overflow-hidden rounded-2xl",
               "aspect-[4/3] md:aspect-auto",
+              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
               tile.span,
             )}
           >
@@ -44,10 +46,14 @@ export function BentoGallery() {
               aria-hidden="true"
               className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"
             />
-            <figcaption className="absolute inset-x-0 bottom-0 p-6 text-body-md font-medium text-white">
+            <span className="absolute inset-x-0 bottom-0 flex items-center gap-2 p-6 text-body-md font-medium text-white">
               {tile.caption}
-            </figcaption>
-          </figure>
+              <ArrowRight
+                className="size-4 shrink-0 opacity-0 transition-opacity group-hover:opacity-100"
+                aria-hidden="true"
+              />
+            </span>
+          </Link>
         ))}
       </div>
     </section>

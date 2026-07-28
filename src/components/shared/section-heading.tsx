@@ -33,7 +33,7 @@ export function SectionHeading({
       )}
       <h2
         id={id}
-        className="max-w-3xl text-balance text-headline-lg text-primary md:text-display-lg"
+        className="max-w-3xl text-balance text-headline-lg-mobile text-primary md:text-display-lg"
       >
         {title}
       </h2>

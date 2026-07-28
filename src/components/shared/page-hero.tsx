@@ -31,29 +31,35 @@ export function PageHero({
         sizes="100vw"
         className="object-cover"
       />
+      {/* Even scrim on mobile (copy is centred over the whole frame); the
+          directional gradient only kicks in from md, where copy is left-aligned. */}
       <div
         aria-hidden="true"
         className={cn(
-          "absolute inset-0",
-          scrim === "left"
-            ? "bg-gradient-to-r from-black/75 via-black/45 to-black/10"
-            : "bg-black/50",
+          "absolute inset-0 bg-black/55",
+          scrim === "left" &&
+            "md:bg-gradient-to-r md:from-black/75 md:via-black/45 md:to-black/10",
         )}
       />
 
-      <div className="container-page relative py-16 md:py-24">
-        <div className="flex max-w-2xl flex-col items-start gap-6">
+      {/* Centred on mobile, left-aligned from md — matches the mobile screens */}
+      <div className="container-page relative py-16 text-center md:py-24 md:text-left">
+        <div className="flex max-w-2xl flex-col items-center gap-6 md:items-start">
           {eyebrow && (
-            <span className="rounded-full bg-accent px-4 py-1.5 text-label-sm uppercase text-accent-foreground">
+            <span className="rounded-full bg-secondary px-4 py-1.5 text-label-sm uppercase text-secondary-foreground">
               {eyebrow}
             </span>
           )}
-          <h1 className="text-balance text-headline-lg text-white md:text-display-lg">
+          <h1 className="text-balance text-headline-lg-mobile text-white md:text-display-lg">
             {title}
           </h1>
-          <p className="text-pretty text-body-lg text-white/85">{description}</p>
+          <p className="text-pretty text-body-lg text-white/90">
+            {description}
+          </p>
           {children && (
-            <div className="flex flex-wrap items-center gap-4">{children}</div>
+            <div className="flex w-full flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center">
+              {children}
+            </div>
           )}
         </div>
       </div>

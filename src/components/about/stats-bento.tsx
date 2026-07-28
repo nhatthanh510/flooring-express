@@ -29,7 +29,9 @@ export function StatsBento() {
                   <h2
                     className={cn(
                       "text-headline-md",
-                      stat.inverted ? "text-primary-foreground" : "text-primary",
+                      stat.inverted
+                        ? "text-primary-foreground"
+                        : "text-primary",
                     )}
                   >
                     {stat.title}
@@ -37,7 +39,9 @@ export function StatsBento() {
                   <p
                     className={cn(
                       "text-body-md",
-                      stat.inverted ? "text-ink-muted" : "text-muted-foreground",
+                      stat.inverted
+                        ? "text-ink-muted"
+                        : "text-muted-foreground",
                     )}
                   >
                     {stat.description}

@@ -45,13 +45,13 @@ export function QualityBand() {
         </div>
 
         <div className="flex flex-col gap-6">
-          <h2 className="text-balance text-headline-lg text-primary-foreground md:text-display-lg">
+          <h2 className="text-balance text-headline-lg-mobile text-primary-foreground md:text-display-lg">
             Expertise You Can Trust. Local Quality You Can Feel.
           </h2>
           <p className="text-pretty text-body-lg text-ink-muted">
             As a locally owned Hobart business, Flooring Express is dedicated to
-            elevating Tasmanian homes with superior surfaces. We don’t just
-            sell floors; we provide a complete installation experience backed by
+            elevating Tasmanian homes with superior surfaces. We don’t just sell
+            floors; we provide a complete installation experience backed by
             expert consultants and certified installers.
           </p>
 

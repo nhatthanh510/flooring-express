@@ -62,7 +62,7 @@ export function CtaBanner({
               align === "center" && "items-center",
             )}
           >
-            <h2 className="max-w-2xl text-balance text-headline-lg text-primary-foreground md:text-display-lg">
+            <h2 className="max-w-2xl text-balance text-headline-lg-mobile text-primary-foreground md:text-display-lg">
               {title}
             </h2>
             <p className="max-w-xl text-pretty text-body-lg text-ink-muted">

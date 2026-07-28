@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useSpecSelection } from "@/components/services/spec-selection";
 import {
   comparisonRows,
   getService,
@@ -14,14 +14,14 @@ import {
  * planks — driving a technical comparison table.
  */
 export function PlankComparison() {
-  const [selected, setSelected] = useState<FlooringSlug>("hybrid");
+  const { selected, select } = useSpecSelection();
   const active = getService(selected);
 
   return (
     <section id="compare" className="scroll-mt-24 bg-muted py-section">
       <div className="container-page grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="flex flex-col gap-6">
-          <h2 className="text-headline-lg text-primary md:text-display-lg">
+          <h2 className="text-headline-lg-mobile text-primary md:text-display-lg">
             Compare At A Glance
           </h2>
           <p className="text-body-lg text-muted-foreground">
@@ -32,9 +32,7 @@ export function PlankComparison() {
           <ToggleGroup
             type="single"
             value={selected}
-            onValueChange={(value) =>
-              value && setSelected(value as FlooringSlug)
-            }
+            onValueChange={(value) => value && select(value as FlooringSlug)}
             orientation="vertical"
             variant="outline"
             spacing={3}

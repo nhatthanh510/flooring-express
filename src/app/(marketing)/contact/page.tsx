@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { ContactInfoCards } from "@/components/contact/contact-info-cards";
 import { QuoteForm } from "@/components/forms/quote-form";
 import { PageHero } from "@/components/shared/page-hero";
 import { siteConfig } from "@/lib/site-config";
+import {
+  enquiryCopy,
+  isEnquiryType,
+  isFlooringInterest,
+} from "@/lib/schemas/quote";
 
 export const metadata: Metadata = {
   title: "Contact Us",
@@ -11,7 +18,18 @@ export const metadata: Metadata = {
     "Expert flooring advice and premium installation services across Hobart. Request a free quote and we'll respond within 24 hours.",
 };
 
-export default function ContactPage() {
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ enquiry?: string; flooring?: string }>;
+}) {
+  // CTAs across the site deep-link here with their intent, so the form arrives
+  // pre-set to what the visitor actually clicked rather than a generic quote.
+  const { enquiry, flooring } = await searchParams;
+  const enquiryType = isEnquiryType(enquiry) ? enquiry : "quote";
+  const flooringType = isFlooringInterest(flooring) ? flooring : "hybrid";
+  const copy = enquiryCopy[enquiryType];
+
   return (
     <>
       <PageHero
@@ -38,14 +56,19 @@ export default function ContactPage() {
               />
               <div className="relative">
                 <h2 className="text-headline-lg text-primary">
-                  Request a Free Quote
+                  {copy.heading}
                 </h2>
                 <p className="mt-3 text-body-md text-muted-foreground">
-                  Fill out the form below and one of our experts will get back
-                  to you within 24 hours with a detailed estimate.
+                  {copy.description}
                 </p>
 
-                <QuoteForm idPrefix="contact-quote" className="mt-8" />
+                <QuoteForm
+                  idPrefix="contact-quote"
+                  defaultEnquiry={enquiryType}
+                  defaultFlooring={flooringType}
+                  showEnquiryType
+                  className="mt-8"
+                />
 
                 <div className="mt-8 flex items-center gap-4 border-t border-border pt-6">
                   <div className="flex -space-x-3">
@@ -87,6 +110,31 @@ export default function ContactPage() {
 
           <div className="lg:order-1 lg:col-span-5">
             <ContactInfoCards />
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-primary py-section">
+        <div className="container-page flex flex-col items-center gap-6 text-center">
+          <h2 className="text-headline-lg-mobile text-primary-foreground md:text-display-lg">
+            Have a quick question?
+          </h2>
+          <p className="max-w-2xl text-pretty text-body-lg text-ink-muted">
+            Browse our frequently asked questions about installation times,
+            material durability, and our Hobart service range.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Button asChild size="xl" variant="secondary">
+              <Link href="/services#process">View FAQ</Link>
+            </Button>
+            <Button
+              asChild
+              size="xl"
+              variant="outline"
+              className="border-white/40 bg-transparent text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
+            >
+              <a href={siteConfig.contact.phoneHref}>Call Support</a>
+            </Button>
           </div>
         </div>
       </section>

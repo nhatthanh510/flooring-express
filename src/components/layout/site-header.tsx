@@ -20,34 +20,39 @@ export function SiteHeader() {
           {siteConfig.name}
         </Link>
 
-        <nav aria-label="Main" className="hidden md:block">
-          <ul className="flex items-center gap-8">
-            {navItems.map((item) => {
-              const isActive =
-                pathname === item.href || pathname.startsWith(`${item.href}/`);
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    aria-current={isActive ? "page" : undefined}
-                    className={cn(
-                      "border-b-2 border-transparent pb-1 text-label-md text-muted-foreground transition-colors hover:text-primary",
-                      isActive && "border-secondary font-bold text-primary",
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
+        {/* Nav and CTA sit together on the right, as in the mockup — not spread
+            across the bar by justify-between. */}
+        <div className="flex items-center gap-8">
+          <nav aria-label="Main" className="hidden md:block">
+            <ul className="flex items-center gap-8">
+              {navItems.map((item) => {
+                const isActive =
+                  pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      aria-current={isActive ? "page" : undefined}
+                      className={cn(
+                        "border-b-2 border-transparent pb-1 text-label-md text-muted-foreground transition-colors hover:text-primary",
+                        isActive && "border-secondary font-bold text-primary",
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
 
-        <div className="flex items-center gap-2">
-          <Button asChild size="lg" className="hidden sm:inline-flex">
-            <Link href="/contact">Free Quote</Link>
-          </Button>
-          <MobileNav />
+          <div className="flex items-center gap-2">
+            <Button asChild size="lg" className="hidden sm:inline-flex">
+              <Link href="/contact">Free Quote</Link>
+            </Button>
+            <MobileNav />
+          </div>
         </div>
       </div>
     </header>

@@ -58,7 +58,7 @@ export function ProjectMasonry({ active }: { active: GalleryFilter }) {
         {visible.map((project) => (
           <figure
             key={project.slug}
-            className="group mb-gutter break-inside-avoid overflow-hidden rounded-2xl border border-border bg-card"
+            className="group relative mb-gutter break-inside-avoid overflow-hidden rounded-2xl border border-border bg-card card-lift"
           >
             <div className={cn("relative w-full", project.aspect)}>
               <Image
@@ -97,6 +97,20 @@ export function ProjectMasonry({ active }: { active: GalleryFilter }) {
                 {project.subtitle}
               </span>
             </div>
+
+            {project.caseStudy && (
+              /* Stretched link: the whole card is the hit target, so no
+                 separate "view" button is needed. The accessible name still
+                 lives on a single real anchor. */
+              <Link
+                href={`/gallery/${project.caseStudy}`}
+                className="absolute inset-0 z-10 rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+              >
+                <span className="sr-only">
+                  View the {project.title} case study
+                </span>
+              </Link>
+            )}
           </figure>
         ))}
       </div>

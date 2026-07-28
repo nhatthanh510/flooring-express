@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, CircleCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,14 @@ import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { flooringInterests, quoteSchema, type QuoteFormValues } from "@/lib/schemas/quote";
+import {
+  enquiryCopy,
+  enquiryTypes,
+  flooringInterests,
+  quoteSchema,
+  type EnquiryType,
+  type QuoteFormValues,
+} from "@/lib/schemas/quote";
 import { submitQuote } from "@/lib/submit-quote";
 import { cn } from "@/lib/utils";
 
@@ -33,10 +40,27 @@ const inputClass = "h-12 rounded-lg text-body-md";
 type QuoteFormProps = {
   /** Distinguishes the two instances so field ids stay unique on the same page */
   idPrefix?: string;
+  /** Submit label — the mockups word this differently on home vs contact */
+  submitLabel?: string;
+  /** Which flooring options to offer; home omits "Other", per the mockup */
+  interests?: readonly (typeof flooringInterests)[number][];
+  /** Preselected from the CTA the visitor arrived through */
+  defaultEnquiry?: EnquiryType;
+  defaultFlooring?: (typeof flooringInterests)[number];
+  /** Home shows a compact form; contact shows the enquiry-type selector */
+  showEnquiryType?: boolean;
   className?: string;
 };
 
-export function QuoteForm({ idPrefix = "quote", className }: QuoteFormProps) {
+export function QuoteForm({
+  idPrefix = "quote",
+  submitLabel,
+  interests = flooringInterests,
+  defaultEnquiry = "quote",
+  defaultFlooring = "hybrid",
+  showEnquiryType = false,
+  className,
+}: QuoteFormProps) {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const successRef = useRef<HTMLDivElement>(null);
@@ -59,10 +83,14 @@ export function QuoteForm({ idPrefix = "quote", className }: QuoteFormProps) {
       name: "",
       email: "",
       phone: "",
-      flooring: "hybrid",
+      enquiry: defaultEnquiry,
+      flooring: defaultFlooring,
       message: "",
     },
   });
+
+  const enquiry = useWatch({ control, name: "enquiry" }) ?? defaultEnquiry;
+  const resolvedSubmitLabel = submitLabel ?? enquiryCopy[enquiry].submit;
 
   async function onSubmit(values: QuoteFormValues) {
     setSubmitError(null);
@@ -93,8 +121,8 @@ export function QuoteForm({ idPrefix = "quote", className }: QuoteFormProps) {
         </h3>
         <p className="text-body-md text-muted-foreground">
           One of our Hobart flooring specialists will get back to you within 24
-          hours with a detailed estimate. If it’s urgent, give us a call
-          and we’ll bring samples to you.
+          hours with a detailed estimate. If it’s urgent, give us a call and
+          we’ll bring samples to you.
         </p>
         <Button variant="outline" size="lg" onClick={() => setSubmitted(false)}>
           Send another request
@@ -110,6 +138,38 @@ export function QuoteForm({ idPrefix = "quote", className }: QuoteFormProps) {
       className={cn("flex flex-col gap-6", className)}
     >
       <FieldGroup>
+        {showEnquiryType && (
+          <FieldSet data-invalid={errors.enquiry ? true : undefined}>
+            <FieldLegend variant="label">What do you need?</FieldLegend>
+            <Controller
+              control={control}
+              name="enquiry"
+              render={({ field }) => (
+                <ToggleGroup
+                  type="single"
+                  value={field.value}
+                  onValueChange={(value) => value && field.onChange(value)}
+                  onBlur={field.onBlur}
+                  variant="outline"
+                  spacing={2}
+                  className="grid w-full grid-cols-2 sm:grid-cols-4"
+                >
+                  {enquiryTypes.map((type) => (
+                    <ToggleGroupItem
+                      key={type}
+                      value={type}
+                      className="h-12 w-full rounded-lg text-body-md data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                    >
+                      {enquiryCopy[type].label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              )}
+            />
+            <FieldError errors={[errors.enquiry]} />
+          </FieldSet>
+        )}
+
         <div className="grid gap-5 sm:grid-cols-2">
           <Field data-invalid={errors.name ? true : undefined}>
             <FieldLabel htmlFor={`${idPrefix}-name`}>Full Name</FieldLabel>
@@ -124,35 +184,35 @@ export function QuoteForm({ idPrefix = "quote", className }: QuoteFormProps) {
             <FieldError errors={[errors.name]} />
           </Field>
 
-          <Field data-invalid={errors.phone ? true : undefined}>
-            <FieldLabel htmlFor={`${idPrefix}-phone`}>Phone Number</FieldLabel>
+          <Field data-invalid={errors.email ? true : undefined}>
+            <FieldLabel htmlFor={`${idPrefix}-email`}>Email Address</FieldLabel>
             <Input
-              id={`${idPrefix}-phone`}
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="0400 000 000"
-              aria-invalid={errors.phone ? true : undefined}
+              id={`${idPrefix}-email`}
+              type="email"
+              autoComplete="email"
+              spellCheck={false}
+              placeholder="john@example.com"
+              aria-invalid={errors.email ? true : undefined}
               className={inputClass}
-              {...register("phone")}
+              {...register("email")}
             />
-            <FieldError errors={[errors.phone]} />
+            <FieldError errors={[errors.email]} />
           </Field>
         </div>
 
-        <Field data-invalid={errors.email ? true : undefined}>
-          <FieldLabel htmlFor={`${idPrefix}-email`}>Email Address</FieldLabel>
+        <Field data-invalid={errors.phone ? true : undefined}>
+          <FieldLabel htmlFor={`${idPrefix}-phone`}>Phone Number</FieldLabel>
           <Input
-            id={`${idPrefix}-email`}
-            type="email"
-            autoComplete="email"
-            spellCheck={false}
-            placeholder="john@example.com"
-            aria-invalid={errors.email ? true : undefined}
+            id={`${idPrefix}-phone`}
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="0400 000 000"
+            aria-invalid={errors.phone ? true : undefined}
             className={inputClass}
-            {...register("email")}
+            {...register("phone")}
           />
-          <FieldError errors={[errors.email]} />
+          <FieldError errors={[errors.phone]} />
         </Field>
 
         <FieldSet data-invalid={errors.flooring ? true : undefined}>
@@ -168,9 +228,12 @@ export function QuoteForm({ idPrefix = "quote", className }: QuoteFormProps) {
                 onBlur={field.onBlur}
                 variant="outline"
                 spacing={2}
-                className="grid w-full grid-cols-2 sm:grid-cols-4"
+                className={cn(
+                  "grid w-full grid-cols-2",
+                  interests.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-4",
+                )}
               >
-                {flooringInterests.map((interest) => (
+                {interests.map((interest) => (
                   <ToggleGroupItem
                     key={interest}
                     value={interest}
@@ -208,7 +271,12 @@ export function QuoteForm({ idPrefix = "quote", className }: QuoteFormProps) {
         </p>
       )}
 
-      <Button type="submit" size="xl" className="w-full" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        size="xl"
+        className="w-full"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? (
           <>
             <Spinner />
@@ -216,7 +284,7 @@ export function QuoteForm({ idPrefix = "quote", className }: QuoteFormProps) {
           </>
         ) : (
           <>
-            Send Quote Request
+            {resolvedSubmitLabel}
             <ArrowRight data-icon="inline-end" />
           </>
         )}

@@ -6,10 +6,7 @@ import { craftCards } from "@/lib/content/about";
 export function CraftsmanshipGrid() {
   return (
     <section className="container-page py-section">
-      <SectionHeading
-        title="Craftsmanship in Action"
-        description="The details that decide whether a floor still looks right in fifteen years."
-      />
+      <SectionHeading title="Craftsmanship in Action" />
 
       <div className="mt-16 grid gap-gutter md:grid-cols-2 lg:grid-cols-4">
         {craftCards.map((card, index) => (

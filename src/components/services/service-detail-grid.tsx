@@ -1,18 +1,14 @@
 import Image from "next/image";
-import Link from "next/link";
 import { CircleCheck } from "lucide-react";
 import { Reveal } from "@/components/shared/reveal";
+import { ViewSpecsButton } from "@/components/services/view-specs-button";
 import { SectionHeading } from "@/components/shared/section-heading";
-import { Button } from "@/components/ui/button";
 import { services } from "@/lib/content/services";
 
 export function ServiceDetailGrid() {
   return (
     <section id="services" className="container-page scroll-mt-24 py-section">
-      <SectionHeading
-        title="Our Flooring Solutions"
-        description="Whether you need a waterproof surface for a busy family home or a hardwood that will outlast the mortgage, we install it to the same standard."
-      />
+      <SectionHeading title="Our Flooring Solutions" />
 
       <div className="mt-16 grid gap-gutter md:grid-cols-3">
         {services.map((service, index) => {
@@ -21,7 +17,7 @@ export function ServiceDetailGrid() {
             <Reveal key={service.slug} delay={index * 100}>
               <article
                 id={service.slug}
-                className="group flex h-full scroll-mt-28 flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-ambient transition-[transform,box-shadow] duration-300 hover:-translate-y-2 hover:shadow-ambient-lifted"
+                className="group flex h-full scroll-mt-28 flex-col overflow-hidden rounded-2xl border border-border bg-card card-lift"
               >
                 <div className="relative h-64 w-full overflow-hidden">
                   <Image
@@ -63,17 +59,7 @@ export function ServiceDetailGrid() {
                     ))}
                   </ul>
 
-                  <Button
-                    asChild
-                    size="xl"
-                    variant="outline"
-                    className="mt-auto w-full"
-                  >
-                    <Link href="#compare">
-                      View Specifications
-                      <span className="sr-only"> for {service.name}</span>
-                    </Link>
-                  </Button>
+                  <ViewSpecsButton slug={service.slug} name={service.name} />
                 </div>
               </article>
             </Reveal>

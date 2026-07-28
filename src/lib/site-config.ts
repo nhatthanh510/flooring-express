@@ -34,6 +34,9 @@ export const siteConfig = {
     { days: "Sunday", time: "Closed", closed: true },
   ],
 
+  /** Compact one-line form used in the footer, where space is tight. */
+  hoursSummary: "Mon - Fri: 8am - 6pm",
+
   /** Schema.org openingHours format, derived from the table above. */
   openingHoursSpec: ["Mo-Fr 08:00-18:00", "Sa 09:00-16:00"],
 
@@ -64,22 +67,39 @@ export const navItems = [
 
 export const footerColumns = [
   {
-    title: "Our Products",
+    title: "Flooring Solutions",
     links: [
       { href: "/services#hybrid", label: "Hybrid Flooring" },
       { href: "/services#laminate", label: "Laminate Flooring" },
       { href: "/services#timber", label: "Timber Flooring" },
-      { href: "/services#process", label: "Installation Process" },
+      { href: "/services#compare", label: "Engineered Wood" },
     ],
   },
   {
-    title: "Company",
+    title: "Quick Links",
     links: [
-      { href: "/gallery", label: "Recent Projects" },
+      { href: "/gallery", label: "Recent Work" },
+      { href: "/contact", label: "Contact Us" },
       { href: "/about", label: "Local Expertise" },
-      { href: "/contact", label: "Request a Quote" },
       { href: "/about#specifications", label: "Technical Specs" },
     ],
+  },
+] as const;
+
+/**
+ * PLACEHOLDER URLs — the mockups only had dead `#` links here. Point these at
+ * the real profiles before launch, or delete an entry to hide that icon.
+ */
+export const socialLinks = [
+  {
+    href: "https://www.facebook.com/",
+    label: "Flooring Express on Facebook",
+    icon: "facebook",
+  },
+  {
+    href: "https://www.instagram.com/",
+    label: "Flooring Express on Instagram",
+    icon: "instagram",
   },
 ] as const;
 

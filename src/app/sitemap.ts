@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { caseStudies } from "@/lib/content/case-studies";
 import { navItems, siteConfig } from "@/lib/site-config";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -16,6 +17,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.8,
+    })),
+    ...caseStudies.map((study) => ({
+      url: `${siteConfig.url}/gallery/${study.slug}`,
+      lastModified,
+      changeFrequency: "yearly" as const,
+      priority: 0.6,
     })),
   ];
 }

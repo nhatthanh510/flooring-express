@@ -68,7 +68,11 @@ export const services: readonly FlooringService[] = [
     plankColor: "#a68966",
     homeBlurb:
       "High-performance style at an affordable price point. Mimics the look of real timber with superior wear resistance and easy maintenance.",
-    homeFeatures: ["Affordable Luxury", "Impact Resistant", "High UV Stability"],
+    homeFeatures: [
+      "Affordable Luxury",
+      "Impact Resistant",
+      "High UV Stability",
+    ],
     servicesBlurb:
       "Affordable style meets everyday performance. Our laminate ranges offer authentic wood looks with superior impact resistance.",
     servicesFeatures: [
