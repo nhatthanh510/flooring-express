@@ -87,7 +87,7 @@ ok(JSON.stringify(footer.headings) === JSON.stringify(["Flooring Solutions", "Qu
    `footer headings ${footer.headings.join(" | ")}`);
 ok(/6200 0000/.test(document_text) && /flooringexpress\.com\.au/.test(document_text) && /Collins Street/.test(document_text),
    "footer carries phone, email and address");
-ok(footer.socials === 2, `footer has ${footer.socials} social icons (expected 2)`);
+ok(footer.socials === 1, `footer has ${footer.socials} social icon (expected 1)`);
 ok(footer.copyrightCentered === "center", "copyright row centred");
 ok(footer.cols === 4, `footer grid has ${footer.cols} columns (expected 4)`);
 
@@ -122,13 +122,15 @@ for (const [q, heading] of [["enquiry=samples", /Order Product Samples/i],
                             ["enquiry=consultation", /Book a Free Consultation/i],
                             ["enquiry=commercial", /Commercial Team/i]]) {
   await page.goto(`${B}/contact?${q}`, { waitUntil: "domcontentloaded" });
-  const h = await page.locator("main h2").first().innerText();
+  // the form's own heading, not the sr-only "Contact details" group label
+  const h = await page.locator("main form").locator("xpath=../h2").first().innerText()
+    .catch(async () => (await page.locator("main h2:not(.sr-only)").first().innerText()));
   ok(heading.test(h), `/contact?${q} -> "${h}"`);
 }
 await page.goto(B + "/contact?enquiry=samples&flooring=timber", { waitUntil: "networkidle" });
 const preset = await page.evaluate(() =>
   [...document.querySelectorAll("[data-slot=toggle-group-item][data-state=on]")].map(e => e.textContent.trim()));
-ok(preset.includes("Timber") && preset.includes("Product samples"),
+ok(preset.includes("Timber") && preset.includes("Sample Request"),
    `deep link preselects [${preset.join(", ")}]`);
 
 // --- 10. Home portfolio tiles are links and match gallery imagery -------------
@@ -155,6 +157,92 @@ const shown = await page.locator("#compare h3").first().innerText();
 ok(/Timber/i.test(shown), `View Specifications (Timber) -> comparison shows "${shown}"`);
 
 // --- 12. No image ships with baked-in UI chrome (spot check by size) ---------
+
+// --- 13. Contact form controls never overflow their group -------------------
+for (const w of [390, 768, 1024, 1440]) {
+  const vp = await browser.newContext({ viewport: { width: w, height: 1000 } });
+  const vpp = await vp.newPage();
+  await vpp.goto(B + "/contact?enquiry=consultation", { waitUntil: "networkidle", timeout: 120000 });
+  const spill = await vpp.evaluate(() => {
+    const out = [];
+    document.querySelectorAll("[data-slot=toggle-group]").forEach((g) => {
+      const gr = g.getBoundingClientRect();
+      g.querySelectorAll("[data-slot=toggle-group-item]").forEach((i) => {
+        const r = i.getBoundingClientRect();
+        if (r.right > gr.right + 1 || i.scrollWidth > i.clientWidth + 1) out.push(i.textContent.trim());
+      });
+    });
+    return out;
+  });
+  ok(spill.length === 0, `@${w}px no toggle option overflows${spill.length ? ": " + spill.join(", ") : ""}`);
+  await vp.close();
+}
+
+// --- 14. Contact page shows a live map, not a static image ------------------
+await page.goto(B + "/contact", { waitUntil: "networkidle" });
+const mapFrame = await page.evaluate(() => {
+  const f = document.querySelector("iframe[title*='Map']");
+  return f ? { src: f.getAttribute("src"), title: f.getAttribute("title"), lazy: f.getAttribute("loading") } : null;
+});
+ok(!!mapFrame && /maps\.google\.com/.test(mapFrame.src), `contact map is a live embed (${mapFrame?.src?.slice(0, 42)}…)`);
+ok(mapFrame?.lazy === "lazy" && !!mapFrame?.title, "map iframe is lazy-loaded and titled");
+// Nothing may sit on top of the map — Google's attribution and place card
+// both live inside the frame and must stay unobstructed.
+const overlays = await page.evaluate(() => {
+  const f = document.querySelector("iframe[title*='Map']");
+  const box = f.getBoundingClientRect();
+  return [...document.querySelectorAll("main a, main button")].filter((el) => {
+    const r = el.getBoundingClientRect();
+    return r.width && r.top < box.bottom - 2 && r.bottom > box.top + 2 &&
+           r.left < box.right - 2 && r.right > box.left + 2;
+  }).map((el) => el.textContent.trim().slice(0, 30));
+});
+ok(overlays.length === 0, `nothing overlays the map${overlays.length ? ": " + overlays.join(", ") : ""}`);
+ok((await page.getByRole("link", { name: /Get Directions/i }).count()) === 1,
+   "Get Directions link sits below the map");
+const fb = await page.evaluate(() =>
+  [...document.querySelectorAll("footer a[href*='facebook']")].map((a) => a.getAttribute("href")));
+ok(fb.length === 1 && fb[0].includes("61562958221994"), `footer links the real Facebook profile (${fb[0] ?? "none"})`);
+ok((await page.evaluate(() => document.querySelectorAll("footer a[href*='instagram']").length)) === 0,
+   "no Instagram link");
+
+// --- 15. FAQ ------------------------------------------------------------------
+await page.goto(B + "/faq", { waitUntil: "networkidle" });
+ok((await page.locator("[data-slot=accordion-item]").count()) === 5, "/faq lists all 5 questions");
+await page.locator("#faq-search").fill("steam mop");
+await page.waitForTimeout(300);
+ok((await page.locator("[data-slot=accordion-item]").count()) === 1, "FAQ search filters to the matching question");
+await page.locator("#faq-search").fill("zzzz");
+await page.waitForTimeout(300);
+ok((await page.getByText(/No questions match/i).count()) === 1, "FAQ search shows an empty state");
+ok(/FAQPage/.test(await page.content()), "/faq emits FAQPage structured data");
+await page.goto(B + "/", { waitUntil: "networkidle" });
+ok((await page.locator("#faq [data-slot=accordion-item]").count()) === 4, "home page has the 4-question FAQ section");
+await page.goto(B + "/contact", { waitUntil: "networkidle" });
+const faqCta = await page.getByRole("link", { name: /^View FAQ$/ }).getAttribute("href");
+ok(faqCta === "/faq", `contact "View FAQ" -> ${faqCta}`);
+
+// --- 16. Mobile menu matches the design --------------------------------------
+{
+  const mctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const mp = await mctx.newPage();
+  await mp.goto(B + "/", { waitUntil: "networkidle" });
+  await mp.getByRole("button", { name: /Open navigation menu/i }).click();
+  await mp.waitForTimeout(500);
+  const nav = await mp.evaluate(() => {
+    const a = document.querySelector("[data-slot=sheet-content] nav a");
+    const panel = document.querySelector("[data-slot=sheet-content]").getBoundingClientRect();
+    const cs = getComputedStyle(a);
+    return { size: cs.fontSize, family: cs.fontFamily.split(",")[0].replace(/"/g, ""),
+             align: getComputedStyle(a.parentElement).textAlign,
+             fullWidth: Math.round(panel.width) === window.innerWidth };
+  });
+  ok(nav.size === "16px", `mobile menu links are ${nav.size} (design: 16px)`);
+  ok(nav.family === "Montserrat", `mobile menu links use ${nav.family}`);
+  ok(nav.align === "center", "mobile menu links are centred");
+  ok(nav.fullWidth, "mobile menu covers the full width");
+  await mctx.close();
+}
 
 console.log("PASS (" + pass.length + ")"); pass.forEach(p => console.log("  ✓ " + p));
 console.log(fails.length ? "\nFAIL (" + fails.length + ")" : "\nNo failures.");

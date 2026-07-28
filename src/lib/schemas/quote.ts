@@ -14,8 +14,8 @@ export const flooringInterests = [
  */
 export const enquiryTypes = [
   "quote",
-  "samples",
   "consultation",
+  "samples",
   "commercial",
 ] as const;
 
@@ -26,28 +26,28 @@ export const enquiryCopy: Record<
   { label: string; heading: string; description: string; submit: string }
 > = {
   quote: {
-    label: "Free quote",
+    label: "Free Measure & Quote",
     heading: "Request a Free Quote",
     description:
       "Fill out the form below and one of our experts will get back to you within 24 hours with a detailed estimate.",
     submit: "Send Quote Request",
   },
   samples: {
-    label: "Product samples",
+    label: "Sample Request",
     heading: "Order Product Samples",
     description:
       "Tell us which finishes you'd like to see and we'll post samples out, or bring them to you so you can check them in your own light.",
     submit: "Send Sample Request",
   },
   consultation: {
-    label: "On-site consultation",
+    label: "Expert Consultation",
     heading: "Book a Free Consultation",
     description:
       "We'll visit your property, laser-measure the space and talk through the options — no obligation, no charge.",
     submit: "Book Consultation",
   },
   commercial: {
-    label: "Commercial project",
+    label: "Commercial Project",
     heading: "Talk to Our Commercial Team",
     description:
       "Tell us about the site, the floor area and your timeline. We'll come back with a staged plan and a fixed quote.",

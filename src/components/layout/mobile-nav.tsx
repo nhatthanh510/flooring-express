@@ -3,13 +3,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Mail, Menu, Phone } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
@@ -33,14 +32,22 @@ export function MobileNav() {
         </Button>
       </SheetTrigger>
 
-      <SheetContent side="right" className="w-full max-w-sm">
-        <SheetHeader>
-          <SheetTitle className="font-display text-headline-md font-bold text-primary">
-            {siteConfig.name}
-          </SheetTitle>
-        </SheetHeader>
+      {/* Full-screen overlay with centred links, per the mobile design. */}
+      {/* The width overrides must carry the same `data-[side=right]:` prefix as
+          shadcn's defaults, otherwise tailwind-merge treats them as a different
+          group and `w-3/4` wins. */}
+      <SheetContent
+        side="right"
+        className="border-0 bg-surface p-margin-mobile data-[side=right]:w-full data-[side=right]:sm:max-w-none"
+      >
+        <SheetTitle className="sr-only">
+          {siteConfig.name} navigation
+        </SheetTitle>
 
-        <nav aria-label="Mobile" className="flex flex-col gap-1 px-4">
+        <nav
+          aria-label="Mobile"
+          className="mt-16 flex flex-col gap-6 text-center"
+        >
           {navItems.map((item) => {
             const isActive =
               pathname === item.href || pathname.startsWith(`${item.href}/`);
@@ -50,8 +57,8 @@ export function MobileNav() {
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "rounded-lg px-3 py-3 font-display text-headline-md text-muted-foreground transition-colors hover:bg-muted hover:text-primary",
-                    isActive && "bg-muted font-semibold text-primary",
+                    "font-display text-body-md text-primary transition-colors hover:text-secondary",
+                    isActive && "font-semibold text-secondary",
                   )}
                 >
                   {item.label}
@@ -59,29 +66,13 @@ export function MobileNav() {
               </SheetClose>
             );
           })}
-        </nav>
 
-        <div className="mt-auto flex flex-col gap-4 border-t border-border p-4">
-          <a
-            href={siteConfig.contact.phoneHref}
-            className="flex items-center gap-3 text-body-md text-muted-foreground transition-colors hover:text-primary"
-          >
-            <Phone className="size-4 text-secondary" />
-            {siteConfig.contact.phone}
-          </a>
-          <a
-            href={`mailto:${siteConfig.contact.email}`}
-            className="flex items-center gap-3 text-body-md text-muted-foreground transition-colors hover:text-primary"
-          >
-            <Mail className="size-4 text-secondary" />
-            {siteConfig.contact.email}
-          </a>
           <SheetClose asChild>
-            <Button asChild size="xl" className="w-full">
-              <Link href="/contact">Request a Free Quote</Link>
+            <Button asChild size="xl" className="mt-4 w-full font-display">
+              <Link href="/contact">Free Quote</Link>
             </Button>
           </SheetClose>
-        </div>
+        </nav>
       </SheetContent>
     </Sheet>
   );

@@ -49,12 +49,12 @@ export function SiteFooter() {
             <h2 className="mb-6 font-sans text-body-md font-bold text-primary-foreground">
               {column.title}
             </h2>
-            <ul className="flex flex-col gap-4">
+            <ul className="flex flex-col gap-1">
               {column.links.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-body-md text-primary-foreground/80 transition-colors hover:text-cream"
+                    className="inline-flex min-h-11 items-center text-body-md text-primary-foreground/80 transition-colors hover:text-cream"
                   >
                     {link.label}
                   </Link>
@@ -68,7 +68,7 @@ export function SiteFooter() {
           <h2 className="mb-6 font-sans text-body-md font-bold text-primary-foreground">
             Contact
           </h2>
-          <ul className="flex flex-col gap-4 text-body-md text-primary-foreground/80">
+          <ul className="flex flex-col gap-3 text-body-md text-primary-foreground/80">
             <li className="flex items-start gap-3">
               <MapPin
                 className="mt-0.5 size-4 shrink-0 text-cream-dim"
@@ -83,7 +83,7 @@ export function SiteFooter() {
               />
               <a
                 href={siteConfig.contact.phoneHref}
-                className="transition-colors hover:text-cream"
+                className="inline-flex min-h-11 items-center transition-colors hover:text-cream"
               >
                 {siteConfig.contact.phone}
               </a>
@@ -95,7 +95,7 @@ export function SiteFooter() {
               />
               <a
                 href={`mailto:${siteConfig.contact.email}`}
-                className="break-all transition-colors hover:text-cream"
+                className="inline-flex min-h-11 items-center break-all transition-colors hover:text-cream"
               >
                 {siteConfig.contact.email}
               </a>

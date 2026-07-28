@@ -61,6 +61,7 @@ export const siteConfig = {
 export const navItems = [
   { href: "/services", label: "Services" },
   { href: "/gallery", label: "Gallery" },
+  { href: "/faq", label: "FAQ" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ] as const;
@@ -80,26 +81,18 @@ export const footerColumns = [
     links: [
       { href: "/gallery", label: "Recent Work" },
       { href: "/contact", label: "Contact Us" },
-      { href: "/about", label: "Local Expertise" },
+      { href: "/faq", label: "FAQ" },
       { href: "/about#specifications", label: "Technical Specs" },
     ],
   },
 ] as const;
 
-/**
- * PLACEHOLDER URLs — the mockups only had dead `#` links here. Point these at
- * the real profiles before launch, or delete an entry to hide that icon.
- */
+/** Add an entry to show another social icon in the footer; remove one to hide it. */
 export const socialLinks = [
   {
-    href: "https://www.facebook.com/",
+    href: "https://www.facebook.com/profile.php?id=61562958221994",
     label: "Flooring Express on Facebook",
     icon: "facebook",
-  },
-  {
-    href: "https://www.instagram.com/",
-    label: "Flooring Express on Instagram",
-    icon: "instagram",
   },
 ] as const;
 

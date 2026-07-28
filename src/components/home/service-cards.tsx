@@ -46,7 +46,7 @@ export function ServiceCards() {
 
                 <Link
                   href={`/contact?enquiry=samples&flooring=${service.slug}`}
-                  className="mt-auto inline-flex items-center gap-2 pt-2 text-label-md font-semibold text-secondary transition-[gap] hover:gap-3"
+                  className="mt-auto inline-flex min-h-11 items-center gap-2 pt-2 text-label-md font-semibold text-secondary transition-[gap] hover:gap-3"
                 >
                   Request Sample
                   <ArrowRight className="size-4" aria-hidden="true" />

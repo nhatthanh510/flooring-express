@@ -1,12 +1,7 @@
-import Image from "next/image";
 import { Clock, Mail, Phone } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { fullAddress, siteConfig } from "@/lib/site-config";
+import { ServiceAreaMap } from "@/components/contact/service-area-map";
+import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
-
-const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-  `${fullAddress}, Australia`,
-)}`;
 
 export function ContactInfoCards() {
   return (
@@ -53,32 +48,7 @@ export function ContactInfoCards() {
         </div>
       </div>
 
-      <div className="relative h-[350px] overflow-hidden rounded-2xl border border-border">
-        <Image
-          src="/images/contact/service-area-map.webp"
-          alt=""
-          aria-hidden="true"
-          fill
-          sizes="(min-width: 1024px) 40vw, 100vw"
-          className="object-cover"
-        />
-        <div className="glass-panel absolute inset-x-4 bottom-4 flex items-center justify-between gap-4 rounded-xl p-4">
-          <div className="flex flex-col">
-            <span className="text-body-md font-semibold text-primary">
-              Serving All Greater Hobart
-            </span>
-            <span className="text-label-md text-muted-foreground">
-              Residential &amp; Commercial
-            </span>
-          </div>
-          <Button asChild size="lg" variant="default">
-            <a href={directionsHref} target="_blank" rel="noopener noreferrer">
-              Directions
-              <span className="sr-only"> to our Hobart showroom</span>
-            </a>
-          </Button>
-        </div>
-      </div>
+      <ServiceAreaMap />
     </div>
   );
 }
@@ -105,7 +75,7 @@ function InfoCard({
         <h3 className="text-headline-md text-primary">{title}</h3>
         <a
           href={href}
-          className="break-all text-body-lg text-primary transition-colors hover:text-secondary"
+          className="inline-flex min-h-11 items-center break-all text-body-lg text-primary transition-colors hover:text-secondary"
         >
           {value}
         </a>

@@ -16,7 +16,7 @@ export function BentoGallery() {
         </div>
         <Link
           href="/gallery"
-          className="inline-flex items-center gap-2 text-label-md font-semibold text-primary transition-[gap] hover:gap-3"
+          className="inline-flex min-h-11 items-center gap-2 text-label-md font-semibold text-primary transition-[gap] hover:gap-3"
         >
           View More Projects
           <ArrowRight className="size-4" aria-hidden="true" />

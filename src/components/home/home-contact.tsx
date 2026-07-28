@@ -76,7 +76,7 @@ export function HomeContact() {
                     {channel.href ? (
                       <a
                         href={channel.href}
-                        className="text-body-lg font-semibold text-primary transition-colors hover:text-secondary"
+                        className="inline-flex min-h-11 items-center text-body-lg font-semibold text-primary transition-colors hover:text-secondary"
                       >
                         {channel.value}
                       </a>

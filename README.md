@@ -30,16 +30,16 @@ src/
 │   ├── layout.tsx           fonts (Montserrat + Inter), base metadata, viewport
 │   ├── globals.css          Tailwind v4 @theme — the whole design system
 │   ├── sitemap.ts robots.ts
-│   └── (marketing)/         shared header/footer, five pages + gallery/[slug]
+│   └── (marketing)/         shared header/footer, six pages + gallery/[slug]
 ├── components/
 │   ├── ui/                  shadcn components
 │   ├── layout/ shared/      header, mobile nav, footer, hero, CTA, reveal
-│   ├── home/ services/ gallery/ about/ contact/
+│   ├── home/ services/ gallery/ about/ contact/ faq/
 │   ├── projects/            composable case-study sections + icon map
 │   └── forms/               quote-form, newsletter-input
 └── lib/
     ├── site-config.ts       business details, nav, footer links
-    ├── content/             services, projects, case-studies, process, about
+    ├── content/             services, projects, case-studies, faqs, process, about
     ├── schemas/quote.ts     zod schema shared by both quote forms
     └── submit-quote.ts      the only place the app talks to the outside world
 ```
@@ -70,17 +70,14 @@ not touching components.
    confirmed business data.
 2. **Wire up the quote form.** `submitQuote()` in `src/lib/submit-quote.ts`
    currently resolves after a delay. Swap its body for the real API/CRM call —
-   nothing else needs to change. `subscribeToNewsletter()` is the same shape.
+   nothing else needs to change.
 3. **Set `siteConfig.url`** to the real domain so `metadataBase`, the sitemap
    and the JSON-LD resolve correctly.
 4. **Replace the imagery.** `public/images/` holds the AI-generated placeholders
    from the Stitch mockup (~1376×768 WebP). Alt text is written per image in the
    content modules and should be re-checked against the real photos.
-5. **Set the social URLs.** `socialLinks` in `site-config.ts` points at the
-   Facebook and Instagram home pages, not real profiles. Add the real URLs or
-   delete an entry to hide that icon. The footer's "Privacy Policy" / "Terms of
-   Service" links from the mockup are also not built yet — the Quick Links
-   column currently points at pages that exist instead.
+5. **Privacy Policy / Terms of Service** pages from the mockup footer aren't
+   built — the Quick Links column points at pages that exist instead.
 
 ## Where CTAs go
 
@@ -88,8 +85,13 @@ Every call to action carries an **enquiry intent**, so no two buttons land on an
 identical form. `/contact` reads `?enquiry=` and `?flooring=` and adapts its
 heading, description, submit label and preselected options
 (`enquiryCopy` in `lib/schemas/quote.ts`). The four intents are `quote`,
-`samples`, `consultation` and `commercial`. The regression suite asserts that no
-page has two CTAs pointing at the same contact URL.
+`consultation`, `samples` and `commercial`, matching the "Inquiry Type" field in
+the updated contact mockup. The regression suite asserts that no page has two
+CTAs pointing at the same contact URL.
+
+The mockup's fourth option is "General Inquiry"; we use **Commercial Project**
+instead, because the gallery's "Contact Sales" CTA needs a distinct destination
+and a commercial lead is worth routing separately.
 
 ## Notes
 
@@ -102,9 +104,18 @@ page has two CTAs pointing at the same contact URL.
 - `pnpm screenshots` (dev server running) captures every route at 1440px and
   390px into `screenshots/`, and reports horizontal overflow, console errors and
   failed requests. Override with `BASE=`, `ROUTES=`, `OUT=`.
+- `pnpm mobile-audit` checks every route at 390px for horizontal overflow,
+  elements escaping the viewport, tap targets under 32px, and clipped text.
 - `pnpm regression` runs the functional suite — link integrity, gallery filters
   and card links, quote-form validation and success, the plank toggle, mobile
-  nav, footer structure, and that card hover stays on the compositor.
+  nav, footer structure, CTA intent routing, control overflow at four widths,
+  and that card hover stays on the compositor.
+- **One third-party resource:** the contact page embeds a Google map via the
+  keyless `maps.google.com/maps?output=embed` endpoint, lazy-loaded. Everything
+  else is same-origin (the social icons are outbound links, not loads). Swap it
+  for the Maps Embed API in `components/contact/service-area-map.tsx` if you
+  want custom styling, or drop the component if you'd rather ship zero
+  third-party requests.
 
 ### Typography
 

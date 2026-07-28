@@ -44,10 +44,14 @@ export default async function ContactPage({
       />
 
       <section className="container-page py-section">
-        {/* The form leads in the DOM so it comes first on mobile and so the
-            heading order stays h1 → h2 → h3; `lg:order-*` moves it right on
-            desktop to match the mockup. */}
+        {/* Contact details lead in the DOM so they come first on mobile, as in
+            the mockup; `lg:order-*` swaps the columns on desktop. The group's
+            sr-only h2 keeps the heading order valid (h1 → h2 → h3 → h2). */}
         <div className="grid items-start gap-gutter lg:grid-cols-12">
+          <div className="lg:order-1 lg:col-span-5">
+            <h2 className="sr-only">Contact details</h2>
+            <ContactInfoCards />
+          </div>
           <div className="lg:order-2 lg:col-span-7">
             <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-8 shadow-ambient md:p-12">
               <div
@@ -107,10 +111,6 @@ export default async function ContactPage({
               </div>
             </div>
           </div>
-
-          <div className="lg:order-1 lg:col-span-5">
-            <ContactInfoCards />
-          </div>
         </div>
       </section>
 
@@ -125,7 +125,7 @@ export default async function ContactPage({
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button asChild size="xl" variant="secondary">
-              <Link href="/services#process">View FAQ</Link>
+              <Link href="/faq">View FAQ</Link>
             </Button>
             <Button
               asChild

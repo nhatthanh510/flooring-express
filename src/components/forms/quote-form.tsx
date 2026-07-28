@@ -138,38 +138,6 @@ export function QuoteForm({
       className={cn("flex flex-col gap-6", className)}
     >
       <FieldGroup>
-        {showEnquiryType && (
-          <FieldSet data-invalid={errors.enquiry ? true : undefined}>
-            <FieldLegend variant="label">What do you need?</FieldLegend>
-            <Controller
-              control={control}
-              name="enquiry"
-              render={({ field }) => (
-                <ToggleGroup
-                  type="single"
-                  value={field.value}
-                  onValueChange={(value) => value && field.onChange(value)}
-                  onBlur={field.onBlur}
-                  variant="outline"
-                  spacing={2}
-                  className="grid w-full grid-cols-2 sm:grid-cols-4"
-                >
-                  {enquiryTypes.map((type) => (
-                    <ToggleGroupItem
-                      key={type}
-                      value={type}
-                      className="h-12 w-full rounded-lg text-body-md data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-                    >
-                      {enquiryCopy[type].label}
-                    </ToggleGroupItem>
-                  ))}
-                </ToggleGroup>
-              )}
-            />
-            <FieldError errors={[errors.enquiry]} />
-          </FieldSet>
-        )}
-
         <div className="grid gap-5 sm:grid-cols-2">
           <Field data-invalid={errors.name ? true : undefined}>
             <FieldLabel htmlFor={`${idPrefix}-name`}>Full Name</FieldLabel>
@@ -215,8 +183,42 @@ export function QuoteForm({
           <FieldError errors={[errors.phone]} />
         </Field>
 
+        {showEnquiryType && (
+          <FieldSet data-invalid={errors.enquiry ? true : undefined}>
+            <FieldLegend variant="label">Inquiry Type</FieldLegend>
+            <Controller
+              control={control}
+              name="enquiry"
+              render={({ field }) => (
+                <ToggleGroup
+                  type="single"
+                  value={field.value}
+                  onValueChange={(value) => value && field.onChange(value)}
+                  onBlur={field.onBlur}
+                  variant="outline"
+                  spacing={2}
+                  className="grid w-full grid-cols-2 lg:grid-cols-4"
+                >
+                  {enquiryTypes.map((type) => (
+                    <ToggleGroupItem
+                      key={type}
+                      value={type}
+                      className={
+                        "h-auto min-h-12 w-full whitespace-normal rounded-lg px-3 py-2 text-center text-body-md leading-tight data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                      }
+                    >
+                      {enquiryCopy[type].label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              )}
+            />
+            <FieldError errors={[errors.enquiry]} />
+          </FieldSet>
+        )}
+
         <FieldSet data-invalid={errors.flooring ? true : undefined}>
-          <FieldLegend variant="label">Flooring Interest</FieldLegend>
+          <FieldLegend variant="label">Flooring Type</FieldLegend>
           <Controller
             control={control}
             name="flooring"
@@ -230,7 +232,7 @@ export function QuoteForm({
                 spacing={2}
                 className={cn(
                   "grid w-full grid-cols-2",
-                  interests.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-4",
+                  interests.length === 3 ? "sm:grid-cols-3" : "lg:grid-cols-4",
                 )}
               >
                 {interests.map((interest) => (
@@ -238,7 +240,9 @@ export function QuoteForm({
                     key={interest}
                     value={interest}
                     aria-label={interestLabels[interest]}
-                    className="h-12 w-full rounded-lg text-body-md data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                    className={
+                      "h-auto min-h-12 w-full whitespace-normal rounded-lg px-3 py-2 text-center text-body-md leading-tight data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                    }
                   >
                     {interestLabels[interest]}
                   </ToggleGroupItem>
