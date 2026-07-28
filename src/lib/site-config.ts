@@ -29,9 +29,14 @@ export const siteConfig = {
   },
 
   hours: [
-    { days: "Monday - Friday", time: "8:00 AM - 6:00 PM" },
-    { days: "Saturday", time: "9:00 AM - 4:00 PM" },
-    { days: "Sunday", time: "Closed", closed: true },
+    // `short` is used where the column is narrow (the mobile contact card)
+    {
+      days: "Monday - Friday",
+      short: "Mon \u2013 Fri",
+      time: "8:00 AM - 6:00 PM",
+    },
+    { days: "Saturday", short: "Sat", time: "9:00 AM - 4:00 PM" },
+    { days: "Sunday", short: "Sun", time: "Closed", closed: true },
   ],
 
   /** Compact one-line form used in the footer, where space is tight. */

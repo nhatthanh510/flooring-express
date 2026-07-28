@@ -1,86 +1,90 @@
-import { Clock, Mail, Phone } from "lucide-react";
+import { Clock, Mail, Phone, type LucideIcon } from "lucide-react";
 import { ServiceAreaMap } from "@/components/contact/service-area-map";
 import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 
-export function ContactInfoCards() {
+/**
+ * Compact cards, per the mobile mockup: a small round icon, a micro uppercase
+ * label, then the value. The earlier version used a 24px heading per card,
+ * which made each one roughly twice as tall as it needed to be on a phone.
+ */
+function CardShell({
+  icon: Icon,
+  label,
+  children,
+}: {
+  icon: LucideIcon;
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="flex flex-col gap-gutter">
-      <InfoCard
-        icon={Phone}
-        title="Phone"
-        caption="Mon–Fri, 8am–6pm"
-        value={siteConfig.contact.phone}
-        href={siteConfig.contact.phoneHref}
-      />
-      <InfoCard
-        icon={Mail}
-        title="Email"
-        caption="24/7 digital enquiries"
-        value={siteConfig.contact.email}
-        href={`mailto:${siteConfig.contact.email}`}
-      />
-
-      <div className="flex items-start gap-4 rounded-2xl border border-border bg-surface-low p-6">
-        <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-          <Clock className="size-5" aria-hidden="true" />
-        </span>
-        <div className="flex w-full flex-col gap-3">
-          <h3 className="text-headline-md text-primary">Business Hours</h3>
-          <dl className="flex flex-col gap-2">
-            {siteConfig.hours.map((entry) => (
-              <div
-                key={entry.days}
-                className="flex items-baseline justify-between gap-4 text-body-md"
-              >
-                <dt className="text-muted-foreground">{entry.days}</dt>
-                <dd
-                  className={cn(
-                    "font-medium text-primary",
-                    "closed" in entry && entry.closed && "text-destructive",
-                  )}
-                >
-                  {entry.time}
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </div>
+    <div className="flex items-start gap-4 rounded-2xl border border-border bg-surface-low p-5">
+      <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+        <Icon className="size-5" aria-hidden="true" />
+      </span>
+      <div className="flex min-w-0 flex-1 flex-col gap-1">
+        <h3 className="font-sans text-label-sm uppercase tracking-wide text-muted-foreground">
+          {label}
+        </h3>
+        {children}
       </div>
-
-      <ServiceAreaMap />
     </div>
   );
 }
 
-function InfoCard({
-  icon: Icon,
-  title,
-  caption,
-  value,
-  href,
-}: {
-  icon: typeof Phone;
-  title: string;
-  caption: string;
-  value: string;
-  href: string;
-}) {
+export function ContactInfoCards() {
   return (
-    <div className="flex items-start gap-4 rounded-2xl border border-border bg-surface-low p-6">
-      <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-        <Icon className="size-5" aria-hidden="true" />
-      </span>
-      <div className="flex flex-col gap-1">
-        <h3 className="text-headline-md text-primary">{title}</h3>
+    <div className="flex flex-col gap-4">
+      <CardShell icon={Phone} label="Call us">
         <a
-          href={href}
-          className="inline-flex min-h-11 items-center break-all text-body-lg text-primary transition-colors hover:text-secondary"
+          href={siteConfig.contact.phoneHref}
+          className="text-body-lg font-semibold text-primary transition-colors hover:text-secondary"
         >
-          {value}
+          {siteConfig.contact.phone}
         </a>
-        <p className="text-label-md text-muted-foreground">{caption}</p>
-      </div>
+        <p className="text-label-md text-muted-foreground">
+          Mon&ndash;Fri, 8am&ndash;6pm
+        </p>
+      </CardShell>
+
+      <CardShell icon={Mail} label="Email us">
+        {/* break-words, not break-all — the latter split the address mid-word */}
+        <a
+          href={`mailto:${siteConfig.contact.email}`}
+          className="break-words text-body-lg font-semibold text-primary transition-colors hover:text-secondary"
+        >
+          {siteConfig.contact.email}
+        </a>
+        <p className="text-label-md text-muted-foreground">
+          24/7 digital enquiries
+        </p>
+      </CardShell>
+
+      <CardShell icon={Clock} label="Showroom hours">
+        <dl className="flex flex-col gap-1.5">
+          {siteConfig.hours.map((entry) => (
+            <div
+              key={entry.days}
+              className="flex items-baseline justify-between gap-4 text-body-md"
+            >
+              <dt className="text-muted-foreground">
+                <span className="sm:hidden">{entry.short}</span>
+                <span className="hidden sm:inline">{entry.days}</span>
+              </dt>
+              <dd
+                className={cn(
+                  "whitespace-nowrap font-semibold text-primary",
+                  "closed" in entry && entry.closed && "text-destructive",
+                )}
+              >
+                {entry.time}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </CardShell>
+
+      <ServiceAreaMap />
     </div>
   );
 }

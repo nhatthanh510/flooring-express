@@ -41,10 +41,10 @@ export default async function ContactPage({
           alt: "Newly laid flooring in a bright Hobart interior, ready for handover.",
         }}
         scrim="left"
-        height="min-h-[340px] md:min-h-[409px]"
+        height="min-h-[260px] md:min-h-[409px]"
       />
 
-      <section className="container-page py-section">
+      <section className="container-page py-12 md:py-section">
         {/* Contact details lead in the DOM so they come first on mobile, as in
             the mockup; `lg:order-*` swaps the columns on desktop. The group's
             sr-only h2 keeps the heading order valid (h1 → h2 → h3 → h2). */}
