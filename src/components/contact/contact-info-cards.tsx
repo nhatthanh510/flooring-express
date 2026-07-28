@@ -38,7 +38,7 @@ export function ContactInfoCards() {
       <CardShell icon={Phone} label="Call us">
         <a
           href={siteConfig.contact.phoneHref}
-          className="text-body-lg font-semibold text-primary transition-colors hover:text-secondary"
+          className="-my-2 inline-block py-2 text-body-lg font-semibold text-primary transition-colors hover:text-secondary"
         >
           {siteConfig.contact.phone}
         </a>
@@ -51,7 +51,7 @@ export function ContactInfoCards() {
         {/* break-words, not break-all — the latter split the address mid-word */}
         <a
           href={`mailto:${siteConfig.contact.email}`}
-          className="break-words text-body-lg font-semibold text-primary transition-colors hover:text-secondary"
+          className="-my-2 inline-block break-words py-2 text-body-lg font-semibold text-primary transition-colors hover:text-secondary"
         >
           {siteConfig.contact.email}
         </a>

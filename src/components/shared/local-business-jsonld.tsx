@@ -11,7 +11,7 @@ export function LocalBusinessJsonLd() {
     "@type": "HomeAndConstructionBusiness",
     name: siteConfig.legalName,
     description: siteConfig.description,
-    url: siteConfig.url,
+    url: siteConfig.productionUrl,
     telephone: siteConfig.contact.phone,
     email: siteConfig.contact.email,
     address: {

@@ -71,8 +71,8 @@ not touching components.
 2. **Wire up the quote form.** `submitQuote()` in `src/lib/submit-quote.ts`
    currently resolves after a delay. Swap its body for the real API/CRM call —
    nothing else needs to change.
-3. **Set `siteConfig.url`** to the real domain so `metadataBase`, the sitemap
-   and the JSON-LD resolve correctly.
+3. **Set `NEXT_PUBLIC_SITE_URL`** (see `.env.example`) — or deploy to Vercel,
+   where it is detected automatically. See "Why a shared link has no image".
 4. **Replace the imagery.** `public/images/` holds the AI-generated placeholders
    from the Stitch mockup (~1376×768 WebP). Alt text is written per image in the
    content modules and should be re-checked against the real photos.
@@ -131,6 +131,24 @@ and a commercial lead is worth routing separately.
 - `manifest.webmanifest`, canonical URLs on every route, `robots` directives with
   `max-image-preview:large`, and `geo.region` / `geo.placename` for local search.
 - Structured data: `HomeAndConstructionBusiness` site-wide, `FAQPage` on `/faq`.
+
+### Why a shared link has no image
+
+Social crawlers fetch `og:image` as an **absolute** URL. If that URL points at a
+host which isn't serving the site, the preview degrades to title + description
+with no image — which is exactly what happens when `metadataBase` is hard-coded
+to a domain that isn't live yet.
+
+`siteConfig.url` therefore resolves at runtime, in this order:
+
+1. `NEXT_PUBLIC_SITE_URL` — set this when self-hosting, or when testing shares
+   through a tunnel (ngrok, cloudflared).
+2. Vercel's production/preview URL, so preview deployments preview correctly.
+3. The production domain.
+
+Note that **a `localhost` link can never produce a preview**, whatever the tags
+say — the crawler cannot reach your machine. To test a real share, expose the
+site with a tunnel and set `NEXT_PUBLIC_SITE_URL` to the tunnel origin.
 
 ### Typography
 

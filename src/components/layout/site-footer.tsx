@@ -85,7 +85,7 @@ export function SiteFooter() {
               />
               <a
                 href={siteConfig.contact.phoneHref}
-                className="transition-colors hover:text-cream"
+                className="-my-2.5 inline-block py-2.5 transition-colors hover:text-cream"
               >
                 {siteConfig.contact.phone}
               </a>
@@ -97,7 +97,7 @@ export function SiteFooter() {
               />
               <a
                 href={`mailto:${siteConfig.contact.email}`}
-                className="break-all transition-colors hover:text-cream"
+                className="-my-2.5 inline-block break-words py-2.5 transition-colors hover:text-cream"
               >
                 {siteConfig.contact.email}
               </a>

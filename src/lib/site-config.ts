@@ -7,10 +7,47 @@
  * PLACEHOLDER DATA and should be replaced with the real details before launch.
  */
 
+/** The domain the site will eventually live on. */
+const PRODUCTION_URL = "https://flooringexpress.com.au";
+
+/**
+ * Absolute base URL used for `metadataBase`, canonical links, the sitemap and —
+ * critically — the `og:image` URL.
+ *
+ * Social crawlers fetch `og:image` as an absolute URL, so if this points at a
+ * domain that isn't serving the site, the preview falls back to title and
+ * description with no image. Resolution order:
+ *
+ *   1. `NEXT_PUBLIC_SITE_URL` — set this for a tunnel (ngrok/cloudflared) or any
+ *      non-Vercel host.
+ *   2. Vercel's production/preview URL, so preview deployments preview correctly.
+ *   3. The production domain above.
+ *
+ * In `next dev` it falls back to localhost, which is fine for looking at the
+ * card yourself but can never work in a real share — crawlers can't reach your
+ * machine. Use a tunnel plus `NEXT_PUBLIC_SITE_URL` to test that properly.
+ */
+function resolveSiteUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicit) return explicit.replace(/\/$/, "");
+
+  const vercel =
+    process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+  if (vercel) return `https://${vercel}`;
+
+  if (process.env.NODE_ENV === "development") {
+    return `http://localhost:${process.env.PORT ?? 3000}`;
+  }
+
+  return PRODUCTION_URL;
+}
+
 export const siteConfig = {
   name: "Flooring Express",
   legalName: "Flooring Express Hobart",
-  url: "https://flooringexpress.com.au",
+  url: resolveSiteUrl(),
+  /** Always the real domain, regardless of where this build is served from. */
+  productionUrl: PRODUCTION_URL,
   tagline: "Premium flooring solutions for Hobart homes",
   description:
     "Expert flooring installation in Hobart. Specializing in Hybrid, Laminate, and Timber flooring solutions for premium homes.",

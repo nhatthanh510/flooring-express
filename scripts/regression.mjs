@@ -130,7 +130,7 @@ for (const [q, heading] of [["enquiry=samples", /Order Product Samples/i],
 await page.goto(B + "/contact?enquiry=samples&flooring=timber", { waitUntil: "networkidle" });
 const preset = await page.evaluate(() =>
   [...document.querySelectorAll("[data-slot=toggle-group-item][data-state=on]")].map(e => e.textContent.trim()));
-ok(preset.includes("Timber") && preset.includes("Sample Request"),
+ok(preset.includes("Timber") && preset.includes("Samples"),
    `deep link preselects [${preset.join(", ")}]`);
 
 // --- 10. Home portfolio tiles are links and match gallery imagery -------------
@@ -178,26 +178,13 @@ for (const w of [390, 768, 1024, 1440]) {
   await vp.close();
 }
 
-// --- 14. Contact map is a facade until requested -----------------------------
+// --- 14. Contact page shows a live map ---------------------------------------
 await page.goto(B + "/contact", { waitUntil: "networkidle" });
-let mapsBytes = 0;
-page.on("response", async (r) => {
-  if (/maps\.google|maps\.gstatic/.test(r.url())) { try { mapsBytes += (await r.body()).length; } catch {} }
-});
-await page.reload({ waitUntil: "networkidle" });
-await page.waitForTimeout(600);
-ok((await page.locator("iframe[title*='Map']").count()) === 0, "no map iframe before the visitor asks for it");
-ok(mapsBytes === 0, `no Google Maps JS on load (${(mapsBytes / 1024).toFixed(0)} kB)`);
-ok((await page.getByRole("link", { name: /Get Directions/i }).count()) === 1,
-   "Get Directions works without loading the map");
-
-await page.getByRole("button", { name: /Load interactive map/i }).click();
-await page.waitForTimeout(2500);
 const mapFrame = await page.evaluate(() => {
   const f = document.querySelector("iframe[title*='Map']");
   return f ? { src: f.getAttribute("src"), title: f.getAttribute("title"), lazy: f.getAttribute("loading") } : null;
 });
-ok(!!mapFrame && /maps\.google\.com/.test(mapFrame.src), "clicking loads the real Google map");
+ok(!!mapFrame && /maps\.google\.com/.test(mapFrame.src), `contact map is a live embed (${mapFrame?.src?.slice(0, 42)}…)`);
 ok(mapFrame?.lazy === "lazy" && !!mapFrame?.title, "map iframe is lazy-loaded and titled");
 
 // Nothing may sit on top of the map — Google's attribution and place card
@@ -219,6 +206,29 @@ const fb = await page.evaluate(() =>
 ok(fb.length === 1 && fb[0].includes("61562958221994"), `footer links the real Facebook profile (${fb[0] ?? "none"})`);
 ok((await page.evaluate(() => document.querySelectorAll("footer a[href*='instagram']").length)) === 0,
    "no Instagram link");
+
+// --- 14b. Footer contact column stays on one line and aligned -----------------
+const contactCol = await page.evaluate(() => {
+  const a = document.querySelector("footer address");
+  const ul = a.closest("ul");
+  const lefts = [...ul.querySelectorAll("address, a, span")].map((e) => Math.round(e.getBoundingClientRect().left));
+  return { addrH: Math.round(a.getBoundingClientRect().height),
+           rows: [...ul.children].map((li) => Math.round(li.getBoundingClientRect().height)),
+           distinctLefts: [...new Set(lefts)].length };
+});
+ok(contactCol.addrH <= 26, `footer address fits one line (${contactCol.addrH}px)`);
+ok(contactCol.rows.every((h) => h === contactCol.rows[0]), `footer contact rows are even (${contactCol.rows.join("/")})`);
+ok(contactCol.distinctLefts === 1, "footer contact values share one left edge");
+
+// --- 14c. Quote form controls -------------------------------------------------
+const ta = await page.evaluate(() => {
+  const t = document.querySelector("textarea");
+  return { h: Math.round(t.getBoundingClientRect().height), rows: t.rows };
+});
+ok(ta.h >= 120, `message textarea is ${ta.h}px tall for ${ta.rows} rows`);
+const optionHeights = await page.evaluate(() =>
+  [...document.querySelectorAll("[data-slot=toggle-group-item]")].map((e) => Math.round(e.getBoundingClientRect().height)));
+ok(new Set(optionHeights).size === 1, `form options are one line each (${[...new Set(optionHeights)].join("/")}px)`);
 
 // --- 15. FAQ ------------------------------------------------------------------
 await page.goto(B + "/faq", { waitUntil: "networkidle" });
