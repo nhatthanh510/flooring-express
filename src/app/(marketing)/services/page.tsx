@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Professional Flooring Services",
   description:
     "Expert flooring installation in Hobart. Specializing in Hybrid, Laminate, and Timber flooring solutions for premium homes.",
+  alternates: { canonical: "/services" },
 };
 
 export default function ServicesPage() {

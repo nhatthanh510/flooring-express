@@ -178,18 +178,33 @@ for (const w of [390, 768, 1024, 1440]) {
   await vp.close();
 }
 
-// --- 14. Contact page shows a live map, not a static image ------------------
+// --- 14. Contact map is a facade until requested -----------------------------
 await page.goto(B + "/contact", { waitUntil: "networkidle" });
+let mapsBytes = 0;
+page.on("response", async (r) => {
+  if (/maps\.google|maps\.gstatic/.test(r.url())) { try { mapsBytes += (await r.body()).length; } catch {} }
+});
+await page.reload({ waitUntil: "networkidle" });
+await page.waitForTimeout(600);
+ok((await page.locator("iframe[title*='Map']").count()) === 0, "no map iframe before the visitor asks for it");
+ok(mapsBytes === 0, `no Google Maps JS on load (${(mapsBytes / 1024).toFixed(0)} kB)`);
+ok((await page.getByRole("link", { name: /Get Directions/i }).count()) === 1,
+   "Get Directions works without loading the map");
+
+await page.getByRole("button", { name: /Load interactive map/i }).click();
+await page.waitForTimeout(2500);
 const mapFrame = await page.evaluate(() => {
   const f = document.querySelector("iframe[title*='Map']");
   return f ? { src: f.getAttribute("src"), title: f.getAttribute("title"), lazy: f.getAttribute("loading") } : null;
 });
-ok(!!mapFrame && /maps\.google\.com/.test(mapFrame.src), `contact map is a live embed (${mapFrame?.src?.slice(0, 42)}…)`);
+ok(!!mapFrame && /maps\.google\.com/.test(mapFrame.src), "clicking loads the real Google map");
 ok(mapFrame?.lazy === "lazy" && !!mapFrame?.title, "map iframe is lazy-loaded and titled");
+
 // Nothing may sit on top of the map — Google's attribution and place card
 // both live inside the frame and must stay unobstructed.
 const overlays = await page.evaluate(() => {
   const f = document.querySelector("iframe[title*='Map']");
+  if (!f) return [];
   const box = f.getBoundingClientRect();
   return [...document.querySelectorAll("main a, main button")].filter((el) => {
     const r = el.getBoundingClientRect();
@@ -198,8 +213,7 @@ const overlays = await page.evaluate(() => {
   }).map((el) => el.textContent.trim().slice(0, 30));
 });
 ok(overlays.length === 0, `nothing overlays the map${overlays.length ? ": " + overlays.join(", ") : ""}`);
-ok((await page.getByRole("link", { name: /Get Directions/i }).count()) === 1,
-   "Get Directions link sits below the map");
+
 const fb = await page.evaluate(() =>
   [...document.querySelectorAll("footer a[href*='facebook']")].map((a) => a.getAttribute("href")));
 ok(fb.length === 1 && fb[0].includes("61562958221994"), `footer links the real Facebook profile (${fb[0] ?? "none"})`);

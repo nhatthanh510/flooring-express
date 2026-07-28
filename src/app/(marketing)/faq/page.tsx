@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Mail, Phone } from "lucide-react";
+import { Download, Headset, Mail, Phone } from "lucide-react";
 import { FaqBrowser } from "@/components/faq/faq-browser";
 import { Button } from "@/components/ui/button";
 import { allFaqs, faqGroups } from "@/lib/content/faqs";
@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "FAQ",
   description:
     "Answers to common questions about our hybrid, laminate and timber flooring, professional installation, warranties and ongoing care.",
+  alternates: { canonical: "/faq" },
 };
 
 /** Structured data so the answers can surface directly in search results. */
@@ -31,61 +32,49 @@ function FaqJsonLd() {
   );
 }
 
+function SupportCard() {
+  return (
+    <div
+      id="faq-support"
+      className="flex scroll-mt-28 flex-col gap-4 rounded-2xl bg-surface-highest/60 p-6"
+    >
+      <div className="flex flex-col gap-2">
+        <h2 className="text-headline-md text-primary">Still have questions?</h2>
+        <p className="text-body-md text-muted-foreground">
+          Our flooring experts are available to provide detailed advice for your
+          specific project.
+        </p>
+      </div>
+
+      <a
+        href={siteConfig.contact.phoneHref}
+        className="flex min-h-11 items-center gap-3 text-body-md text-primary transition-colors hover:text-secondary"
+      >
+        <Phone className="size-5 shrink-0 text-secondary" aria-hidden="true" />
+        {siteConfig.contact.phone}
+      </a>
+      <a
+        href={`mailto:${siteConfig.contact.email}`}
+        className="flex min-h-11 items-center gap-3 text-body-md text-primary transition-colors hover:text-secondary"
+      >
+        <Mail className="size-5 shrink-0 text-secondary" aria-hidden="true" />
+        Email Support
+      </a>
+    </div>
+  );
+}
+
 export default function FaqPage() {
   return (
     <>
       <FaqJsonLd />
 
-      <section className="container-page py-16 text-center md:py-24">
-        <h1 className="text-headline-lg-mobile text-primary md:text-display-lg">
-          Frequently Asked Questions
-        </h1>
-        <p className="mx-auto mt-6 max-w-2xl text-pretty text-body-lg text-muted-foreground">
-          Find answers to common questions about our premium flooring solutions,
-          professional installation, and ongoing care.
-        </p>
-      </section>
+      <FaqBrowser groups={faqGroups} support={<SupportCard />} />
 
-      <section className="container-page pb-section">
-        <div className="grid items-start gap-gutter lg:grid-cols-12">
-          <div className="lg:col-span-8">
-            <FaqBrowser groups={faqGroups} />
-          </div>
-
-          <aside
-            id="faq-support"
-            className="scroll-mt-28 lg:col-span-4 lg:sticky lg:top-28"
-          >
-            <div className="flex flex-col gap-5 rounded-2xl border border-border bg-surface-low p-8">
-              <div className="flex flex-col gap-2">
-                <h2 className="text-headline-md text-primary">
-                  Still have questions?
-                </h2>
-                <p className="text-body-md text-muted-foreground">
-                  Our flooring experts are available to provide detailed advice
-                  for your specific project.
-                </p>
-              </div>
-
-              <Button asChild size="xl" className="w-full">
-                <a href={siteConfig.contact.phoneHref}>
-                  <Phone aria-hidden="true" />
-                  {siteConfig.contact.phone}
-                </a>
-              </Button>
-              <Button asChild size="xl" variant="outline" className="w-full">
-                <a href={`mailto:${siteConfig.contact.email}`}>
-                  <Mail aria-hidden="true" />
-                  Email Support
-                </a>
-              </Button>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section className="container-page pb-section">
-        <div className="flex flex-col items-center gap-6 rounded-3xl bg-primary p-10 text-center md:p-16">
+      {/* Full-bleed dark band, as in the mockup */}
+      {/* primary-container, not primary — see the note on the contact page. */}
+      <section className="bg-ink-soft py-section">
+        <div className="container-page flex flex-col items-center gap-6 text-center">
           <h2 className="max-w-2xl text-balance text-headline-lg-mobile text-primary-foreground md:text-display-lg">
             Didn&rsquo;t find what you were looking for?
           </h2>
@@ -96,6 +85,7 @@ export default function FaqPage() {
           <div className="flex flex-wrap justify-center gap-4">
             <Button asChild size="xl" variant="secondary">
               <Link href="/contact?enquiry=consultation">
+                <Headset aria-hidden="true" />
                 Talk to a Consultant
               </Link>
             </Button>
@@ -105,7 +95,10 @@ export default function FaqPage() {
               variant="outline"
               className="border-white/40 bg-transparent text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
             >
-              <Link href="/contact?enquiry=samples">Request a Care Guide</Link>
+              <Link href="/contact?enquiry=samples">
+                <Download aria-hidden="true" />
+                Request a Care Guide
+              </Link>
             </Button>
           </div>
         </div>

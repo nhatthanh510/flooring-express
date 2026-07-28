@@ -55,7 +55,7 @@ export function ProjectMasonry({ active }: { active: GalleryFilter }) {
       </p>
 
       <div className="mt-12 gap-gutter [column-count:1] md:[column-count:2] lg:[column-count:3]">
-        {visible.map((project) => (
+        {visible.map((project, index) => (
           <figure
             key={project.slug}
             className="group relative mb-gutter break-inside-avoid overflow-hidden rounded-2xl border border-border bg-card card-lift"
@@ -66,6 +66,7 @@ export function ProjectMasonry({ active }: { active: GalleryFilter }) {
                 alt={project.image.alt}
                 fill
                 sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                priority={index === 0}
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div

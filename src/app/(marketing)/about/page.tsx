@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "About Us",
   description:
     "Locally owned and operated, Flooring Express brings over 15 years of precision craftsmanship to every Hobart home we touch.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {

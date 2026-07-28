@@ -34,10 +34,11 @@ export async function generateMetadata({
   return {
     title: study.metaTitle,
     description: study.metaDescription,
+    alternates: { canonical: `/gallery/${study.slug}` },
     openGraph: {
+      type: "article",
       title: study.metaTitle,
       description: study.metaDescription,
-      images: [study.hero.src],
     },
   };
 }

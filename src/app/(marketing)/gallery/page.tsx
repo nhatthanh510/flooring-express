@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Gallery",
   description:
     "Recently completed residential and commercial flooring installations across Hobart — timber, laminate and hybrid.",
+  alternates: { canonical: "/gallery" },
 };
 
 export default async function GalleryPage({

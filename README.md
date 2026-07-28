@@ -104,18 +104,33 @@ and a commercial lead is worth routing separately.
 - `pnpm screenshots` (dev server running) captures every route at 1440px and
   390px into `screenshots/`, and reports horizontal overflow, console errors and
   failed requests. Override with `BASE=`, `ROUTES=`, `OUT=`.
+- `pnpm perf-audit` reports LCP / CLS / TTFB and per-route byte weight against a
+  production build (`pnpm build && pnpm start --port 3222`, then
+  `BASE=http://localhost:3222 pnpm perf-audit`).
 - `pnpm mobile-audit` checks every route at 390px for horizontal overflow,
   elements escaping the viewport, tap targets under 32px, and clipped text.
 - `pnpm regression` runs the functional suite — link integrity, gallery filters
   and card links, quote-form validation and success, the plank toggle, mobile
   nav, footer structure, CTA intent routing, control overflow at four widths,
   and that card hover stays on the compositor.
-- **One third-party resource:** the contact page embeds a Google map via the
-  keyless `maps.google.com/maps?output=embed` endpoint, lazy-loaded. Everything
-  else is same-origin (the social icons are outbound links, not loads). Swap it
-  for the Maps Embed API in `components/contact/service-area-map.tsx` if you
-  want custom styling, or drop the component if you'd rather ship zero
-  third-party requests.
+- **The contact map is the only third-party resource.** Google's embed pulls
+  ~1.6 MB of JavaScript — more than the rest of the site combined — so `/contact`
+  is by far the heaviest route. It is lazy-loaded, so it only downloads once the
+  map scrolls into view. If that cost ever matters, `ServiceAreaMap` is the one
+  file to change (a click-to-load facade cuts it to zero). Everything else is
+  same-origin; the Facebook icon is an outbound link, not a load.
+
+## SEO & sharing
+
+- Per-route **Open Graph / Twitter cards** generated at build time by
+  `next/og` from `src/app/og.tsx` — each route re-exports it with its own title,
+  so a shared link previews what was actually shared. Case studies generate one
+  per project.
+- **Favicon and apple-touch-icon** are generated the same way (`app/icon.tsx`,
+  `app/apple-icon.tsx`), so they can't drift from the palette.
+- `manifest.webmanifest`, canonical URLs on every route, `robots` directives with
+  `max-image-preview:large`, and `geo.region` / `geo.placename` for local search.
+- Structured data: `HomeAndConstructionBusiness` site-wide, `FAQPage` on `/faq`.
 
 ### Typography
 

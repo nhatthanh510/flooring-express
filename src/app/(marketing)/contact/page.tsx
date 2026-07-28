@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   title: "Contact Us",
   description:
     "Expert flooring advice and premium installation services across Hobart. Request a free quote and we'll respond within 24 hours.",
+  alternates: { canonical: "/contact" },
 };
 
 export default async function ContactPage({
@@ -114,7 +115,9 @@ export default async function ContactPage({
         </div>
       </section>
 
-      <section className="bg-primary py-section">
+      {/* primary-container, not primary — this sits directly above the footer
+          and needs a tonal step or the two dark blocks merge. */}
+      <section className="bg-ink-soft py-section">
         <div className="container-page flex flex-col items-center gap-6 text-center">
           <h2 className="text-headline-lg-mobile text-primary-foreground md:text-display-lg">
             Have a quick question?
