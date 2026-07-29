@@ -272,8 +272,6 @@ export const FAQ_PAGE_QUERY = defineQuery(`
 export const CONTACT_PAGE_QUERY = defineQuery(`
   *[_id == "contactPage"][0]{
     hero ${HERO},
-    avatars[] ${IMG},
-    socialProof{ prefix, highlightSuffix, suffix },
     closingBand ${CLOSING_BAND},
     seo ${SEO}
   }

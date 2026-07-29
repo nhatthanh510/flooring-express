@@ -2,22 +2,40 @@ import type { QuoteFormValues } from "./schemas/quote";
 
 export type SubmitResult = { ok: true } | { ok: false; error: string };
 
+const GENERIC_ERROR =
+  "Sorry, we couldn't send that. Please try again, or call us directly.";
+
 /**
- * Phase 1 has no backend. This resolves after a short delay so the form can
- * exercise its pending and success states.
+ * Hands a quote enquiry to `/api/quote`, which emails it through Resend.
  *
- * To go live, replace the body with the real call — a route handler, a server
- * action, or a direct CRM request. Nothing else in the app needs to change:
- * this is the only place the app talks to the outside world about a quote.
+ * Still the only place the app talks to the outside world about a quote — the
+ * form knows nothing about transport, so swapping email for a CRM means editing
+ * the route handler, not this file or the form.
  */
 export async function submitQuote(
   values: QuoteFormValues,
 ): Promise<SubmitResult> {
-  await new Promise((resolve) => setTimeout(resolve, 900));
+  try {
+    const response = await fetch("/api/quote", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
 
-  if (process.env.NODE_ENV === "development") {
-    console.info("[submitQuote] captured enquiry", values);
+    // The route answers with JSON on every path, but a proxy or platform error
+    // can still return HTML — a failed parse must not throw past the caller and
+    // leave the form stuck showing its spinner.
+    const data = (await response.json().catch(() => null)) as
+      | { ok?: boolean; error?: string }
+      | null;
+
+    if (!response.ok || !data?.ok) {
+      return { ok: false, error: data?.error ?? GENERIC_ERROR };
+    }
+
+    return { ok: true };
+  } catch {
+    // Offline, DNS failure, or the request was blocked.
+    return { ok: false, error: GENERIC_ERROR };
   }
-
-  return { ok: true };
 }

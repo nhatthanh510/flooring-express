@@ -398,23 +398,6 @@ export const faqPage = pageSingleton("faqPage", "FAQ page", [
 ]);
 
 export const contactPage = pageSingleton("contactPage", "Contact page", [
-  defineField({
-    name: "avatars",
-    title: "Team avatars",
-    type: "array",
-    of: [defineArrayMember({ type: "imageWithAlt" })],
-    description: "The small faces beside the social-proof line above the form.",
-  }),
-  defineField({
-    name: "socialProof",
-    type: "object",
-    description: 'Renders as "Join {count} Hobart families …" — the count comes from Site settings.',
-    fields: [
-      defineField({ name: "prefix", type: "string" }),
-      defineField({ name: "highlightSuffix", type: "string" }),
-      defineField({ name: "suffix", type: "string" }),
-    ],
-  }),
   defineField({ name: "closingBand", type: "closingBand" }),
 ]);
 

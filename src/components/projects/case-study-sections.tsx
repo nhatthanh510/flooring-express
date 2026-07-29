@@ -1,5 +1,6 @@
 import { Link } from "@/components/shared/link";
 import { ArrowRight, CircleCheck, Quote, TriangleAlert } from "lucide-react";
+import { CaseStudyGalleryGrid } from "@/components/projects/case-study-gallery-grid";
 import { Reveal } from "@/components/shared/reveal";
 import { SanityFillImage } from "@/components/shared/sanity-image";
 import { resolveIcon } from "@/lib/icons";
@@ -338,19 +339,7 @@ export function CaseStudyGallery({
           {gallery.heading}
         </h2>
       )}
-      <div className="grid gap-gutter sm:grid-cols-2 lg:grid-cols-3">
-        {gallery.images.map((image, index) => (
-          <Reveal key={image.asset?._id ?? index} delay={index * 60}>
-            <figure className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-border">
-              <SanityFillImage
-                image={image}
-                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="transition-transform duration-500 group-hover:scale-105"
-              />
-            </figure>
-          </Reveal>
-        ))}
-      </div>
+      <CaseStudyGalleryGrid images={gallery.images} />
     </section>
   );
 }

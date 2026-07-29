@@ -28,6 +28,14 @@ When adding a feature:
   field, and a section with no content should collapse rather than render an
   empty heading or throw.
 
+## Never start a test server on port 3000
+
+Port 3000 is the developer's `next dev`. Starting your own server there kills
+their running instance, and `next start` will silently serve a stale build into
+the port they are looking at. Pick a distinct port for anything you launch —
+`next start -p 3987`, Playwright, Lighthouse — and stop it when you are done.
+The same applies to `next dev` if you need one: use a different port.
+
 ## New UI is not done until it is editable and seeded
 
 Shipping a component that renders the right pixels from hardcoded strings is a

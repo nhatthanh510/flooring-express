@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { ContactInfoCards } from "@/components/contact/contact-info-cards";
 import { QuoteIntro, QuoteIntroBody } from "@/components/contact/quote-intro";
 import { PageHero } from "@/components/shared/page-hero";
-import { SanityFillImage } from "@/components/shared/sanity-image";
 import { sanityFetch } from "@/sanity/lib/live";
 import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 
@@ -72,27 +71,6 @@ export default async function ContactPage() {
                 <Suspense fallback={<QuoteIntroBody />}>
                   <QuoteIntro />
                 </Suspense>
-
-                <div className="mt-8 flex items-center gap-4 border-t border-border pt-6">
-                  <div className="flex -space-x-3">
-                    {page.avatars?.map((avatar) => (
-                      <span
-                        key={avatar.asset?._id}
-                        className="relative size-10 overflow-hidden rounded-full border-2 border-card"
-                      >
-                        <SanityFillImage image={avatar} sizes="40px" />
-                      </span>
-                    ))}
-                  </div>
-                  <p className="text-body-md text-muted-foreground">
-                    {page.socialProof?.prefix}{" "}
-                    <strong className="font-semibold text-primary">
-                      {settings.stats?.familiesServed}{" "}
-                      {page.socialProof?.highlightSuffix}
-                    </strong>{" "}
-                    {page.socialProof?.suffix}
-                  </p>
-                </div>
               </div>
             </div>
           </div>

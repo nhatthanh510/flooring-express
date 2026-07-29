@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A second push to the same branch makes the first run's answer irrelevant.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      # The build calls sanityFetch while prerendering, so it needs real
+      # credentials — the same Viewer token the app uses at runtime.
+      NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ vars.NEXT_PUBLIC_SANITY_PROJECT_ID }}
+      NEXT_PUBLIC_SANITY_DATASET: ${{ vars.NEXT_PUBLIC_SANITY_DATASET }}
+      NEXT_PUBLIC_SANITY_API_VERSION: ${{ vars.NEXT_PUBLIC_SANITY_API_VERSION }}
+      SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+      # 3987, not 3000 — the rule in AGENTS.md, and clear of anything else a
+      # runner might have bound. Every script below reads BASE.
+      BASE: http://localhost:3987
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+      # Chromium only: every script launches chromium specifically, so the
+      # other browsers would be download time spent on nothing.
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Start production server
+        run: |
+          pnpm start -p 3987 &
+          npx --yes wait-on "$BASE" --timeout 90000
+
+      # Gates: both exit non-zero when they find something.
+      - name: Functional regression suite
+        run: pnpm regression
+
+      - name: Mobile audit
+        run: pnpm mobile-audit
+
+      # Reporting only. These print findings but have no failing exit code, so
+      # they inform a review without blocking a merge on a noisy timing number.
+      - name: Performance audit (informational)
+        run: pnpm perf-audit
+        continue-on-error: true
+
+      - name: Screenshots (informational)
+        run: pnpm screenshots
+        continue-on-error: true
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshots/
+          if-no-files-found: ignore
+          retention-days: 7

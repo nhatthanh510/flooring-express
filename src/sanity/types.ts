@@ -91,16 +91,6 @@ export type ContactPage = {
   _updatedAt: string;
   _rev: string;
   hero?: PageHero;
-  avatars?: Array<
-    {
-      _key: string;
-    } & ImageWithAlt
-  >;
-  socialProof?: {
-    prefix?: string;
-    highlightSuffix?: string;
-    suffix?: string;
-  };
   closingBand?: ClosingBand;
   cta?: CtaBanner;
   seo?: Seo;
@@ -2886,19 +2876,15 @@ export type FAQ_PAGE_QUERY_RESULT =
 
 // Source: src/sanity/queries.ts
 // Variable: CONTACT_PAGE_QUERY
-// Query: *[_id == "contactPage"][0]{    hero {  eyebrow,  title,  description,  image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }},  actions[] { label, href }},    avatars[] {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }},    socialProof{ prefix, highlightSuffix, suffix },    closingBand { title, description, actions[] { label, href } },    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }  }
+// Query: *[_id == "contactPage"][0]{    hero {  eyebrow,  title,  description,  image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }},  actions[] { label, href }},    closingBand { title, description, actions[] { label, href } },    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }  }
 export type CONTACT_PAGE_QUERY_RESULT =
   | {
       hero: null;
-      avatars: null;
-      socialProof: null;
       closingBand: null;
       seo: null;
     }
   | {
       hero: null;
-      avatars: null;
-      socialProof: null;
       closingBand: null;
       seo: {
         metaTitle: string | null;
@@ -2915,8 +2901,6 @@ export type CONTACT_PAGE_QUERY_RESULT =
         image: null;
         actions: null;
       } | null;
-      avatars: null;
-      socialProof: null;
       closingBand: null;
       seo: {
         metaTitle: string | null;
@@ -2960,8 +2944,6 @@ export type CONTACT_PAGE_QUERY_RESULT =
           href: string | null;
         }> | null;
       } | null;
-      avatars: null;
-      socialProof: null;
       closingBand: null;
       seo: {
         metaTitle: string | null;
@@ -3004,88 +2986,6 @@ export type CONTACT_PAGE_QUERY_RESULT =
           label: string | null;
           href: string | null;
         }> | null;
-      } | null;
-      avatars: null;
-      socialProof: null;
-      closingBand: {
-        title: string | null;
-        description: string | null;
-        actions: Array<{
-          label: string | null;
-          href: string | null;
-        }> | null;
-      } | null;
-      seo: {
-        metaTitle: string | null;
-        metaDescription: string | null;
-        ogEyebrow: string | null;
-        ogDescription: string | null;
-      } | null;
-    }
-  | {
-      hero: {
-        eyebrow: string | null;
-        title: string | null;
-        description: string | null;
-        image: {
-          alt: string | null;
-          decorative: boolean | null;
-          hotspot: {
-            x: number | null;
-            y: number | null;
-          } | null;
-          crop: {
-            top: number | null;
-            bottom: number | null;
-            left: number | null;
-            right: number | null;
-          } | null;
-          asset: {
-            _id: string;
-            url: string | null;
-            metadata: {
-              lqip: string | null;
-              dimensions: {
-                width: number | null;
-                height: number | null;
-              } | null;
-            } | null;
-          } | null;
-        } | null;
-        actions: Array<{
-          label: string | null;
-          href: string | null;
-        }> | null;
-      } | null;
-      avatars: Array<{
-        alt: string | null;
-        decorative: boolean | null;
-        hotspot: {
-          x: number | null;
-          y: number | null;
-        } | null;
-        crop: {
-          top: number | null;
-          bottom: number | null;
-          left: number | null;
-          right: number | null;
-        } | null;
-        asset: {
-          _id: string;
-          url: string | null;
-          metadata: {
-            lqip: string | null;
-            dimensions: {
-              width: number | null;
-              height: number | null;
-            } | null;
-          } | null;
-        } | null;
-      }> | null;
-      socialProof: {
-        prefix: string | null;
-        highlightSuffix: string | null;
-        suffix: string | null;
       } | null;
       closingBand: {
         title: string | null;
@@ -3137,7 +3037,7 @@ declare module "@sanity/client" {
     '\n  *[_id == "notFoundPage"][0]{\n    image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    icon,\n    heading,\n    description,\n    actions[] { icon, label, href },\n    helpPanel{ title, links[] { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': NOT_FOUND_PAGE_QUERY_RESULT;
     '\n  *[_id == "aboutPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    stats[]{ icon, title, description, inverted },\n    missionStory{ eyebrow, title, body, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}, action { label, href } },\n    craftCards[]{ title, description, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    specTable{ heading, description, rows[]{ type, durability, idealFor, warranty } },\n    cta {\n  title,\n  description,\n  primary { label, href },\n  secondary { label, href },\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n},\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_id == "faqPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    searchPlaceholder,\n    supportCard{ title, description, emailLabel },\n    closingBand { title, description, actions[] { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': FAQ_PAGE_QUERY_RESULT;
-    '\n  *[_id == "contactPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    avatars[] {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    socialProof{ prefix, highlightSuffix, suffix },\n    closingBand { title, description, actions[] { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': CONTACT_PAGE_QUERY_RESULT;
+    '\n  *[_id == "contactPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    closingBand { title, description, actions[] { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': CONTACT_PAGE_QUERY_RESULT;
     '\n  {\n    "caseStudies": *[_type == "caseStudy" && defined(slug.current)]{ "slug": slug.current },\n    "navItems": *[_id == "siteSettings"][0].navItems[]{ href }\n  }\n': SITEMAP_QUERY_RESULT;
   }
 }
