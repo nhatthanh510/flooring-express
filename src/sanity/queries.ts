@@ -55,6 +55,7 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     keywords,
     stats{ yearsExperience, familiesServed },
     contact,
+    notificationEmail,
     hours[]{ days, short, time, closed },
     hoursSummary,
     openingHoursSpec,

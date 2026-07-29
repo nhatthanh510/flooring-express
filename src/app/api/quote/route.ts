@@ -11,11 +11,17 @@ import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
  * with the very same schema again — client validation is a convenience for the
  * visitor, not a control. Anything can POST here.
  *
- * The recipient comes from Sanity (`siteSettings.contact.email`) rather than an
- * env var, so the owner can change where enquiries land without a redeploy —
- * it is the same address already published on the contact page. The *sender*
- * has to stay in env: it must be an address on a domain verified with Resend,
- * and a value typed into a CMS would silently stop delivery.
+ * The recipient comes from Sanity, so the owner can redirect enquiries without
+ * a redeploy. `notificationEmail` wins when set — it is private, and can be a
+ * Gmail address — otherwise it falls back to the public `contact.email`, which
+ * is also printed on the contact page, in the footer and in the LocalBusiness
+ * structured data. That split exists so "send enquiries to my Gmail" does not
+ * mean "publish my Gmail on the website".
+ *
+ * The *sender* has to stay in env. It must be an address on a domain verified
+ * with Resend — notably it cannot be an @gmail.com address, because Gmail
+ * publishes a strict DMARC policy and mail claiming to come from gmail.com but
+ * sent through Resend is rejected or filed as spam.
  */
 export async function POST(request: Request) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -57,10 +63,12 @@ export async function POST(request: Request) {
     query: SITE_SETTINGS_QUERY,
     stega: false,
   });
-  const to = settings?.contact?.email;
+  const to = settings?.notificationEmail || settings?.contact?.email;
 
   if (!to) {
-    console.error("[quote] siteSettings.contact.email is empty — nowhere to send.");
+    console.error(
+      "[quote] Neither siteSettings.notificationEmail nor contact.email is set — nowhere to send.",
+    );
     return Response.json(
       { ok: false, error: "Sorry, we couldn't send that just now." },
       { status: 500 },

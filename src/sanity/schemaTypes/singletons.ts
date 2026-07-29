@@ -84,6 +84,15 @@ export const siteSettings = defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: "notificationEmail",
+      title: "Where quote enquiries are sent",
+      type: "string",
+      description:
+        "Private — never shown on the site. Quote-form submissions are emailed here; a Gmail address is fine. Leave empty and they go to the public Email address above instead, which is also the one printed on the contact page, in the footer and in the site's structured data.",
+      group: "contact",
+      validation: (r) => r.email(),
+    }),
+    defineField({
       name: "hours",
       type: "array",
       of: [defineArrayMember({ type: "openingHoursRow" })],
