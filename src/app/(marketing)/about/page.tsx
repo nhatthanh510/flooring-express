@@ -1,46 +1,43 @@
 import type { Metadata } from "next";
+
 import { CraftsmanshipGrid } from "@/components/about/craftsmanship-grid";
 import { MissionStory } from "@/components/about/mission-story";
 import { SpecTable } from "@/components/about/spec-table";
 import { StatsBento } from "@/components/about/stats-bento";
 import { CtaBanner } from "@/components/shared/cta-banner";
 import { PageHero } from "@/components/shared/page-hero";
+import { sanityFetch } from "@/sanity/lib/live";
+import { ABOUT_PAGE_QUERY } from "@/sanity/queries";
 
-export const metadata: Metadata = {
-  title: "About Us",
-  description:
-    "Locally owned and operated, Flooring Express brings over 15 years of precision craftsmanship to every Hobart home we touch.",
-  alternates: { canonical: "/about" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { data } = await sanityFetch({ query: ABOUT_PAGE_QUERY, stega: false });
+  return {
+    title: data?.seo?.metaTitle,
+    description: data?.seo?.metaDescription,
+    alternates: { canonical: "/about" },
+  };
+}
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { data: page } = await sanityFetch({ query: ABOUT_PAGE_QUERY });
+  if (!page) return null;
+
   return (
     <>
       <PageHero
-        title="Crafting Hobart's Finest Foundations"
-        description="Locally owned and operated, we bring over 15 years of precision craftsmanship to every home we touch."
-        image={{
-          src: "/images/about/hero.webp",
-          alt: "Detail of a freshly installed timber floor catching afternoon light.",
-        }}
+        title={page.hero?.title ?? ""}
+        description={page.hero?.description ?? undefined}
+        image={page.hero?.image}
         scrim="left"
         height="min-h-[480px] md:min-h-[614px]"
       />
 
-      <StatsBento />
-      <MissionStory />
-      <CraftsmanshipGrid />
-      <SpecTable />
+      <StatsBento stats={page.stats} />
+      <MissionStory story={page.missionStory} />
+      <CraftsmanshipGrid cards={page.craftCards} />
+      <SpecTable table={page.specTable} />
 
-      <CtaBanner
-        title="Ready to start your transformation?"
-        description="Book a free on-site consultation with our Hobart team today. We'll bring samples to your door."
-        primary={{
-          href: "/contact?enquiry=quote",
-          label: "Request Free Quote",
-        }}
-        align="split"
-      />
+      <CtaBanner cta={page.cta} align="split" />
     </>
   );
 }

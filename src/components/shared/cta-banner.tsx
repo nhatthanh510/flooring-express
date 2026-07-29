@@ -1,17 +1,20 @@
-import Image from "next/image";
 import Link from "next/link";
+import { SanityFillImage } from "@/components/shared/sanity-image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import type { SanityImage } from "@/sanity/lib/image";
 
-type CtaLink = { href: string; label: string };
+type CtaLink = { href?: string | null; label?: string | null } | null;
 
 type CtaBannerProps = {
-  title: string;
-  description: string;
-  primary: CtaLink;
-  secondary?: CtaLink;
+  cta: {
+    title?: string | null;
+    description?: string | null;
+    primary?: CtaLink;
+    secondary?: CtaLink;
+  } | null;
   /** Decorative background photo, rendered at low opacity behind the copy */
-  pattern?: string;
+  pattern?: SanityImage | null;
   /** "dots" uses the radial-dot texture from the gallery mockup */
   texture?: "dots";
   align?: "center" | "split";
@@ -19,26 +22,23 @@ type CtaBannerProps = {
 };
 
 export function CtaBanner({
-  title,
-  description,
-  primary,
-  secondary,
+  cta,
   pattern,
   texture,
   align = "center",
   className,
 }: CtaBannerProps) {
+  if (!cta) return null;
+  const { title, description, primary, secondary } = cta;
+
   return (
     <section className={cn("container-page py-section", className)}>
       <div className="relative overflow-hidden rounded-3xl bg-primary p-10 md:p-16">
         {pattern && (
-          <Image
-            src={pattern}
-            alt=""
-            aria-hidden="true"
-            fill
+          <SanityFillImage
+            image={pattern}
             sizes="100vw"
-            className="object-cover opacity-10"
+            className="opacity-10"
           />
         )}
         {texture === "dots" && (
@@ -71,9 +71,11 @@ export function CtaBanner({
           </div>
 
           <div className="flex flex-wrap items-center gap-4">
-            <Button asChild size="xl" variant="secondary">
-              <Link href={primary.href}>{primary.label}</Link>
-            </Button>
+            {primary && (
+              <Button asChild size="xl" variant="secondary">
+                <Link href={primary.href ?? "#"}>{primary.label}</Link>
+              </Button>
+            )}
             {secondary && (
               <Button
                 asChild
@@ -81,7 +83,7 @@ export function CtaBanner({
                 variant="outline"
                 className="border-white/40 bg-transparent text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
               >
-                <Link href={secondary.href}>{secondary.label}</Link>
+                <Link href={secondary.href ?? "#"}>{secondary.label}</Link>
               </Button>
             )}
           </div>

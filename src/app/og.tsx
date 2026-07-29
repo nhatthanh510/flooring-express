@@ -1,5 +1,7 @@
 import { ImageResponse } from "next/og";
-import { siteConfig } from "@/lib/site-config";
+
+import { sanityFetch } from "@/sanity/lib/live";
+import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 
 export const ogSize = { width: 1200, height: 630 };
 
@@ -8,7 +10,7 @@ export const ogSize = { width: 1200, height: 630 };
  * file with their own title, so a shared link shows what was actually shared
  * rather than one generic image.
  */
-export function OgImage({
+export async function OgImage({
   title,
   eyebrow,
   description,
@@ -17,6 +19,13 @@ export function OgImage({
   eyebrow?: string;
   description?: string;
 }) {
+  // `stega: false` — the invisible edit markers would render as stray glyphs
+  // in the generated PNG.
+  const { data: settings } = await sanityFetch({
+    query: SITE_SETTINGS_QUERY,
+    stega: false,
+  });
+
   return new ImageResponse(
     <div
       style={{
@@ -91,10 +100,10 @@ export function OgImage({
         }}
       >
         <div style={{ fontSize: 34, fontWeight: 700, color: "#ffffff" }}>
-          {siteConfig.name}
+          {settings?.name}
         </div>
         <div style={{ fontSize: 26, color: "#96908b" }}>
-          Hybrid · Laminate · Timber — Hobart
+          {`Hybrid · Laminate · Timber — ${settings?.contact?.locality ?? ""}`}
         </div>
       </div>
     </div>,

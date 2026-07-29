@@ -1,19 +1,18 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
-export function HomeHero() {
+import { SanityFillImage } from "@/components/shared/sanity-image";
+import { Button } from "@/components/ui/button";
+import type { HOME_PAGE_QUERY_RESULT } from "@/sanity/types";
+
+type Hero = NonNullable<HOME_PAGE_QUERY_RESULT>["hero"];
+
+export function HomeHero({ hero }: { hero: Hero }) {
+  const [primary, secondary] = hero?.actions ?? [];
+
   return (
     <section className="relative flex min-h-[751px] items-center md:min-h-[720px]">
-      <Image
-        src="/images/home/hero.webp"
-        alt="Sunlit open-plan Hobart living room finished in wide-plank timber flooring."
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
+      <SanityFillImage image={hero?.image} priority sizes="100vw" />
       {/* Even scrim on mobile, where the copy is centred over the whole frame;
           a left-to-right gradient from md, where the copy sits on the left. */}
       <div
@@ -25,31 +24,36 @@ export function HomeHero() {
           Stitch screen. */}
       <div className="container-page relative py-20 text-center md:text-left">
         <div className="flex max-w-2xl flex-col items-center gap-6 md:items-start">
-          <span className="rounded-full bg-secondary px-4 py-1.5 text-label-sm uppercase text-secondary-foreground">
-            Hobart&rsquo;s Leading Installers
-          </span>
+          {hero?.eyebrow && (
+            <span className="rounded-full bg-secondary px-4 py-1.5 text-label-sm uppercase text-secondary-foreground">
+              {hero.eyebrow}
+            </span>
+          )}
           <h1 className="text-balance text-headline-lg-mobile text-white md:text-display-lg">
-            Premium Flooring Solutions for Hobart Homes
+            {hero?.title}
           </h1>
           <p className="text-pretty text-body-lg text-white/90">
-            Specializing in Hybrid, Laminate, and Timber installation with a
-            focus on quality craftsmanship and long-lasting stability.
+            {hero?.description}
           </p>
           <div className="flex w-full flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center">
-            <Button asChild size="xl" variant="secondary">
-              <Link href="#contact">
-                Request a Free Quote
-                <ArrowRight data-icon="inline-end" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="xl"
-              variant="outline"
-              className="border-2 border-white bg-white/10 text-white backdrop-blur-md hover:bg-white/20 hover:text-white"
-            >
-              <Link href="#services">Explore Collections</Link>
-            </Button>
+            {primary && (
+              <Button asChild size="xl" variant="secondary">
+                <Link href={primary.href ?? "#"}>
+                  {primary.label}
+                  <ArrowRight data-icon="inline-end" />
+                </Link>
+              </Button>
+            )}
+            {secondary && (
+              <Button
+                asChild
+                size="xl"
+                variant="outline"
+                className="border-2 border-white bg-white/10 text-white backdrop-blur-md hover:bg-white/20 hover:text-white"
+              >
+                <Link href={secondary.href ?? "#"}>{secondary.label}</Link>
+              </Button>
+            )}
           </div>
         </div>
       </div>

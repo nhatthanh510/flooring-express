@@ -6,7 +6,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { specRows } from "@/lib/content/about";
+import type { ABOUT_PAGE_QUERY_RESULT } from "@/sanity/types";
+
+type AboutPage = NonNullable<ABOUT_PAGE_QUERY_RESULT>;
 
 const columns = [
   "Flooring Type",
@@ -15,7 +17,7 @@ const columns = [
   "Standard Warranty",
 ] as const;
 
-export function SpecTable() {
+export function SpecTable({ table }: { table: AboutPage["specTable"] }) {
   return (
     <section
       id="specifications"
@@ -26,11 +28,10 @@ export function SpecTable() {
             from the centred SectionHeading used elsewhere, per the mockup. */}
         <div className="mb-8 flex flex-col gap-2">
           <h2 className="text-headline-lg-mobile text-primary md:text-headline-lg">
-            Technical Excellence
+            {table?.heading}
           </h2>
           <p className="text-body-md text-muted-foreground">
-            We don&rsquo;t just guess&mdash;we install based on performance
-            data.
+            {table?.description}
           </p>
         </div>
 
@@ -50,7 +51,7 @@ export function SpecTable() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {specRows.map((row) => (
+                {table?.rows?.map((row) => (
                   <TableRow
                     key={row.type}
                     className="border-b-0 hover:bg-transparent"

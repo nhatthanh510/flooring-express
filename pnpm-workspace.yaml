@@ -1,3 +1,8 @@
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+
+# The Sanity CLI (`sanity schema extract`, `sanity typegen generate`) runs on
+# esbuild, whose postinstall links the platform binary. Without it the CLI throws.
+onlyBuiltDependencies:
+  - esbuild

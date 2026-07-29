@@ -12,10 +12,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { navItems, siteConfig } from "@/lib/site-config";
+import type { SiteNavProps } from "@/components/layout/site-header";
 import { cn } from "@/lib/utils";
 
-export function MobileNav() {
+export function MobileNav({ name, navItems }: SiteNavProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -40,21 +40,20 @@ export function MobileNav() {
         side="right"
         className="border-0 bg-surface p-margin-mobile data-[side=right]:w-full data-[side=right]:sm:max-w-none"
       >
-        <SheetTitle className="sr-only">
-          {siteConfig.name} navigation
-        </SheetTitle>
+        <SheetTitle className="sr-only">{name} navigation</SheetTitle>
 
         <nav
           aria-label="Mobile"
           className="mt-16 flex flex-col gap-6 text-center"
         >
           {navItems.map((item) => {
+            const href = item.href ?? "/";
             const isActive =
-              pathname === item.href || pathname.startsWith(`${item.href}/`);
+              pathname === href || pathname.startsWith(`${href}/`);
             return (
-              <SheetClose asChild key={item.href}>
+              <SheetClose asChild key={href}>
                 <Link
-                  href={item.href}
+                  href={href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "font-display text-body-md text-primary transition-colors hover:text-secondary",

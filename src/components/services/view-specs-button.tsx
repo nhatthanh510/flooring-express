@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useSpecSelection } from "@/components/services/spec-selection";
-import type { FlooringSlug } from "@/lib/content/services";
+import type { FlooringSlug } from "@/lib/flooring";
 
 /**
  * Selects this product in the comparison table and scrolls to it, rather than

@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CircleCheck, Quote, TriangleAlert } from "lucide-react";
 import { Reveal } from "@/components/shared/reveal";
-import { resolveIcon } from "@/components/projects/icon-map";
+import { SanityFillImage } from "@/components/shared/sanity-image";
+import { resolveIcon } from "@/lib/icons";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -12,20 +12,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { CaseStudy } from "@/lib/content/case-studies";
+import type {
+  CASE_STUDY_QUERY_RESULT,
+  NEXT_CASE_STUDY_QUERY_RESULT,
+} from "@/sanity/types";
+
+type CaseStudy = NonNullable<CASE_STUDY_QUERY_RESULT>;
 
 export function CaseStudyHero({ study }: { study: CaseStudy }) {
   return (
     <section className="container-page pt-8">
       <div className="relative flex min-h-[420px] items-end overflow-hidden rounded-2xl md:min-h-[620px]">
-        <Image
-          src={study.hero.src}
-          alt={study.hero.alt}
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
+        <SanityFillImage image={study.hero} priority sizes="100vw" />
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
@@ -73,6 +71,7 @@ export function CaseStudyMeta({ items }: { items: CaseStudy["meta"] }) {
  */
 export function CaseStudyNarrative({ study }: { study: CaseStudy }) {
   const { challenge, solution } = study;
+  if (!challenge) return null;
   return (
     <section className="container-page py-section">
       <div className="grid items-stretch gap-gutter lg:grid-cols-2">
@@ -94,12 +93,9 @@ export function CaseStudyNarrative({ study }: { study: CaseStudy }) {
         {challenge.image && (
           <Reveal className="h-full">
             <div className="relative h-full min-h-[280px] overflow-hidden rounded-2xl">
-              <Image
-                src={challenge.image.src}
-                alt={challenge.image.alt}
-                fill
+              <SanityFillImage
+                image={challenge.image}
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
               />
             </div>
           </Reveal>
@@ -108,12 +104,9 @@ export function CaseStudyNarrative({ study }: { study: CaseStudy }) {
         {solution?.image && (
           <Reveal className="h-full">
             <div className="relative h-full min-h-[280px] overflow-hidden rounded-2xl">
-              <Image
-                src={solution.image.src}
-                alt={solution.image.alt}
-                fill
+              <SanityFillImage
+                image={solution.image}
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
               />
             </div>
           </Reveal>
@@ -163,7 +156,7 @@ export function CaseStudyFeatures({
 }: {
   features: CaseStudy["features"];
 }) {
-  if (!features?.items.length) return null;
+  if (!features?.items?.length) return null;
   const cols =
     features.items.length >= 4
       ? "sm:grid-cols-2 lg:grid-cols-4"
@@ -205,7 +198,7 @@ export function CaseStudyFeatures({
 }
 
 export function CaseStudySpecs({ specs }: { specs: CaseStudy["specs"] }) {
-  if (!specs?.rows.length) return null;
+  if (!specs?.rows?.length) return null;
   return (
     <section className="bg-surface-highest/30 py-section">
       <div className="container-page">
@@ -262,7 +255,7 @@ export function CaseStudyDetails({
 }: {
   details: CaseStudy["details"];
 }) {
-  if (!details?.rows.length) return null;
+  if (!details?.rows?.length) return null;
   return (
     <section className="container-page py-section">
       <div className="mx-auto max-w-2xl rounded-2xl border border-border bg-card p-8 shadow-ambient md:p-12">
@@ -292,7 +285,7 @@ export function CaseStudyRoadmap({
 }: {
   roadmap: CaseStudy["roadmap"];
 }) {
-  if (!roadmap?.steps.length) return null;
+  if (!roadmap?.steps?.length) return null;
   return (
     <section className="bg-surface-low py-section">
       <div className="container-page">
@@ -337,7 +330,7 @@ export function CaseStudyGallery({
 }: {
   gallery: CaseStudy["gallery"];
 }) {
-  if (!gallery?.images.length) return null;
+  if (!gallery?.images?.length) return null;
   return (
     <section className="container-page py-section">
       {gallery.heading && (
@@ -347,14 +340,12 @@ export function CaseStudyGallery({
       )}
       <div className="grid gap-gutter sm:grid-cols-2 lg:grid-cols-3">
         {gallery.images.map((image, index) => (
-          <Reveal key={image.src} delay={index * 60}>
+          <Reveal key={image.asset?._id ?? index} delay={index * 60}>
             <figure className="group relative aspect-[4/3] overflow-hidden rounded-2xl border border-border">
-              <Image
-                src={image.src}
-                alt={image.alt}
-                fill
+              <SanityFillImage
+                image={image}
                 sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="transition-transform duration-500 group-hover:scale-105"
               />
             </figure>
           </Reveal>
@@ -389,12 +380,9 @@ export function CaseStudyTestimonial({
         </div>
         {testimonial.image && (
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-            <Image
-              src={testimonial.image.src}
-              alt={testimonial.image.alt}
-              fill
+            <SanityFillImage
+              image={testimonial.image}
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
             />
           </div>
         )}
@@ -406,8 +394,9 @@ export function CaseStudyTestimonial({
 export function CaseStudyNext({
   next,
 }: {
-  next: { slug: string; shortTitle: string };
+  next: NEXT_CASE_STUDY_QUERY_RESULT;
 }) {
+  if (!next?.slug) return null;
   return (
     <section className="container-page border-t border-border py-section">
       <div className="flex flex-col items-center gap-3 text-center">
@@ -442,7 +431,7 @@ export function CaseStudyCta({ cta }: { cta: CaseStudy["cta"] }) {
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Button asChild size="xl" variant="secondary">
-            <Link href={cta.primary.href}>{cta.primary.label}</Link>
+            <Link href={cta.primary?.href ?? "#"}>{cta.primary?.label}</Link>
           </Button>
           {cta.secondary && (
             <Button
@@ -451,7 +440,7 @@ export function CaseStudyCta({ cta }: { cta: CaseStudy["cta"] }) {
               variant="outline"
               className="border-white/40 bg-transparent text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
             >
-              <Link href={cta.secondary.href}>{cta.secondary.label}</Link>
+              <Link href={cta.secondary?.href ?? "#"}>{cta.secondary?.label}</Link>
             </Button>
           )}
         </div>

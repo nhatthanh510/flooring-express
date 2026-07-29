@@ -1,6 +1,4 @@
-import { fullAddress, siteConfig } from "@/lib/site-config";
-
-const query = encodeURIComponent(`${fullAddress}, Australia`);
+import { formatAddress, type SiteSettings } from "@/lib/site";
 
 /**
  * Google's keyless embed endpoint — no API key or billing account needed, which
@@ -12,13 +10,15 @@ const query = encodeURIComponent(`${fullAddress}, Australia`);
  * once the map scrolls into view. Google's own controls inside the frame cover
  * directions, so there is no separate button here.
  */
-const embedSrc = `https://maps.google.com/maps?q=${query}&z=14&output=embed`;
+export function ServiceAreaMap({ settings }: { settings: SiteSettings }) {
+  const fullAddress = formatAddress(settings.contact);
+  const query = encodeURIComponent(`${fullAddress}, Australia`);
+  const embedSrc = `https://maps.google.com/maps?q=${query}&z=14&output=embed`;
 
-export function ServiceAreaMap() {
   return (
     <div className="h-[350px] overflow-hidden rounded-2xl border border-border">
       <iframe
-        title={`Map showing ${siteConfig.legalName} at ${fullAddress}`}
+        title={`Map showing ${settings.legalName} at ${fullAddress}`}
         src={embedSrc}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"

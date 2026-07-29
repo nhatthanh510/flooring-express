@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useState } from "react";
-import type { FlooringSlug } from "@/lib/content/services";
+import type { FlooringSlug } from "@/lib/flooring";
 
 type SpecSelectionValue = {
   selected: FlooringSlug;

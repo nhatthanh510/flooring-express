@@ -1,11 +1,12 @@
-import Image from "next/image";
+import { SanityFillImage } from "@/components/shared/sanity-image";
 import { cn } from "@/lib/utils";
+import type { SanityImage } from "@/sanity/lib/image";
 
 type PageHeroProps = {
   title: string;
-  description: string;
+  description?: string;
   eyebrow?: string;
-  image: { src: string; alt: string };
+  image: SanityImage | null | undefined;
   /** Dark scrim over the photo. "left" fades to the right for left-aligned copy. */
   scrim?: "left" | "even";
   height?: string;
@@ -23,14 +24,7 @@ export function PageHero({
 }: PageHeroProps) {
   return (
     <section className={cn("relative flex items-center", height)}>
-      <Image
-        src={image.src}
-        alt={image.alt}
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
+      <SanityFillImage image={image} priority sizes="100vw" />
       {/* Even scrim on mobile (copy is centred over the whole frame); the
           directional gradient only kicks in from md, where copy is left-aligned. */}
       <div

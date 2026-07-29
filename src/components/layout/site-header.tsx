@@ -4,10 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { MobileNav } from "@/components/layout/mobile-nav";
-import { navItems, siteConfig } from "@/lib/site-config";
+import type { SiteSettings } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
-export function SiteHeader() {
+export type SiteNavProps = {
+  name: string;
+  navItems: NonNullable<SiteSettings["navItems"]>;
+};
+
+export function SiteHeader({ name, navItems }: SiteNavProps) {
   const pathname = usePathname();
 
   return (
@@ -17,7 +22,7 @@ export function SiteHeader() {
           href="/"
           className="font-display text-headline-md font-bold tracking-tight text-primary"
         >
-          {siteConfig.name}
+          {name}
         </Link>
 
         {/* Nav and CTA sit together on the right, as in the mockup — not spread
@@ -26,13 +31,13 @@ export function SiteHeader() {
           <nav aria-label="Main" className="hidden md:block">
             <ul className="flex items-center gap-8">
               {navItems.map((item) => {
+                const href = item.href ?? "/";
                 const isActive =
-                  pathname === item.href ||
-                  pathname.startsWith(`${item.href}/`);
+                  pathname === href || pathname.startsWith(`${href}/`);
                 return (
-                  <li key={item.href}>
+                  <li key={href}>
                     <Link
-                      href={item.href}
+                      href={href}
                       aria-current={isActive ? "page" : undefined}
                       className={cn(
                         "border-b-2 border-transparent pb-1 text-label-md text-muted-foreground transition-colors hover:text-primary",
@@ -51,7 +56,7 @@ export function SiteHeader() {
             <Button asChild size="lg" className="hidden sm:inline-flex">
               <Link href="/contact">Free Quote</Link>
             </Button>
-            <MobileNav />
+            <MobileNav name={name} navItems={navItems} />
           </div>
         </div>
       </div>

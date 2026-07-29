@@ -2,31 +2,39 @@
 
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { useSpecSelection } from "@/components/services/spec-selection";
-import {
-  comparisonRows,
-  getService,
-  services,
-  type FlooringSlug,
-} from "@/lib/content/services";
+import { comparisonRows, type FlooringSlug } from "@/lib/flooring";
+import type {
+  SERVICES_QUERY_RESULT,
+  SERVICES_PAGE_QUERY_RESULT,
+} from "@/sanity/types";
 
 /**
  * The "Plank Toggle" from DESIGN.md — a selector whose chips read as floor
  * planks — driving a technical comparison table.
+ *
+ * Takes `services` as a prop rather than importing it: this is a client
+ * component, and importing the module would ship every service — images,
+ * blurbs and all — to the browser.
  */
-export function PlankComparison() {
+export function PlankComparison({
+  heading,
+  services,
+}: {
+  heading: NonNullable<SERVICES_PAGE_QUERY_RESULT>["comparisonHeading"];
+  services: SERVICES_QUERY_RESULT;
+}) {
   const { selected, select } = useSpecSelection();
-  const active = getService(selected);
+  const active = services.find((service) => service.slug === selected);
 
   return (
     <section id="compare" className="scroll-mt-24 bg-muted py-section">
       <div className="container-page grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="flex flex-col gap-6">
           <h2 className="text-headline-lg-mobile text-primary md:text-display-lg">
-            Compare At A Glance
+            {heading?.title}
           </h2>
           <p className="text-body-lg text-muted-foreground">
-            Select a finish to see how each material performs under typical
-            Tasmanian conditions.
+            {heading?.description}
           </p>
 
           <ToggleGroup
@@ -42,14 +50,14 @@ export function PlankComparison() {
             {services.map((service, index) => (
               <ToggleGroupItem
                 key={service.slug}
-                value={service.slug}
+                value={service.slug ?? ""}
                 className="h-auto w-full justify-start gap-4 rounded-xl bg-card p-5 text-left data-[state=on]:border-secondary data-[state=on]:bg-card data-[state=on]:ring-3 data-[state=on]:ring-secondary/20"
               >
                 <span
                   aria-hidden="true"
                   className="h-9 w-6 shrink-0 rounded-sm shadow-ambient"
                   style={{
-                    backgroundColor: service.plankColor,
+                    backgroundColor: service.plankColor ?? undefined,
                     transform: `rotate(${[-12, 6, -3][index]}deg)`,
                   }}
                 />
@@ -67,7 +75,7 @@ export function PlankComparison() {
         </div>
 
         <div className="glass-panel w-full rounded-2xl p-8 shadow-ambient md:p-10">
-          <h3 className="text-headline-md text-primary">{active.name}</h3>
+          <h3 className="text-headline-md text-primary">{active?.name}</h3>
           <p className="mt-1 text-label-md text-muted-foreground">
             Typical specification range
           </p>
@@ -82,7 +90,7 @@ export function PlankComparison() {
                   {row.label}
                 </dt>
                 <dd className="text-body-md font-semibold text-primary">
-                  {active.specs[row.key]}
+                  {active?.specs?.[row.key]}
                 </dd>
               </div>
             ))}

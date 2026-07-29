@@ -1,18 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Image from "next/image";
-import { Brush, Hammer, Layers, Search, type LucideIcon } from "lucide-react";
+import { SanityFillImage } from "@/components/shared/sanity-image";
+import { Search } from "lucide-react";
 import { FaqAccordion } from "@/components/faq/faq-accordion";
 import { Input } from "@/components/ui/input";
-import type { FaqGroup } from "@/lib/content/faqs";
+import { resolveIcon } from "@/lib/icons";
+import type { SanityImage } from "@/sanity/lib/image";
+import type { FAQ_GROUPS_QUERY_RESULT } from "@/sanity/types";
 import { cn } from "@/lib/utils";
-
-const groupIcons: Record<string, LucideIcon> = {
-  layers: Layers,
-  construction: Hammer,
-  cleaning: Brush,
-};
 
 const slug = (title: string) => title.toLowerCase().replace(/[^a-z]+/g, "-");
 
@@ -22,9 +18,15 @@ const slug = (title: string) => title.toLowerCase().replace(/[^a-z]+/g, "-");
  */
 export function FaqBrowser({
   groups,
+  hero,
+  heroImage,
+  searchPlaceholder,
   support,
 }: {
-  groups: readonly FaqGroup[];
+  groups: FAQ_GROUPS_QUERY_RESULT;
+  hero: { title?: string | null; description?: string | null } | null;
+  heroImage: SanityImage | null | undefined;
+  searchPlaceholder: string;
   /** Rendered under the category nav in the sidebar */
   support: React.ReactNode;
 }) {
@@ -38,8 +40,8 @@ export function FaqBrowser({
         ...group,
         items: group.items.filter(
           (item) =>
-            item.question.toLowerCase().includes(q) ||
-            item.answer.toLowerCase().includes(q),
+            item.question?.toLowerCase().includes(q) ||
+            item.answer?.toLowerCase().includes(q),
         ),
       }))
       .filter((group) => group.items.length > 0);
@@ -51,14 +53,11 @@ export function FaqBrowser({
     <>
       {/* Hero band — textured plank photo behind centred copy and the search */}
       <section className="relative isolate overflow-hidden border-b border-border">
-        <Image
-          src="/images/faq/hero-texture.webp"
-          alt=""
-          aria-hidden="true"
-          fill
+        <SanityFillImage
+          image={heroImage}
           priority
           sizes="100vw"
-          className="object-cover opacity-25"
+          className="opacity-25"
         />
         <div
           aria-hidden="true"
@@ -67,11 +66,10 @@ export function FaqBrowser({
 
         <div className="container-page relative py-16 text-center md:py-24">
           <h1 className="text-headline-lg-mobile text-primary md:text-display-lg">
-            Frequently Asked Questions
+            {hero?.title}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-pretty text-body-lg text-muted-foreground">
-            Find answers to common questions about our premium flooring
-            solutions, professional installation, and ongoing care.
+            {hero?.description}
           </p>
 
           <div className="relative mx-auto mt-10 max-w-xl">
@@ -87,7 +85,7 @@ export function FaqBrowser({
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search questions (e.g. 'Hybrid cleaning', 'Timber installation')"
+              placeholder={searchPlaceholder}
               className="h-14 rounded-lg bg-card pl-12 pr-4 text-body-md shadow-ambient"
             />
           </div>
@@ -101,14 +99,14 @@ export function FaqBrowser({
             <nav aria-label="FAQ categories" className="mb-8">
               <ul className="flex flex-col gap-1">
                 {groups.map((group) => {
-                  const Icon = groupIcons[group.icon] ?? Layers;
+                  const Icon = resolveIcon(group.icon);
                   const isVisible = results.some(
                     (r) => r.title === group.title,
                   );
                   return (
                     <li key={group.title}>
                       <a
-                        href={`#${slug(group.title)}`}
+                        href={`#${slug(group.title ?? "")}`}
                         aria-disabled={!isVisible}
                         className={cn(
                           "flex min-h-11 items-center gap-3 rounded-lg px-3 text-body-md transition-colors",
@@ -152,11 +150,11 @@ export function FaqBrowser({
             ) : (
               <div className="flex flex-col gap-12">
                 {results.map((group) => {
-                  const Icon = groupIcons[group.icon] ?? Layers;
+                  const Icon = resolveIcon(group.icon);
                   return (
                     <div
                       key={group.title}
-                      id={slug(group.title)}
+                      id={slug(group.title ?? "")}
                       className="scroll-mt-28"
                     >
                       <h2 className="mb-6 flex items-center gap-3 text-headline-lg-mobile text-primary md:text-headline-lg">
@@ -168,7 +166,7 @@ export function FaqBrowser({
                       </h2>
                       <FaqAccordion
                         items={group.items}
-                        idPrefix={slug(group.title)}
+                        idPrefix={slug(group.title ?? "")}
                       />
                     </div>
                   );
