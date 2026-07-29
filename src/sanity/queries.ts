@@ -39,6 +39,8 @@ const CLOSING_BAND = /* groq */ `{ title, description, actions[] ${LINK} }`;
 
 const ICON_CARD = /* groq */ `{ icon, title, description }`;
 
+const ICON_LINK = /* groq */ `{ icon, label, href }`;
+
 // ---------------------------------------------------------------------------
 // Site-wide
 // ---------------------------------------------------------------------------
@@ -225,6 +227,22 @@ export const SERVICES_PAGE_QUERY = defineQuery(`
 
 export const GALLERY_PAGE_QUERY = defineQuery(`
   *[_id == "galleryPage"][0]{ hero ${HERO}, cta ${CTA}, seo ${SEO} }
+`);
+
+/**
+ * Read by `app/not-found.tsx`, which serves both unmatched URLs and every
+ * `notFound()` call in the app.
+ */
+export const NOT_FOUND_PAGE_QUERY = defineQuery(`
+  *[_id == "notFoundPage"][0]{
+    image ${IMG},
+    icon,
+    heading,
+    description,
+    actions[] ${ICON_LINK},
+    helpPanel{ title, links[] ${LINK} },
+    seo ${SEO}
+  }
 `);
 
 export const ABOUT_PAGE_QUERY = defineQuery(`

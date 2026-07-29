@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { LinkPending } from "@/components/layout/link-pending";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import type { SiteSettings } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -45,6 +46,7 @@ export function SiteHeader({ name, navItems }: SiteNavProps) {
                       )}
                     >
                       {item.label}
+                      <LinkPending />
                     </Link>
                   </li>
                 );
@@ -54,7 +56,10 @@ export function SiteHeader({ name, navItems }: SiteNavProps) {
 
           <div className="flex items-center gap-2">
             <Button asChild size="lg" className="hidden sm:inline-flex">
-              <Link href="/contact">Free Quote</Link>
+              <Link href="/contact">
+                Free Quote
+                <LinkPending />
+              </Link>
             </Button>
             <MobileNav name={name} navItems={navItems} />
           </div>

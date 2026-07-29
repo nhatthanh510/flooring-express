@@ -45,7 +45,9 @@ export async function generateMetadata({
     params: { slug },
     stega: false,
   });
-  if (!study) return {};
+  // An unknown slug streams the 404 through not-found.tsx, which cannot set
+  // metadata of its own — without this the tab keeps the default site title.
+  if (!study) return { title: "Page not found" };
 
   return {
     title: study.seo?.metaTitle,

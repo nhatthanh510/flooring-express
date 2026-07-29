@@ -245,6 +245,35 @@ export const iconCard = defineType({
   preview: { select: { title: "title", subtitle: "description" } },
 });
 
+/**
+ * `{ icon, label, href }` — the 404 page's action set, where one array renders
+ * as stacked buttons on mobile and a card grid on desktop.
+ *
+ * Kept separate from `link` rather than adding an optional icon to it: `link` is
+ * used in the header nav, footer columns and closing bands, none of which have
+ * anywhere to put an icon, and an always-ignored field is a trap for editors.
+ *
+ * Declared below `iconField` because it reads it at module scope — the earlier
+ * position in this file would hit the temporal dead zone.
+ */
+export const iconLink = defineType({
+  name: "iconLink",
+  title: "Icon link",
+  type: "object",
+  fields: [
+    iconField,
+    defineField({ name: "label", type: "string", validation: (r) => r.required() }),
+    defineField({
+      name: "href",
+      type: "string",
+      description:
+        "A site path such as /services or /services#hybrid, or a full https:// URL.",
+      validation: (r) => r.required(),
+    }),
+  ],
+  preview: { select: { title: "label", subtitle: "href" } },
+});
+
 export const openingHoursRow = defineType({
   name: "openingHoursRow",
   title: "Opening hours",
@@ -329,6 +358,7 @@ export const objectTypes = [
   specRow,
   statChip,
   iconCard,
+  iconLink,
   openingHoursRow,
   footerColumn,
   socialLink,

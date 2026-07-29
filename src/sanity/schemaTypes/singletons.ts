@@ -1,5 +1,6 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
+import { iconKeys } from "@/lib/icons";
 import { bentoSpanOptions } from "@/lib/layout-options";
 
 /**
@@ -409,6 +410,94 @@ export const contactPage = pageSingleton("contactPage", "Contact page", [
   defineField({ name: "closingBand", type: "closingBand" }),
 ]);
 
+/**
+ * The 404 page.
+ *
+ * Not built on `pageSingleton`: that helper contributes a `pageHero` and a
+ * `ctaBanner`, and this page has neither — its hero is a bare photo the "404"
+ * numeral sits on, and a marketing CTA band under an error message is the wrong
+ * note. It keeps the same `content`/`seo` group split so it feels the same to
+ * edit.
+ *
+ * One heading and one `actions` array serve both breakpoints: the actions render
+ * as stacked buttons on mobile and as a card grid from `md` up. Editors write
+ * the copy once and it is correct on every screen.
+ */
+export const notFoundPage = defineType({
+  name: "notFoundPage",
+  title: "Not found page",
+  type: "document",
+  groups: [
+    { name: "content", title: "Content", default: true },
+    { name: "seo", title: "Search & social" },
+  ],
+  fields: [
+    defineField({
+      name: "image",
+      title: "Backdrop photo",
+      type: "imageWithAlt",
+      description:
+        'Framed with the "404" numeral over it on phones, and faded behind the copy on desktop. A calm, uncluttered interior works best — busy photos fight the text.',
+      group: "content",
+    }),
+    defineField({
+      name: "icon",
+      title: "Badge icon",
+      type: "string",
+      description: "Shown in the round badge above the heading, on desktop only.",
+      options: { list: iconKeys.map((value) => ({ value, title: value })) },
+      initialValue: "search",
+      group: "content",
+    }),
+    defineField({
+      name: "heading",
+      type: "string",
+      description: 'The headline, e.g. "404 — Page not found".',
+      group: "content",
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: "description",
+      type: "text",
+      rows: 3,
+      group: "content",
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: "actions",
+      title: "Actions",
+      type: "array",
+      of: [defineArrayMember({ type: "iconLink" })],
+      description:
+        "Where to send someone who has hit a dead end. The first is styled as the primary action. Four fills the desktop grid exactly.",
+      group: "content",
+      validation: (r) => r.max(4),
+    }),
+    defineField({
+      name: "helpPanel",
+      title: "Help panel",
+      type: "object",
+      description:
+        "The bordered panel of extra links under the actions. Leave the links empty to hide the whole panel.",
+      group: "content",
+      fields: [
+        defineField({
+          name: "title",
+          type: "string",
+          description: 'e.g. "Can\'t find what you\'re looking for?"',
+        }),
+        defineField({
+          name: "links",
+          type: "array",
+          of: [defineArrayMember({ type: "link" })],
+        }),
+      ],
+    }),
+    defineField({ name: "seo", type: "seo", group: "seo" }),
+  ],
+  preview: { prepare: () => ({ title: "Not found page" }) },
+});
+
 export const singletonTypes = [
   siteSettings,
   homePage,
@@ -417,6 +506,7 @@ export const singletonTypes = [
   aboutPage,
   faqPage,
   contactPage,
+  notFoundPage,
 ];
 
 /** Used by structure.ts and the migration script — one document each, fixed id. */

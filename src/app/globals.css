@@ -256,6 +256,46 @@
     }
   }
 
+  /* Pending-navigation hint rendered inside nav links by <LinkPending>.
+     Always in the layout at a fixed size and only toggled between transparent
+     and visible, so appearing mid-click can't nudge the nav around.
+     The 120ms animation-delay is the point: a prefetched route commits well
+     inside that window, so the dot never flashes on a fast transition and only
+     surfaces when the navigation is genuinely waiting on the network. */
+  .link-hint {
+    display: inline-block;
+    width: 0.4em;
+    height: 0.4em;
+    margin-left: 0.4em;
+    border-radius: 9999px;
+    background: currentColor;
+    opacity: 0;
+    visibility: hidden;
+    vertical-align: middle;
+  }
+
+  .link-hint[data-pending="true"] {
+    visibility: visible;
+    animation-name: link-hint-in, link-hint-pulse;
+    animation-duration: 200ms, 1s;
+    animation-delay: 120ms, 120ms;
+    animation-timing-function: ease, ease-in-out;
+    animation-iteration-count: 1, infinite;
+    animation-fill-mode: forwards, none;
+  }
+
+  @keyframes link-hint-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes link-hint-pulse {
+    50% {
+      opacity: 0.25;
+    }
+  }
+
   /* Glassmorphic panel used by the hero CTA, service cards and the map overlay */
   .glass-panel {
     background-color: rgb(255 255 255 / 0.7);

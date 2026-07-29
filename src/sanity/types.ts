@@ -15,6 +15,75 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type NotFoundPage = {
+  _id: string;
+  _type: "notFoundPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  image?: ImageWithAlt;
+  icon?:
+    | "badge-check"
+    | "cleaning"
+    | "collections"
+    | "construction"
+    | "contact"
+    | "droplets"
+    | "gallery"
+    | "gem"
+    | "history"
+    | "home"
+    | "layers"
+    | "leaf"
+    | "map-pin"
+    | "quote"
+    | "ruler"
+    | "search"
+    | "tree-pine"
+    | "users";
+  heading?: string;
+  description?: string;
+  actions?: Array<
+    {
+      _key: string;
+    } & IconLink
+  >;
+  helpPanel?: {
+    title?: string;
+    links?: Array<
+      {
+        _key: string;
+      } & Link
+    >;
+  };
+  seo?: Seo;
+};
+
+export type Seo = {
+  _type: "seo";
+  metaTitle?: string;
+  metaDescription?: string;
+  ogEyebrow?: string;
+  ogDescription?: string;
+};
+
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
+export type ImageWithAlt = {
+  _type: "imageWithAlt";
+  asset?: SanityImageAssetReference;
+  media?: unknown;
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  alt?: string;
+  decorative?: boolean;
+};
+
 export type ContactPage = {
   _id: string;
   _type: "contactPage";
@@ -35,14 +104,6 @@ export type ContactPage = {
   closingBand?: ClosingBand;
   cta?: CtaBanner;
   seo?: Seo;
-};
-
-export type Seo = {
-  _type: "seo";
-  metaTitle?: string;
-  metaDescription?: string;
-  ogEyebrow?: string;
-  ogDescription?: string;
 };
 
 export type CtaBanner = {
@@ -156,23 +217,6 @@ export type AboutPage = {
   };
   cta?: CtaBanner;
   seo?: Seo;
-};
-
-export type SanityImageAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-};
-
-export type ImageWithAlt = {
-  _type: "imageWithAlt";
-  asset?: SanityImageAssetReference;
-  media?: unknown;
-  hotspot?: SanityImageHotspot;
-  crop?: SanityImageCrop;
-  alt?: string;
-  decorative?: boolean;
 };
 
 export type Link = {
@@ -364,13 +408,18 @@ export type FaqGroup = {
   icon?:
     | "badge-check"
     | "cleaning"
+    | "collections"
     | "construction"
+    | "contact"
     | "droplets"
+    | "gallery"
     | "gem"
     | "history"
+    | "home"
     | "layers"
     | "leaf"
     | "map-pin"
+    | "quote"
     | "ruler"
     | "search"
     | "tree-pine"
@@ -525,13 +574,18 @@ export type FlooringService = {
   icon?:
     | "badge-check"
     | "cleaning"
+    | "collections"
     | "construction"
+    | "contact"
     | "droplets"
+    | "gallery"
     | "gem"
     | "history"
+    | "home"
     | "layers"
     | "leaf"
     | "map-pin"
+    | "quote"
     | "ruler"
     | "search"
     | "tree-pine"
@@ -577,18 +631,48 @@ export type OpeningHoursRow = {
   closed?: boolean;
 };
 
+export type IconLink = {
+  _type: "iconLink";
+  icon?:
+    | "badge-check"
+    | "cleaning"
+    | "collections"
+    | "construction"
+    | "contact"
+    | "droplets"
+    | "gallery"
+    | "gem"
+    | "history"
+    | "home"
+    | "layers"
+    | "leaf"
+    | "map-pin"
+    | "quote"
+    | "ruler"
+    | "search"
+    | "tree-pine"
+    | "users";
+  label?: string;
+  href?: string;
+};
+
 export type IconCard = {
   _type: "iconCard";
   icon?:
     | "badge-check"
     | "cleaning"
+    | "collections"
     | "construction"
+    | "contact"
     | "droplets"
+    | "gallery"
     | "gem"
     | "history"
+    | "home"
     | "layers"
     | "leaf"
     | "map-pin"
+    | "quote"
     | "ruler"
     | "search"
     | "tree-pine"
@@ -729,15 +813,16 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
-  | ContactPage
+  | NotFoundPage
   | Seo
+  | SanityImageAssetReference
+  | ImageWithAlt
+  | ContactPage
   | CtaBanner
   | ClosingBand
   | PageHero
   | FaqPage
   | AboutPage
-  | SanityImageAssetReference
-  | ImageWithAlt
   | Link
   | GalleryPage
   | ServicesPage
@@ -758,6 +843,7 @@ export type AllSanitySchemaTypes =
   | SocialLink
   | FooterColumn
   | OpeningHoursRow
+  | IconLink
   | IconCard
   | StatChip
   | SpecRow
@@ -888,13 +974,18 @@ export type SERVICES_QUERY_RESULT = Array<{
   icon:
     | "badge-check"
     | "cleaning"
+    | "collections"
     | "construction"
+    | "contact"
     | "droplets"
+    | "gallery"
     | "gem"
     | "history"
+    | "home"
     | "layers"
     | "leaf"
     | "map-pin"
+    | "quote"
     | "ruler"
     | "search"
     | "tree-pine"
@@ -964,13 +1055,18 @@ export type FAQ_GROUPS_QUERY_RESULT = Array<{
   icon:
     | "badge-check"
     | "cleaning"
+    | "collections"
     | "construction"
+    | "contact"
     | "droplets"
+    | "gallery"
     | "gem"
     | "history"
+    | "home"
     | "layers"
     | "leaf"
     | "map-pin"
+    | "quote"
     | "ruler"
     | "search"
     | "tree-pine"
@@ -1150,13 +1246,18 @@ export type CASE_STUDY_QUERY_RESULT = {
       icon:
         | "badge-check"
         | "cleaning"
+        | "collections"
         | "construction"
+        | "contact"
         | "droplets"
+        | "gallery"
         | "gem"
         | "history"
+        | "home"
         | "layers"
         | "leaf"
         | "map-pin"
+        | "quote"
         | "ruler"
         | "search"
         | "tree-pine"
@@ -1188,13 +1289,18 @@ export type CASE_STUDY_QUERY_RESULT = {
       icon:
         | "badge-check"
         | "cleaning"
+        | "collections"
         | "construction"
+        | "contact"
         | "droplets"
+        | "gallery"
         | "gem"
         | "history"
+        | "home"
         | "layers"
         | "leaf"
         | "map-pin"
+        | "quote"
         | "ruler"
         | "search"
         | "tree-pine"
@@ -1340,6 +1446,21 @@ export type HOME_PAGE_QUERY_RESULT =
       seo: null;
     }
   | {
+      hero: null;
+      servicesHeading: null;
+      qualityBand: null;
+      galleryHeading: null;
+      bentoTiles: null;
+      faqSection: null;
+      contactSection: null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
+    }
+  | {
       hero: {
         eyebrow: null;
         title: null;
@@ -1481,13 +1602,18 @@ export type HOME_PAGE_QUERY_RESULT =
           icon:
             | "badge-check"
             | "cleaning"
+            | "collections"
             | "construction"
+            | "contact"
             | "droplets"
+            | "gallery"
             | "gem"
             | "history"
+            | "home"
             | "layers"
             | "leaf"
             | "map-pin"
+            | "quote"
             | "ruler"
             | "search"
             | "tree-pine"
@@ -1632,6 +1758,19 @@ export type SERVICES_PAGE_QUERY_RESULT =
       processFootnote: null;
       cta: null;
       seo: null;
+    }
+  | {
+      hero: null;
+      comparisonHeading: null;
+      processHeading: null;
+      processFootnote: null;
+      cta: null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
     }
   | {
       hero: {
@@ -1848,6 +1987,16 @@ export type GALLERY_PAGE_QUERY_RESULT =
       seo: null;
     }
   | {
+      hero: null;
+      cta: null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
+    }
+  | {
       hero: {
         eyebrow: null;
         title: null;
@@ -1957,6 +2106,243 @@ export type GALLERY_PAGE_QUERY_RESULT =
   | null;
 
 // Source: src/sanity/queries.ts
+// Variable: NOT_FOUND_PAGE_QUERY
+// Query: *[_id == "notFoundPage"][0]{    image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }},    icon,    heading,    description,    actions[] { icon, label, href },    helpPanel{ title, links[] { label, href } },    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }  }
+export type NOT_FOUND_PAGE_QUERY_RESULT =
+  | {
+      image: null;
+      icon: null;
+      heading: null;
+      description: null;
+      actions: null;
+      helpPanel: null;
+      seo: null;
+    }
+  | {
+      image: null;
+      icon: null;
+      heading: null;
+      description: null;
+      actions: null;
+      helpPanel: null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
+    }
+  | {
+      image: {
+        alt: string | null;
+        decorative: boolean | null;
+        hotspot: {
+          x: number | null;
+          y: number | null;
+        } | null;
+        crop: {
+          top: number | null;
+          bottom: number | null;
+          left: number | null;
+          right: number | null;
+        } | null;
+        asset: {
+          _id: string;
+          url: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+      } | null;
+      icon: null;
+      heading: null;
+      description: null;
+      actions: null;
+      helpPanel: null;
+      seo: null;
+    }
+  | {
+      image: null;
+      icon:
+        | "badge-check"
+        | "cleaning"
+        | "collections"
+        | "construction"
+        | "contact"
+        | "droplets"
+        | "gallery"
+        | "gem"
+        | "history"
+        | "home"
+        | "layers"
+        | "leaf"
+        | "map-pin"
+        | "quote"
+        | "ruler"
+        | "search"
+        | "tree-pine"
+        | "users"
+        | null;
+      heading: null;
+      description: null;
+      actions: null;
+      helpPanel: null;
+      seo: null;
+    }
+  | {
+      image: {
+        alt: string | null;
+        decorative: boolean | null;
+        hotspot: {
+          x: number | null;
+          y: number | null;
+        } | null;
+        crop: {
+          top: number | null;
+          bottom: number | null;
+          left: number | null;
+          right: number | null;
+        } | null;
+        asset: {
+          _id: string;
+          url: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+      } | null;
+      icon:
+        | "badge-check"
+        | "cleaning"
+        | "collections"
+        | "construction"
+        | "contact"
+        | "droplets"
+        | "gallery"
+        | "gem"
+        | "history"
+        | "home"
+        | "layers"
+        | "leaf"
+        | "map-pin"
+        | "quote"
+        | "ruler"
+        | "search"
+        | "tree-pine"
+        | "users"
+        | null;
+      heading: null;
+      description: null;
+      actions: null;
+      helpPanel: null;
+      seo: null;
+    }
+  | {
+      image: null;
+      icon: null;
+      heading: null;
+      description: string | null;
+      actions: null;
+      helpPanel: null;
+      seo: null;
+    }
+  | {
+      image: {
+        alt: string | null;
+        decorative: boolean | null;
+        hotspot: {
+          x: number | null;
+          y: number | null;
+        } | null;
+        crop: {
+          top: number | null;
+          bottom: number | null;
+          left: number | null;
+          right: number | null;
+        } | null;
+        asset: {
+          _id: string;
+          url: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+      } | null;
+      icon:
+        | "badge-check"
+        | "cleaning"
+        | "collections"
+        | "construction"
+        | "contact"
+        | "droplets"
+        | "gallery"
+        | "gem"
+        | "history"
+        | "home"
+        | "layers"
+        | "leaf"
+        | "map-pin"
+        | "quote"
+        | "ruler"
+        | "search"
+        | "tree-pine"
+        | "users"
+        | null;
+      heading: string | null;
+      description: string | null;
+      actions: Array<{
+        icon:
+          | "badge-check"
+          | "cleaning"
+          | "collections"
+          | "construction"
+          | "contact"
+          | "droplets"
+          | "gallery"
+          | "gem"
+          | "history"
+          | "home"
+          | "layers"
+          | "leaf"
+          | "map-pin"
+          | "quote"
+          | "ruler"
+          | "search"
+          | "tree-pine"
+          | "users"
+          | null;
+        label: string | null;
+        href: string | null;
+      }> | null;
+      helpPanel: {
+        title: string | null;
+        links: Array<{
+          label: string | null;
+          href: string | null;
+        }> | null;
+      } | null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
+    }
+  | null;
+
+// Source: src/sanity/queries.ts
 // Variable: ABOUT_PAGE_QUERY
 // Query: *[_id == "aboutPage"][0]{    hero {  eyebrow,  title,  description,  image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }},  actions[] { label, href }},    stats[]{ icon, title, description, inverted },    missionStory{ eyebrow, title, body, image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }}, action { label, href } },    craftCards[]{ title, description, image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }} },    specTable{ heading, description, rows[]{ type, durability, idealFor, warranty } },    cta {  title,  description,  primary { label, href },  secondary { label, href },  image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }}},    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }  }
 export type ABOUT_PAGE_QUERY_RESULT =
@@ -1968,6 +2354,20 @@ export type ABOUT_PAGE_QUERY_RESULT =
       specTable: null;
       cta: null;
       seo: null;
+    }
+  | {
+      hero: null;
+      stats: null;
+      missionStory: null;
+      craftCards: null;
+      specTable: null;
+      cta: null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
     }
   | {
       hero: {
@@ -2273,6 +2673,18 @@ export type FAQ_PAGE_QUERY_RESULT =
       seo: null;
     }
   | {
+      hero: null;
+      searchPlaceholder: null;
+      supportCard: null;
+      closingBand: null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
+    }
+  | {
       hero: {
         eyebrow: null;
         title: null;
@@ -2455,6 +2867,18 @@ export type CONTACT_PAGE_QUERY_RESULT =
       socialProof: null;
       closingBand: null;
       seo: null;
+    }
+  | {
+      hero: null;
+      avatars: null;
+      socialProof: null;
+      closingBand: null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
     }
   | {
       hero: {
@@ -2683,6 +3107,7 @@ declare module "@sanity/client" {
     '\n  *[_id == "homePage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    servicesHeading { eyebrow, title, description },\n    qualityBand{\n      title,\n      description,\n      image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n      statLabel,\n      points[] { icon, title, description }\n    },\n    galleryHeading{ eyebrow, title, link { label, href } },\n    bentoTiles[]{\n      span,\n      "project": project->{\n        title,\n        subtitle,\n        "slug": slug.current,\n        "category": category->slug,\n        "caseStudy": caseStudy->slug.current,\n        image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n      }\n    },\n    faqSection{ heading { eyebrow, title, description }, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}, link { label, href } },\n    contactSection{\n      formTitle,\n      formDescription,\n      title,\n      description,\n      channelLabels,\n      mapImage {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n    },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': HOME_PAGE_QUERY_RESULT;
     '\n  *[_id == "servicesPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    comparisonHeading { eyebrow, title, description },\n    processHeading { eyebrow, title, description },\n    processFootnote,\n    cta {\n  title,\n  description,\n  primary { label, href },\n  secondary { label, href },\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n},\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': SERVICES_PAGE_QUERY_RESULT;
     '\n  *[_id == "galleryPage"][0]{ hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n}, cta {\n  title,\n  description,\n  primary { label, href },\n  secondary { label, href },\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n}, seo { metaTitle, metaDescription, ogEyebrow, ogDescription } }\n': GALLERY_PAGE_QUERY_RESULT;
+    '\n  *[_id == "notFoundPage"][0]{\n    image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    icon,\n    heading,\n    description,\n    actions[] { icon, label, href },\n    helpPanel{ title, links[] { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': NOT_FOUND_PAGE_QUERY_RESULT;
     '\n  *[_id == "aboutPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    stats[]{ icon, title, description, inverted },\n    missionStory{ eyebrow, title, body, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}, action { label, href } },\n    craftCards[]{ title, description, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    specTable{ heading, description, rows[]{ type, durability, idealFor, warranty } },\n    cta {\n  title,\n  description,\n  primary { label, href },\n  secondary { label, href },\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n},\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_id == "faqPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    searchPlaceholder,\n    supportCard{ title, description, emailLabel },\n    closingBand { title, description, actions[] { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': FAQ_PAGE_QUERY_RESULT;
     '\n  *[_id == "contactPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    avatars[] {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    socialProof{ prefix, highlightSuffix, suffix },\n    closingBand { title, description, actions[] { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': CONTACT_PAGE_QUERY_RESULT;
