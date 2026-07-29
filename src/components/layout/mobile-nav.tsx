@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Link } from "@/components/shared/link";
 import { usePathname } from "next/navigation";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -36,16 +36,37 @@ export function MobileNav({ name, navItems, headerCta }: SiteNavProps) {
       {/* The width overrides must carry the same `data-[side=right]:` prefix as
           shadcn's defaults, otherwise tailwind-merge treats them as a different
           group and `w-3/4` wins. */}
+      {/* Full-screen overlay with centred links, per the mobile design. */}
+      {/* The width overrides must carry the same `data-[side=right]:` prefix as
+          shadcn's defaults, otherwise tailwind-merge treats them as a different
+          group and `w-3/4` wins. */}
       <SheetContent
         side="right"
+        // The built-in close button is a small icon pinned to the corner. The
+        // mockup pairs a larger X with the brand on one row, so it is replaced
+        // rather than positioned around.
+        showCloseButton={false}
         className="border-0 bg-surface p-margin-mobile data-[side=right]:w-full data-[side=right]:sm:max-w-none"
       >
-        <SheetTitle className="sr-only">{name} navigation</SheetTitle>
+        <div className="flex items-center justify-between">
+          {/* The brand doubles as the way back to the home page — without it the
+              menu is a dead end on mobile, since the header logo is behind the
+              overlay. It is also the sheet's accessible title, which Radix
+              requires; it used to be an sr-only string. */}
+          <SheetTitle className="font-display text-headline-md font-bold tracking-tight text-primary">
+            <SheetClose asChild>
+              <Link href="/">{name}</Link>
+            </SheetClose>
+          </SheetTitle>
 
-        <nav
-          aria-label="Mobile"
-          className="mt-16 flex flex-col gap-6 text-center"
-        >
+          <SheetClose asChild>
+            <Button variant="ghost" size="icon-lg" aria-label="Close menu">
+              <X className="size-7" />
+            </Button>
+          </SheetClose>
+        </div>
+
+        <nav aria-label="Mobile" className="mt-12 flex flex-col gap-8 text-center">
           {navItems.map((item) => {
             const href = item.href ?? "/";
             const isActive =
@@ -55,9 +76,15 @@ export function MobileNav({ name, navItems, headerCta }: SiteNavProps) {
                 <Link
                   href={href}
                   aria-current={isActive ? "page" : undefined}
+                  // 16px semibold Montserrat, measured off the mockup. The
+                  // markup there reads `font-headline-lg-mobile`, which is the
+                  // *font-family* utility in Stitch's config — that config
+                  // defines the same keys under both `fontFamily` and
+                  // `fontSize`, and these links carry no size class at all, so
+                  // they sit at the 16px base.
                   className={cn(
-                    "font-display text-body-md text-primary transition-colors hover:text-secondary",
-                    isActive && "font-semibold text-secondary",
+                    "font-display text-body-md font-semibold text-primary transition-colors hover:text-secondary",
+                    isActive && "text-secondary",
                   )}
                 >
                   {item.label}
@@ -67,13 +94,21 @@ export function MobileNav({ name, navItems, headerCta }: SiteNavProps) {
           })}
 
           {headerCta?.label && (
-            <SheetClose asChild>
-              <Button asChild size="xl" className="mt-4 w-full font-display">
-                <Link href={headerCta.href ?? "/contact"}>
-                  {headerCta.label}
-                </Link>
-              </Button>
-            </SheetClose>
+            <div className="mt-8 border-t border-border pt-8">
+              <SheetClose asChild>
+                {/* Also 16px in the mockup — `font-headline-md` there is the
+                    family, not the 24px size. `py-5` is what makes it tall. */}
+                <Button
+                  asChild
+                  size="xl"
+                  className="h-auto w-full py-5 font-display"
+                >
+                  <Link href={headerCta.href ?? "/contact"}>
+                    {headerCta.label}
+                  </Link>
+                </Button>
+              </SheetClose>
+            </div>
           )}
         </nav>
       </SheetContent>

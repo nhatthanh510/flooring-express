@@ -45,7 +45,13 @@ export function SanityFillImage({
       aria-hidden={decorative || undefined}
       fill
       sizes={sizes}
-      priority={priority}
+      // Not `priority`: it is deprecated in Next.js 16, and all it emitted was a
+      // `<link rel="preload">` carrying no priority hint — which is exactly what
+      // Lighthouse's "fetchpriority=high should be applied to the image preload
+      // request" refers to. The docs point to `fetchPriority`/`loading` instead.
+      {...(priority
+        ? { fetchPriority: "high" as const, loading: "eager" as const }
+        : {})}
       style={{ objectPosition: hotspotPosition(image) }}
       className={cn("object-cover", className)}
     />

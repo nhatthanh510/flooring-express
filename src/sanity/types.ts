@@ -435,6 +435,13 @@ export type FlooringServiceReference = {
   [internalGroqTypeReferenceTo]?: "flooringService";
 };
 
+export type SanityFileAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+};
+
 export type CaseStudyReference = {
   _ref: string;
   _type: "reference";
@@ -460,6 +467,11 @@ export type GalleryProject = {
     | "aspect-[4/5]"
     | "aspect-[3/2]";
   image?: ImageWithAlt;
+  video?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
   caseStudy?: CaseStudyReference;
   order?: number;
 };
@@ -836,6 +848,7 @@ export type AllSanitySchemaTypes =
   | Faq
   | FaqGroup
   | FlooringServiceReference
+  | SanityFileAssetReference
   | CaseStudyReference
   | GalleryProject
   | CaseStudy
@@ -1096,7 +1109,7 @@ export type ALL_FAQS_QUERY_RESULT = Array<{
 
 // Source: src/sanity/queries.ts
 // Variable: GALLERY_PROJECTS_QUERY
-// Query: *[_type == "galleryProject"] | order(order asc){    "slug": slug.current,    title,    subtitle,    "category": category->slug,    sector,    aspect,    image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }},    "caseStudy": caseStudy->slug.current  }
+// Query: *[_type == "galleryProject"] | order(order asc){    "slug": slug.current,    title,    subtitle,    "category": category->slug,    sector,    aspect,    image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }},    video{ asset->{ url, mimeType } },    "caseStudy": caseStudy->slug.current  }
 export type GALLERY_PROJECTS_QUERY_RESULT = Array<{
   slug: string | null;
   title: string | null;
@@ -1133,6 +1146,12 @@ export type GALLERY_PROJECTS_QUERY_RESULT = Array<{
           height: number | null;
         } | null;
       } | null;
+    } | null;
+  } | null;
+  video: {
+    asset: {
+      url: string | null;
+      mimeType: string | null;
     } | null;
   } | null;
   caseStudy: string | null;
@@ -3107,7 +3126,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "faq" && showOnHome == true] | order(order asc){ question, answer }\n': HOME_FAQS_QUERY_RESULT;
     '\n  *[_type == "faqGroup"] | order(order asc){\n    title,\n    icon,\n    "items": *[_type == "faq" && group._ref == ^._id] | order(order asc){ question, answer }\n  }\n': FAQ_GROUPS_QUERY_RESULT;
     '\n  *[_type == "faq" && defined(group)] | order(order asc){ question, answer }\n': ALL_FAQS_QUERY_RESULT;
-    '\n  *[_type == "galleryProject"] | order(order asc){\n    "slug": slug.current,\n    title,\n    subtitle,\n    "category": category->slug,\n    sector,\n    aspect,\n    image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    "caseStudy": caseStudy->slug.current\n  }\n': GALLERY_PROJECTS_QUERY_RESULT;
+    '\n  *[_type == "galleryProject"] | order(order asc){\n    "slug": slug.current,\n    title,\n    subtitle,\n    "category": category->slug,\n    sector,\n    aspect,\n    image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    video{ asset->{ url, mimeType } },\n    "caseStudy": caseStudy->slug.current\n  }\n': GALLERY_PROJECTS_QUERY_RESULT;
     '\n  *[_type == "caseStudy" && defined(slug.current)]{ "slug": slug.current }\n': CASE_STUDY_SLUGS_QUERY_RESULT;
     '\n  *[_type == "caseStudy" && slug.current == $slug][0]{\n    "slug": slug.current,\n    "category": category->slug,\n    eyebrow,\n    title,\n    shortTitle,\n    summary,\n    order,\n    hero {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    meta[]{ label, value },\n    challenge{ heading, body, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    solution{ heading, body, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}, stats[]{ value, label } },\n    features{ heading, description, items[] { icon, title, description } },\n    specs{ heading, description, rows[]{ attribute, value } },\n    details{ heading, rows[]{ label, value } },\n    roadmap{ heading, description, steps[] { icon, title, description } },\n    gallery{ heading, images[] {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    testimonial{ quote, name, role, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    cta{ heading, description, primary { label, href }, secondary { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': CASE_STUDY_QUERY_RESULT;
     '\n  coalesce(\n    *[_type == "caseStudy" && order > $order] | order(order asc)[0],\n    *[_type == "caseStudy"] | order(order asc)[0]\n  ){\n    "slug": slug.current,\n    shortTitle,\n    eyebrow,\n    hero {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n  }\n': NEXT_CASE_STUDY_QUERY_RESULT;

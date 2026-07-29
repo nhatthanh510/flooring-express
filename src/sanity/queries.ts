@@ -122,6 +122,7 @@ export const GALLERY_PROJECTS_QUERY = defineQuery(`
     sector,
     aspect,
     image ${IMG},
+    video{ asset->{ url, mimeType } },
     "caseStudy": caseStudy->slug.current
   }
 `);

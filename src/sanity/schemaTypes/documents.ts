@@ -166,6 +166,14 @@ export const galleryProject = defineType({
     }),
     defineField({ name: "image", type: "imageWithAlt", validation: (rule) => rule.required() }),
     defineField({
+      name: "video",
+      title: "Video (optional)",
+      type: "file",
+      options: { accept: "video/mp4,video/webm" },
+      description:
+        "A short, silent clip that plays on a loop in place of the photo. The photo above is still required — it is the poster frame, what search engines index, and what shows while the video loads or if it fails. Keep it under ~10 MB and a few seconds long: it downloads on every visit to the gallery. MP4 (H.264) plays everywhere; WebM is smaller but not supported on older Safari.",
+    }),
+    defineField({
       name: "caseStudy",
       type: "reference",
       to: [{ type: "caseStudy" }],

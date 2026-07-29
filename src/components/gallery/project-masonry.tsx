@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Link } from "@/components/shared/link";
 import { SanityFillImage } from "@/components/shared/sanity-image";
+import { ProjectVideo } from "@/components/gallery/project-video";
 import {
   GalleryFilterBar,
   GalleryFilterBarLive,
@@ -63,6 +64,17 @@ export function ProjectMasonry({
                 priority={index === 0}
                 className="transition-transform duration-500 group-hover:scale-105"
               />
+              {/* Layered over the photo rather than replacing it: the image
+                  stays in the HTML for crawlers and covers the gap while the
+                  clip loads, fails, or is suppressed by reduced-motion. */}
+              {project.video?.asset?.url && (
+                <ProjectVideo
+                  src={project.video.asset.url}
+                  type={project.video.asset.mimeType ?? undefined}
+                  poster={project.image?.asset?.url ?? undefined}
+                  className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              )}
               <div
                 aria-hidden="true"
                 className="absolute inset-0 hidden bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 md:block"
