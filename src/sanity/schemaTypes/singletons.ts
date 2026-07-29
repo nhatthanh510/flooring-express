@@ -127,6 +127,14 @@ export const siteSettings = defineType({
       validation: (r) => r.required().min(1),
     }),
     defineField({
+      name: "headerCta",
+      title: "Header button",
+      type: "link",
+      description:
+        'The button at the right of the header, and the full-width one at the bottom of the mobile menu — e.g. "Free Quote" → /contact. Clear it to remove the button from both.',
+      group: "navigation",
+    }),
+    defineField({
       name: "footerColumns",
       type: "array",
       of: [defineArrayMember({ type: "footerColumn" })],

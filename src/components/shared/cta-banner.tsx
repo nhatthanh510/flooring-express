@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/shared/link";
 import { SanityFillImage } from "@/components/shared/sanity-image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,11 @@ type CtaBannerProps = {
   /** "dots" uses the radial-dot texture from the gallery mockup */
   texture?: "dots";
   align?: "center" | "split";
+  /**
+   * How the band is framed. The mockups genuinely differ: the gallery CTA runs
+   * edge to edge, the about one is a rounded card inset in the page grid.
+   */
+  frame?: "card" | "bleed";
   className?: string;
 };
 
@@ -26,14 +31,32 @@ export function CtaBanner({
   pattern,
   texture,
   align = "center",
+  frame = "card",
   className,
 }: CtaBannerProps) {
   if (!cta) return null;
   const { title, description, primary, secondary } = cta;
 
+  const bleed = frame === "bleed";
+
   return (
-    <section className={cn("container-page py-section", className)}>
-      <div className="relative overflow-hidden rounded-3xl bg-primary p-10 md:p-16">
+    <section
+      className={cn(
+        bleed ? "bg-ink-soft py-section" : "container-page py-section",
+        className,
+      )}
+    >
+      {/* `ink-soft` (#2d2926), not `primary` (#181512) — the mockups' CTA band
+          is the softer charcoal, which is what separates it from the near-black
+          footer directly below it. */}
+      <div
+        className={cn(
+          "relative overflow-hidden",
+          bleed
+            ? "container-page"
+            : "rounded-2xl bg-ink-soft p-10 md:p-12",
+        )}
+      >
         {pattern && (
           <SanityFillImage
             image={pattern}
@@ -53,26 +76,35 @@ export function CtaBanner({
             "relative flex flex-col gap-8",
             align === "center"
               ? "items-center text-center"
-              : "lg:flex-row lg:items-center lg:justify-between",
+              : "md:flex-row md:items-center md:justify-between md:gap-12",
           )}
         >
           <div
             className={cn(
-              "flex flex-col gap-4",
+              "flex max-w-xl flex-col gap-4",
               align === "center" && "items-center",
             )}
           >
-            <h2 className="max-w-2xl text-balance text-headline-lg-mobile text-primary-foreground md:text-display-lg">
+            {/* headline-lg (32px), not display-lg (48px) — the mockups keep the
+                CTA heading a step below the page h1, which is also what leaves
+                room for the buttons to sit alongside rather than wrap. */}
+            <h2 className="text-balance text-headline-lg-mobile text-primary-foreground md:text-headline-lg">
               {title}
             </h2>
-            <p className="max-w-xl text-pretty text-body-lg text-ink-muted">
+            <p className="text-pretty text-body-lg text-ink-muted">
               {description}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4">
+          {/* Stacked on the narrowest screens, side by side from sm, as drawn. */}
+          <div className="flex w-full flex-col gap-4 sm:w-auto sm:flex-row sm:items-center">
             {primary && (
-              <Button asChild size="xl" variant="secondary">
+              <Button
+                asChild
+                size="xl"
+                variant="secondary"
+                className="px-10 font-bold shadow-lg"
+              >
                 <Link href={primary.href ?? "#"}>{primary.label}</Link>
               </Button>
             )}
@@ -81,7 +113,7 @@ export function CtaBanner({
                 asChild
                 size="xl"
                 variant="outline"
-                className="border-white/40 bg-transparent text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
+                className="border-white/40 bg-transparent px-10 text-primary-foreground hover:bg-white/10 hover:text-primary-foreground"
               >
                 <Link href={secondary.href ?? "#"}>{secondary.label}</Link>
               </Button>

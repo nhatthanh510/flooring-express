@@ -52,6 +52,7 @@ export default async function NotFound() {
         <SiteHeader
           name={settings.name ?? ""}
           navItems={settings.navItems ?? []}
+          headerCta={settings.headerCta}
         />
       )}
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { Link } from "@/components/shared/link";
 import { usePathname } from "next/navigation";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import {
 import type { SiteNavProps } from "@/components/layout/site-header";
 import { cn } from "@/lib/utils";
 
-export function MobileNav({ name, navItems }: SiteNavProps) {
+export function MobileNav({ name, navItems, headerCta }: SiteNavProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
@@ -66,11 +66,15 @@ export function MobileNav({ name, navItems }: SiteNavProps) {
             );
           })}
 
-          <SheetClose asChild>
-            <Button asChild size="xl" className="mt-4 w-full font-display">
-              <Link href="/contact">Free Quote</Link>
-            </Button>
-          </SheetClose>
+          {headerCta?.label && (
+            <SheetClose asChild>
+              <Button asChild size="xl" className="mt-4 w-full font-display">
+                <Link href={headerCta.href ?? "/contact"}>
+                  {headerCta.label}
+                </Link>
+              </Button>
+            </SheetClose>
+          )}
         </nav>
       </SheetContent>
     </Sheet>

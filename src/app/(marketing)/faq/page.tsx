@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/shared/link";
 import { Download, Headset, Mail, Phone } from "lucide-react";
 
 import { FaqBrowser } from "@/components/faq/faq-browser";

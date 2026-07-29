@@ -354,6 +354,7 @@ export type SiteSettings = {
       _key: string;
     } & Link
   >;
+  headerCta?: Link;
   footerColumns?: Array<
     {
       _key: string;
@@ -861,7 +862,7 @@ export type AllSanitySchemaTypes =
 
 // Source: src/sanity/queries.ts
 // Variable: SITE_SETTINGS_QUERY
-// Query: *[_id == "siteSettings"][0]{    name,    legalName,    tagline,    description,    blurb,    keywords,    stats{ yearsExperience, familiesServed },    contact,    hours[]{ days, short, time, closed },    hoursSummary,    openingHoursSpec,    serviceAreas,    navItems[]{ label, href },    footerColumns[]{ title, links[]{ label, href } },    socialLinks[]{ icon, label, href }  }
+// Query: *[_id == "siteSettings"][0]{    name,    legalName,    tagline,    description,    blurb,    keywords,    stats{ yearsExperience, familiesServed },    contact,    hours[]{ days, short, time, closed },    hoursSummary,    openingHoursSpec,    serviceAreas,    navItems[]{ label, href },    headerCta { label, href },    footerColumns[]{ title, links[]{ label, href } },    socialLinks[]{ icon, label, href }  }
 export type SITE_SETTINGS_QUERY_RESULT =
   | {
       name: null;
@@ -877,6 +878,7 @@ export type SITE_SETTINGS_QUERY_RESULT =
       openingHoursSpec: null;
       serviceAreas: null;
       navItems: null;
+      headerCta: null;
       footerColumns: null;
       socialLinks: null;
     }
@@ -894,6 +896,7 @@ export type SITE_SETTINGS_QUERY_RESULT =
       openingHoursSpec: null;
       serviceAreas: null;
       navItems: null;
+      headerCta: null;
       footerColumns: null;
       socialLinks: null;
     }
@@ -911,6 +914,7 @@ export type SITE_SETTINGS_QUERY_RESULT =
       openingHoursSpec: null;
       serviceAreas: null;
       navItems: null;
+      headerCta: null;
       footerColumns: null;
       socialLinks: null;
     }
@@ -948,6 +952,10 @@ export type SITE_SETTINGS_QUERY_RESULT =
         label: string | null;
         href: string | null;
       }> | null;
+      headerCta: {
+        label: string | null;
+        href: string | null;
+      } | null;
       footerColumns: Array<{
         title: string | null;
         links: Array<{
@@ -3093,7 +3101,7 @@ export type SITEMAP_QUERY_RESULT = {
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '\n  *[_id == "siteSettings"][0]{\n    name,\n    legalName,\n    tagline,\n    description,\n    blurb,\n    keywords,\n    stats{ yearsExperience, familiesServed },\n    contact,\n    hours[]{ days, short, time, closed },\n    hoursSummary,\n    openingHoursSpec,\n    serviceAreas,\n    navItems[]{ label, href },\n    footerColumns[]{ title, links[]{ label, href } },\n    socialLinks[]{ icon, label, href }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
+    '\n  *[_id == "siteSettings"][0]{\n    name,\n    legalName,\n    tagline,\n    description,\n    blurb,\n    keywords,\n    stats{ yearsExperience, familiesServed },\n    contact,\n    hours[]{ days, short, time, closed },\n    hoursSummary,\n    openingHoursSpec,\n    serviceAreas,\n    navItems[]{ label, href },\n    headerCta { label, href },\n    footerColumns[]{ title, links[]{ label, href } },\n    socialLinks[]{ icon, label, href }\n  }\n': SITE_SETTINGS_QUERY_RESULT;
     '\n  *[_type == "flooringService"] | order(order asc){\n    slug,\n    name,\n    shortName,\n    descriptor,\n    icon,\n    plankColor,\n    homeBlurb,\n    homeFeatures,\n    servicesBlurb,\n    servicesFeatures,\n    image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    specs\n  }\n': SERVICES_QUERY_RESULT;
     '\n  *[_type == "processStep"] | order(order asc){ number, title, description }\n': PROCESS_STEPS_QUERY_RESULT;
     '\n  *[_type == "faq" && showOnHome == true] | order(order asc){ question, answer }\n': HOME_FAQS_QUERY_RESULT;

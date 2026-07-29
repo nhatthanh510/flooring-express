@@ -7,6 +7,8 @@ export const flooringInterests = [
   "other",
 ] as const;
 
+export type FlooringInterest = (typeof flooringInterests)[number];
+
 /**
  * What the visitor actually wants. Every CTA across the site carries one of
  * these, so a "Request a Sample Kit" button and a "Book a Consultation" button

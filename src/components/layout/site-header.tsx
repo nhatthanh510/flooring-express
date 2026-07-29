@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/components/shared/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { LinkPending } from "@/components/layout/link-pending";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import type { SiteSettings } from "@/lib/site";
 import { cn } from "@/lib/utils";
@@ -11,9 +10,11 @@ import { cn } from "@/lib/utils";
 export type SiteNavProps = {
   name: string;
   navItems: NonNullable<SiteSettings["navItems"]>;
+  /** The header button. From Site settings → Navigation, not hardcoded. */
+  headerCta: SiteSettings["headerCta"];
 };
 
-export function SiteHeader({ name, navItems }: SiteNavProps) {
+export function SiteHeader({ name, navItems, headerCta }: SiteNavProps) {
   const pathname = usePathname();
 
   return (
@@ -46,7 +47,6 @@ export function SiteHeader({ name, navItems }: SiteNavProps) {
                       )}
                     >
                       {item.label}
-                      <LinkPending />
                     </Link>
                   </li>
                 );
@@ -55,13 +55,22 @@ export function SiteHeader({ name, navItems }: SiteNavProps) {
           </nav>
 
           <div className="flex items-center gap-2">
-            <Button asChild size="lg" className="hidden sm:inline-flex">
-              <Link href="/contact">
-                Free Quote
-                <LinkPending />
-              </Link>
-            </Button>
-            <MobileNav name={name} navItems={navItems} />
+            {headerCta?.label && (
+              // The mockup's header button is `px-6 py-2.5 rounded` — wider and
+              // squarer than the shared `lg` size, which is tuned for in-page
+              // buttons. Overridden here rather than adding a Button size that
+              // only one element would ever use.
+              <Button
+                asChild
+                size="lg"
+                className="hidden h-10 rounded-sm px-6 text-label-md sm:inline-flex"
+              >
+                <Link href={headerCta.href ?? "/contact"}>
+                  {headerCta.label}
+                </Link>
+              </Button>
+            )}
+            <MobileNav name={name} navItems={navItems} headerCta={headerCta} />
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/shared/link";
 import { PortableText } from "next-sanity";
 import { ArrowRight } from "lucide-react";
 

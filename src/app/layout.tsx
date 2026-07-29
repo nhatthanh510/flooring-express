@@ -1,5 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
+import {
+  RouteProgressBar,
+  RouteProgressProvider,
+} from "@/components/layout/route-progress";
 import { siteUrl } from "@/lib/site-url";
 import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 import { sanityFetch } from "@/sanity/lib/live";
@@ -87,7 +91,14 @@ export default function RootLayout({
       lang="en-AU"
       className={`${inter.variable} ${montserrat.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {/* At the root so the bar also covers the 404, which renders its own
+            header outside the marketing layout. */}
+        <RouteProgressProvider>
+          <RouteProgressBar />
+          {children}
+        </RouteProgressProvider>
+      </body>
     </html>
   );
 }

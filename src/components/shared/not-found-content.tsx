@@ -1,5 +1,5 @@
 import { createElement } from "react";
-import Link from "next/link";
+import { Link } from "@/components/shared/link";
 
 import { SanityFillImage } from "@/components/shared/sanity-image";
 import { resolveIcon } from "@/lib/icons";

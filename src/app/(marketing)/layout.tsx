@@ -36,7 +36,11 @@ export default async function MarketingLayout({
       >
         Skip to content
       </a>
-      <SiteHeader name={settings.name ?? ""} navItems={settings.navItems ?? []} />
+      <SiteHeader
+        name={settings.name ?? ""}
+        navItems={settings.navItems ?? []}
+        headerCta={settings.headerCta}
+      />
       <main id="main" className="flex-1">
         {children}
       </main>

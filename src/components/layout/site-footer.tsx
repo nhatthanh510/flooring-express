@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/shared/link";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import {
   socialIcons,

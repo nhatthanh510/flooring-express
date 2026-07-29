@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/shared/link";
 import { ArrowRight } from "lucide-react";
 import { FaqAccordion } from "@/components/faq/faq-accordion";
 import { SanityFillImage } from "@/components/shared/sanity-image";

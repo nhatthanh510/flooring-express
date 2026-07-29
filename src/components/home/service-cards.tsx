@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/shared/link";
 import { ArrowRight, CircleCheck } from "lucide-react";
 import { Reveal } from "@/components/shared/reveal";
 import { SectionHeading } from "@/components/shared/section-heading";

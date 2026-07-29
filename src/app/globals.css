@@ -256,44 +256,64 @@
     }
   }
 
-  /* Pending-navigation hint rendered inside nav links by <LinkPending>.
-     Always in the layout at a fixed size and only toggled between transparent
-     and visible, so appearing mid-click can't nudge the nav around.
-     The 120ms animation-delay is the point: a prefetched route commits well
-     inside that window, so the dot never flashes on a fast transition and only
-     surfaces when the navigation is genuinely waiting on the network. */
-  .link-hint {
-    display: inline-block;
-    width: 0.4em;
-    height: 0.4em;
-    margin-left: 0.4em;
-    border-radius: 9999px;
-    background: currentColor;
+  /* The route-transition bar under the address bar, driven by <RouteProgressBar>.
+     Decelerating toward 90% and stopping there is the usual trick for an
+     indeterminate wait: the remaining 10% is only covered when the navigation
+     actually resolves, so the bar never claims to be finished early.
+     The 120ms delay at 0 width means a prefetched route — which commits in well
+     under that — never paints a bar at all, so fast navigation stays silent. */
+  .route-progress {
     opacity: 0;
-    visibility: hidden;
-    vertical-align: middle;
+    /* Fades out *after* the fill has run to 100%, which is what reads as
+       "finished" rather than the bar simply vanishing. */
+    transition: opacity 220ms ease 180ms;
   }
 
-  .link-hint[data-pending="true"] {
-    visibility: visible;
-    animation-name: link-hint-in, link-hint-pulse;
-    animation-duration: 200ms, 1s;
-    animation-delay: 120ms, 120ms;
-    animation-timing-function: ease, ease-in-out;
-    animation-iteration-count: 1, infinite;
-    animation-fill-mode: forwards, none;
+  .route-progress[data-pending] {
+    opacity: 1;
+    transition-delay: 0ms;
   }
 
-  @keyframes link-hint-in {
-    to {
-      opacity: 1;
+  .route-progress-fill {
+    width: 100%;
+    transition: width 180ms ease-out;
+  }
+
+  .route-progress-run {
+    /* `both`, not `forwards` — the fill is 100% wide at rest, so without the
+       0% keyframe applying during the delay the bar would flash full width
+       before the animation started. */
+    animation: route-progress 8s cubic-bezier(0.1, 0.8, 0.2, 1) 120ms both;
+  }
+
+  @keyframes route-progress {
+    0% {
+      width: 0;
     }
-  }
-
-  @keyframes link-hint-pulse {
     50% {
-      opacity: 0.25;
+      width: 65%;
     }
+    100% {
+      width: 90%;
+    }
+  }
+
+  /* Gallery filtering.
+     Every project card is server-rendered and stays in the HTML; these rules
+     hide the ones that don't match the filter the bar records in
+     `data-active-filter`. Keeping the mechanism in CSS is what allows the cards
+     to sit outside the bar's Suspense boundary, so crawlers get all of them and
+     changing filter costs no server round trip.
+     One rule per category — `:has()` cannot compare two attribute values, so
+     "hide what isn't the active one" has to be written out. Keep this list in
+     step with `galleryFilters` in src/lib/flooring.ts. */
+  .project-filter:has([data-active-filter="hybrid"])
+    figure[data-category]:not([data-category="hybrid"]),
+  .project-filter:has([data-active-filter="timber"])
+    figure[data-category]:not([data-category="timber"]),
+  .project-filter:has([data-active-filter="laminate"])
+    figure[data-category]:not([data-category="laminate"]) {
+    display: none;
   }
 
   /* Glassmorphic panel used by the hero CTA, service cards and the map overlay */

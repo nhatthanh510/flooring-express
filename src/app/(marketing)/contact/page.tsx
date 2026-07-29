@@ -1,16 +1,12 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/components/shared/link";
 
 import { Button } from "@/components/ui/button";
 import { ContactInfoCards } from "@/components/contact/contact-info-cards";
-import { QuoteForm } from "@/components/forms/quote-form";
+import { QuoteIntro, QuoteIntroBody } from "@/components/contact/quote-intro";
 import { PageHero } from "@/components/shared/page-hero";
 import { SanityFillImage } from "@/components/shared/sanity-image";
-import {
-  enquiryCopy,
-  isEnquiryType,
-  isFlooringInterest,
-} from "@/lib/schemas/quote";
 import { sanityFetch } from "@/sanity/lib/live";
 import { CONTACT_PAGE_QUERY, SITE_SETTINGS_QUERY } from "@/sanity/queries";
 
@@ -26,23 +22,20 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function ContactPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ enquiry?: string; flooring?: string }>;
-}) {
-  const [{ enquiry, flooring }, { data: page }, { data: settings }] =
-    await Promise.all([
-      searchParams,
-      sanityFetch({ query: CONTACT_PAGE_QUERY }),
-      sanityFetch({ query: SITE_SETTINGS_QUERY }),
-    ]);
-
-  // CTAs across the site deep-link here with their intent, so the form arrives
-  // pre-set to what the visitor actually clicked rather than a generic quote.
-  const enquiryType = isEnquiryType(enquiry) ? enquiry : "quote";
-  const flooringType = isFlooringInterest(flooring) ? flooring : "hybrid";
-  const copy = enquiryCopy[enquiryType];
+/**
+ * Deliberately takes no `searchParams`.
+ *
+ * The `?enquiry=` / `?flooring=` deep links every CTA uses are read on the
+ * client by `<QuoteIntro>` instead. Touching `searchParams` here would make the
+ * whole route render on demand, which stops Next.js prefetching it — and since
+ * most CTAs on the site point here, that turned every one of them into a visible
+ * wait. Read from the client, the page prerenders and those clicks are instant.
+ */
+export default async function ContactPage() {
+  const [{ data: page }, { data: settings }] = await Promise.all([
+    sanityFetch({ query: CONTACT_PAGE_QUERY }),
+    sanityFetch({ query: SITE_SETTINGS_QUERY }),
+  ]);
 
   if (!page || !settings) return null;
   const [primary, secondary] = page.closingBand?.actions ?? [];
@@ -73,20 +66,12 @@ export default async function ContactPage({
                 className="absolute -right-16 -top-16 size-48 rounded-full bg-secondary/5"
               />
               <div className="relative">
-                <h2 className="text-headline-lg text-primary">
-                  {copy.heading}
-                </h2>
-                <p className="mt-3 text-body-md text-muted-foreground">
-                  {copy.description}
-                </p>
-
-                <QuoteForm
-                  idPrefix="contact-quote"
-                  defaultEnquiry={enquiryType}
-                  defaultFlooring={flooringType}
-                  showEnquiryType
-                  className="mt-8"
-                />
+                {/* The fallback is the same markup with the default "quote"
+                    wording, so the prerendered HTML carries a complete, usable
+                    form rather than a placeholder. */}
+                <Suspense fallback={<QuoteIntroBody />}>
+                  <QuoteIntro />
+                </Suspense>
 
                 <div className="mt-8 flex items-center gap-4 border-t border-border pt-6">
                   <div className="flex -space-x-3">

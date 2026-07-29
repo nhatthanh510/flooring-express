@@ -60,6 +60,7 @@ export const SITE_SETTINGS_QUERY = defineQuery(`
     openingHoursSpec,
     serviceAreas,
     navItems[]{ label, href },
+    headerCta ${LINK},
     footerColumns[]{ title, links[]{ label, href } },
     socialLinks[]{ icon, label, href }
   }

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { CtaBanner } from "@/components/shared/cta-banner";
 import { ProjectMasonry } from "@/components/gallery/project-masonry";
-import { isGalleryFilter } from "@/lib/flooring";
 import { sanityFetch } from "@/sanity/lib/live";
 import { GALLERY_PAGE_QUERY, GALLERY_PROJECTS_QUERY } from "@/sanity/queries";
 
@@ -18,17 +17,17 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function GalleryPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string }>;
-}) {
-  const [{ category }, { data: page }, { data: projects }] = await Promise.all([
-    searchParams,
+/**
+ * Deliberately takes no `searchParams` — `?category=` is read on the client by
+ * the filter bar. Reading it here would make the route render on demand and
+ * stop Next.js prefetching it, which is what made the Gallery nav item wait on
+ * the server before anything appeared.
+ */
+export default async function GalleryPage() {
+  const [{ data: page }, { data: projects }] = await Promise.all([
     sanityFetch({ query: GALLERY_PAGE_QUERY }),
     sanityFetch({ query: GALLERY_PROJECTS_QUERY }),
   ]);
-  const active = isGalleryFilter(category) ? category : "all";
 
   return (
     <>
@@ -41,9 +40,9 @@ export default async function GalleryPage({
         </p>
       </section>
 
-      <ProjectMasonry active={active} projects={projects} />
+      <ProjectMasonry projects={projects} />
 
-      <CtaBanner cta={page?.cta ?? null} texture="dots" align="split" />
+      <CtaBanner cta={page?.cta ?? null} texture="dots" align="split" frame="bleed" />
     </>
   );
 }

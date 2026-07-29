@@ -1,66 +1,59 @@
-import Link from "next/link";
+import { Suspense } from "react";
+import { Link } from "@/components/shared/link";
 import { SanityFillImage } from "@/components/shared/sanity-image";
-import { galleryFilters, type GalleryFilter } from "@/lib/flooring";
+import {
+  GalleryFilterBar,
+  GalleryFilterBarLive,
+  type FilterCounts,
+} from "@/components/gallery/gallery-filter-bar";
+import { galleryFilters } from "@/lib/flooring";
 import { cn } from "@/lib/utils";
 import type { GALLERY_PROJECTS_QUERY_RESULT } from "@/sanity/types";
 
 /**
- * Server-rendered: the URL is the only source of truth for the active filter
- * and each pill is a real link. That keeps every project in the HTML for
- * crawlers, makes filtered views shareable, supports Cmd/middle-click, and
- * needs no client JavaScript at all.
+ * Every project is rendered, always. Which ones are *visible* is decided by CSS
+ * from the `data-active-filter` the filter bar sets — see the `.project-filter`
+ * rules in globals.css.
+ *
+ * This preserves what the previous server-filtered version was built for — each
+ * pill is still a real link, so filtered views stay shareable and Cmd/middle-
+ * click still works — and improves on it for crawlers, which now see all of the
+ * projects rather than whichever subset matched the requested filter. The cost
+ * is the small client component that reads the query string; in exchange the
+ * route prerenders, so reaching the gallery no longer waits on the server, and
+ * changing filter no longer round-trips at all.
  */
 export function ProjectMasonry({
-  active,
   projects,
 }: {
-  active: GalleryFilter;
   projects: GALLERY_PROJECTS_QUERY_RESULT;
 }) {
-  const visible =
-    active === "all"
-      ? projects
-      : projects.filter((project) => project.category === active);
+  const counts = galleryFilters.reduce<FilterCounts>(
+    (acc, filter) => ({
+      ...acc,
+      [filter.value]:
+        filter.value === "all"
+          ? projects.length
+          : projects.filter((project) => project.category === filter.value)
+              .length,
+    }),
+    {} as FilterCounts,
+  );
 
   return (
-    <section className="container-page pb-section">
-      <nav aria-label="Filter projects by flooring type">
-        <ul className="flex flex-wrap justify-center gap-3">
-          {galleryFilters.map((filter) => {
-            const isActive = filter.value === active;
-            return (
-              <li key={filter.value}>
-                <Link
-                  href={
-                    filter.value === "all"
-                      ? "/gallery"
-                      : `/gallery?category=${filter.value}`
-                  }
-                  scroll={false}
-                  aria-current={isActive ? "true" : undefined}
-                  className={cn(
-                    "inline-flex h-12 items-center rounded-full px-8 text-body-md transition-colors",
-                    isActive
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-primary hover:bg-surface-high",
-                  )}
-                >
-                  {filter.label}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
-
-      <p className="mt-6 text-center text-label-md text-muted-foreground">
-        Showing {visible.length} of {projects.length} projects.
-      </p>
+    <section className="project-filter container-page pb-section">
+      {/* The bar suspends on a prerender because it reads search params; the
+          fallback is the same bar defaulted to "all". The grid below sits
+          outside the boundary, so it is in the static HTML either way. */}
+      <Suspense fallback={<GalleryFilterBar counts={counts} />}>
+        <GalleryFilterBarLive counts={counts} />
+      </Suspense>
 
       <div className="mt-12 gap-gutter [column-count:1] md:[column-count:2] lg:[column-count:3]">
-        {visible.map((project, index) => (
+        {projects.map((project, index) => (
           <figure
             key={project.slug}
+            data-category={project.category}
             className="group relative mb-gutter break-inside-avoid overflow-hidden rounded-2xl border border-border bg-card card-lift"
           >
             <div className={cn("relative w-full", project.aspect)}>
