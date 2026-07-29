@@ -1,9 +1,14 @@
 import type { MetadataRoute } from "next";
-import { siteConfig } from "@/lib/site-config";
+import { siteUrl } from "@/lib/site-url";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/" },
-    sitemap: `${siteConfig.url}/sitemap.xml`,
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      // The Studio and the draft-mode handler are private surfaces, not pages.
+      disallow: ["/studio", "/api/"],
+    },
+    sitemap: `${siteUrl}/sitemap.xml`,
   };
 }

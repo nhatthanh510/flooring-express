@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+
 import {
   CaseStudyCta,
   CaseStudyDetails,
@@ -13,14 +14,24 @@ import {
   CaseStudySpecs,
   CaseStudyTestimonial,
 } from "@/components/projects/case-study-sections";
+import { sanityFetch } from "@/sanity/lib/live";
 import {
-  caseStudies,
-  getCaseStudy,
-  getNextCaseStudy,
-} from "@/lib/content/case-studies";
+  CASE_STUDY_QUERY,
+  CASE_STUDY_SLUGS_QUERY,
+  NEXT_CASE_STUDY_QUERY,
+} from "@/sanity/queries";
 
-export function generateStaticParams() {
-  return caseStudies.map((study) => ({ slug: study.slug }));
+/**
+ * `perspective: "published"` — build-time prerendering must never bake a draft
+ * into a static page, whatever the ambient draft-mode state happens to be.
+ */
+export async function generateStaticParams() {
+  const { data } = await sanityFetch({
+    query: CASE_STUDY_SLUGS_QUERY,
+    perspective: "published",
+    stega: false,
+  });
+  return (data ?? []).flatMap((study) => (study.slug ? [{ slug: study.slug }] : []));
 }
 
 export async function generateMetadata({
@@ -29,16 +40,21 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const study = getCaseStudy(slug);
+  const { data: study } = await sanityFetch({
+    query: CASE_STUDY_QUERY,
+    params: { slug },
+    stega: false,
+  });
   if (!study) return {};
+
   return {
-    title: study.metaTitle,
-    description: study.metaDescription,
+    title: study.seo?.metaTitle,
+    description: study.seo?.metaDescription,
     alternates: { canonical: `/gallery/${study.slug}` },
     openGraph: {
       type: "article",
-      title: study.metaTitle,
-      description: study.metaDescription,
+      title: study.seo?.metaTitle ?? undefined,
+      description: study.seo?.metaDescription ?? undefined,
     },
   };
 }
@@ -49,10 +65,18 @@ export default async function CaseStudyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const study = getCaseStudy(slug);
+  const { data: study } = await sanityFetch({
+    query: CASE_STUDY_QUERY,
+    params: { slug },
+  });
   if (!study) notFound();
 
-  const next = getNextCaseStudy(slug);
+  // The "next project" link wraps to the first study, which is what the old
+  // modulo-the-array helper did — now expressed against the `order` field.
+  const { data: next } = await sanityFetch({
+    query: NEXT_CASE_STUDY_QUERY,
+    params: { order: study.order ?? 0 },
+  });
 
   return (
     <>

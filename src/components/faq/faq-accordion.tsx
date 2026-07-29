@@ -4,7 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import type { Faq } from "@/lib/content/faqs";
+import type { HOME_FAQS_QUERY_RESULT } from "@/sanity/types";
 import { cn } from "@/lib/utils";
 
 type Variant = "card" | "divided";
@@ -20,7 +20,7 @@ export function FaqAccordion({
   variant = "card",
   className,
 }: {
-  items: readonly Faq[];
+  items: HOME_FAQS_QUERY_RESULT;
   /** Keeps item values unique when several accordions share a page */
   idPrefix: string;
   variant?: Variant;

@@ -1,14 +1,17 @@
 import { OgImage, ogSize } from "@/app/og";
+import { sanityFetch } from "@/sanity/lib/live";
+import { FAQ_PAGE_QUERY } from "@/sanity/queries";
 
 export const size = ogSize;
 export const contentType = "image/png";
 export const alt = "Frequently Asked Questions — Flooring Express Hobart";
 
-export default function Image() {
+export default async function Image() {
+  const { data } = await sanityFetch({ query: FAQ_PAGE_QUERY, stega: false });
+
   return OgImage({
-    title: "Frequently Asked Questions",
-    eyebrow: "Expert Guidance",
-    description:
-      "Answers on products, installation, warranties and ongoing care.",
+    title: data?.hero?.title ?? "",
+    eyebrow: data?.seo?.ogEyebrow ?? undefined,
+    description: data?.seo?.ogDescription ?? undefined,
   });
 }

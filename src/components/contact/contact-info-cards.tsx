@@ -1,6 +1,6 @@
 import { Clock, Mail, Phone, type LucideIcon } from "lucide-react";
 import { ServiceAreaMap } from "@/components/contact/service-area-map";
-import { siteConfig } from "@/lib/site-config";
+import type { SiteSettings } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 /**
@@ -32,15 +32,17 @@ function CardShell({
   );
 }
 
-export function ContactInfoCards() {
+export function ContactInfoCards({ settings }: { settings: SiteSettings }) {
+  const contact = settings.contact;
+
   return (
     <div className="flex flex-col gap-4">
       <CardShell icon={Phone} label="Call us">
         <a
-          href={siteConfig.contact.phoneHref}
+          href={contact?.phoneHref ?? undefined}
           className="-my-2 inline-block py-2 text-body-lg font-semibold text-primary transition-colors hover:text-secondary"
         >
-          {siteConfig.contact.phone}
+          {contact?.phone}
         </a>
         <p className="text-label-md text-muted-foreground">
           Mon&ndash;Fri, 8am&ndash;6pm
@@ -50,10 +52,10 @@ export function ContactInfoCards() {
       <CardShell icon={Mail} label="Email us">
         {/* break-words, not break-all — the latter split the address mid-word */}
         <a
-          href={`mailto:${siteConfig.contact.email}`}
+          href={`mailto:${contact?.email ?? ""}`}
           className="-my-2 inline-block break-words py-2 text-body-lg font-semibold text-primary transition-colors hover:text-secondary"
         >
-          {siteConfig.contact.email}
+          {contact?.email}
         </a>
         <p className="text-label-md text-muted-foreground">
           24/7 digital enquiries
@@ -62,7 +64,7 @@ export function ContactInfoCards() {
 
       <CardShell icon={Clock} label="Showroom hours">
         <dl className="flex flex-col gap-1.5">
-          {siteConfig.hours.map((entry) => (
+          {settings.hours?.map((entry) => (
             <div
               key={entry.days}
               className="flex items-baseline justify-between gap-4 text-body-md"
@@ -74,7 +76,7 @@ export function ContactInfoCards() {
               <dd
                 className={cn(
                   "whitespace-nowrap font-semibold text-primary",
-                  "closed" in entry && entry.closed && "text-destructive",
+                  entry.closed && "text-destructive",
                 )}
               >
                 {entry.time}
@@ -84,7 +86,7 @@ export function ContactInfoCards() {
         </dl>
       </CardShell>
 
-      <ServiceAreaMap />
+      <ServiceAreaMap settings={settings} />
     </div>
   );
 }

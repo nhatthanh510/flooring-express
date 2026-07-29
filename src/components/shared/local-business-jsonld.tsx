@@ -1,29 +1,41 @@
-import { services } from "@/lib/content/services";
-import { siteConfig } from "@/lib/site-config";
+import type { SiteSettings } from "@/lib/site";
+import type { SERVICES_QUERY_RESULT } from "@/sanity/types";
+import { PRODUCTION_URL } from "@/lib/site-url";
 
 /**
- * LocalBusiness structured data, built from site-config so the schema can never
- * drift from what the pages actually display.
+ * LocalBusiness structured data, built from the same documents the pages render
+ * so the schema can never drift from what a visitor actually sees.
+ *
+ * `url` is the production domain rather than the resolved site URL — a preview
+ * deployment must not claim to be the canonical business listing.
  */
-export function LocalBusinessJsonLd() {
+export function LocalBusinessJsonLd({
+  settings,
+  services,
+}: {
+  settings: SiteSettings;
+  services: SERVICES_QUERY_RESULT;
+}) {
+  const { contact } = settings;
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
-    name: siteConfig.legalName,
-    description: siteConfig.description,
-    url: siteConfig.productionUrl,
-    telephone: siteConfig.contact.phone,
-    email: siteConfig.contact.email,
+    name: settings.legalName,
+    description: settings.description,
+    url: PRODUCTION_URL,
+    telephone: contact?.phone,
+    email: contact?.email,
     address: {
       "@type": "PostalAddress",
-      streetAddress: siteConfig.contact.street,
-      addressLocality: siteConfig.contact.locality,
-      addressRegion: siteConfig.contact.region,
-      postalCode: siteConfig.contact.postcode,
-      addressCountry: siteConfig.contact.country,
+      streetAddress: contact?.street,
+      addressLocality: contact?.locality,
+      addressRegion: contact?.region,
+      postalCode: contact?.postcode,
+      addressCountry: contact?.country,
     },
-    openingHours: siteConfig.openingHoursSpec,
-    areaServed: siteConfig.serviceAreas.map((area) => ({
+    openingHours: settings.openingHoursSpec ?? [],
+    areaServed: (settings.serviceAreas ?? []).map((area) => ({
       "@type": "Place",
       name: area,
     })),

@@ -1,11 +1,18 @@
 import type { MetadataRoute } from "next";
-import { siteConfig } from "@/lib/site-config";
 
-export default function manifest(): MetadataRoute.Manifest {
+import { sanityFetch } from "@/sanity/lib/live";
+import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
+
+export default async function manifest(): Promise<MetadataRoute.Manifest> {
+  const { data: settings } = await sanityFetch({
+    query: SITE_SETTINGS_QUERY,
+    stega: false,
+  });
+
   return {
-    name: `${siteConfig.legalName} — ${siteConfig.tagline}`,
-    short_name: siteConfig.name,
-    description: siteConfig.description,
+    name: `${settings?.legalName ?? ""} — ${settings?.tagline ?? ""}`,
+    short_name: settings?.name ?? "",
+    description: settings?.description ?? "",
     start_url: "/",
     display: "standalone",
     background_color: "#f9f9f9",

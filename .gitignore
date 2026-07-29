@@ -42,3 +42,6 @@ next-env.d.ts
 
 # playwright output from `pnpm screenshots`
 /screenshots
+
+# sanity
+/schema.json

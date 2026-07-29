@@ -1,13 +1,16 @@
 import { Reveal } from "@/components/shared/reveal";
-import { aboutStats } from "@/lib/content/about";
+import { resolveIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
+import type { ABOUT_PAGE_QUERY_RESULT } from "@/sanity/types";
 
-export function StatsBento() {
+type AboutPage = NonNullable<ABOUT_PAGE_QUERY_RESULT>;
+
+export function StatsBento({ stats }: { stats: AboutPage["stats"] }) {
   return (
     <section className="container-page py-section">
       <ul className="grid gap-gutter md:grid-cols-3">
-        {aboutStats.map((stat, index) => {
-          const Icon = stat.icon;
+        {stats?.map((stat, index) => {
+          const Icon = resolveIcon(stat.icon);
           return (
             <li key={stat.title} className="h-full">
               <Reveal delay={index * 100} className="h-full">

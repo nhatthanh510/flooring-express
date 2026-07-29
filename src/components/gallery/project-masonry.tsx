@@ -1,11 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
-import {
-  galleryFilters,
-  galleryProjects,
-  type GalleryFilter,
-} from "@/lib/content/projects";
+import { SanityFillImage } from "@/components/shared/sanity-image";
+import { galleryFilters, type GalleryFilter } from "@/lib/flooring";
 import { cn } from "@/lib/utils";
+import type { GALLERY_PROJECTS_QUERY_RESULT } from "@/sanity/types";
 
 /**
  * Server-rendered: the URL is the only source of truth for the active filter
@@ -13,11 +10,17 @@ import { cn } from "@/lib/utils";
  * crawlers, makes filtered views shareable, supports Cmd/middle-click, and
  * needs no client JavaScript at all.
  */
-export function ProjectMasonry({ active }: { active: GalleryFilter }) {
+export function ProjectMasonry({
+  active,
+  projects,
+}: {
+  active: GalleryFilter;
+  projects: GALLERY_PROJECTS_QUERY_RESULT;
+}) {
   const visible =
     active === "all"
-      ? galleryProjects
-      : galleryProjects.filter((project) => project.category === active);
+      ? projects
+      : projects.filter((project) => project.category === active);
 
   return (
     <section className="container-page pb-section">
@@ -51,7 +54,7 @@ export function ProjectMasonry({ active }: { active: GalleryFilter }) {
       </nav>
 
       <p className="mt-6 text-center text-label-md text-muted-foreground">
-        Showing {visible.length} of {galleryProjects.length} projects.
+        Showing {visible.length} of {projects.length} projects.
       </p>
 
       <div className="mt-12 gap-gutter [column-count:1] md:[column-count:2] lg:[column-count:3]">
@@ -61,13 +64,11 @@ export function ProjectMasonry({ active }: { active: GalleryFilter }) {
             className="group relative mb-gutter break-inside-avoid overflow-hidden rounded-2xl border border-border bg-card card-lift"
           >
             <div className={cn("relative w-full", project.aspect)}>
-              <Image
-                src={project.image.src}
-                alt={project.image.alt}
-                fill
+              <SanityFillImage
+                image={project.image}
                 sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                 priority={index === 0}
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="transition-transform duration-500 group-hover:scale-105"
               />
               <div
                 aria-hidden="true"
