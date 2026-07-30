@@ -4,6 +4,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Desktop with room to breathe. The Stitch mockups are drawn at 2560px and set
+   a generous vertical scale that forces scrolling on 1366×768 laptops — so
+   pages meant to be grasped in one viewport (the /thank-you confirmation) use
+   the compact scale at plain `md:` and restore the mockup's proportions only
+   when the window is actually tall enough to hold them — the generous layout
+   measures ~1100px with the header, hence the 1000px line. */
+@custom-variant tall (@media (min-width: 48rem) and (min-height: 62.5rem));
+
 /* ---------------------------------------------------------------------------
    Timber & Slate design system — see DESIGN.md for the source of truth.
    shadcn semantic variables live in :root; brand-specific scales are declared

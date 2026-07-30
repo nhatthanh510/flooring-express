@@ -60,15 +60,15 @@ export default async function ThankYouPage() {
         className="pointer-events-none absolute right-1/4 top-20 hidden h-80 w-40 -rotate-12 rounded-lg bg-primary opacity-5 md:block"
       />
 
-      <div className="container-page relative mx-auto max-w-4xl py-16 text-center md:py-24">
-        <div className="mb-8 inline-flex size-20 items-center justify-center rounded-full bg-accent text-secondary md:size-24">
-          <CircleCheck className="size-10 md:size-12" aria-hidden="true" />
+      <div className="container-page relative mx-auto max-w-4xl py-10 text-center md:py-6 tall:py-12">
+        <div className="mb-3 inline-flex size-12 items-center justify-center rounded-full bg-accent text-secondary tall:mb-8 tall:size-24">
+          <CircleCheck className="size-6 tall:size-12" aria-hidden="true" />
         </div>
 
-        <h1 className="text-balance text-headline-lg-mobile text-primary md:text-display-lg">
+        <h1 className="text-balance text-headline-lg-mobile text-primary md:text-headline-lg tall:text-display-lg">
           {page?.heading ?? "Thank you — your request is in."}
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-pretty text-body-lg text-muted-foreground">
+        <p className="mx-auto mt-2 max-w-2xl text-pretty text-body-md text-muted-foreground md:mt-4 md:text-body-lg">
           {page?.description ??
             "We've received your details and will get back to you within 24 hours."}
         </p>
@@ -76,36 +76,36 @@ export default async function ThankYouPage() {
         {/* Phones get the divider photo from the mobile mockup; desktop goes
             without, per its mockup. */}
         {page?.image && (
-          <div className="relative mt-10 aspect-video w-full overflow-hidden rounded-xl border border-border shadow-sm md:hidden">
+          <div className="relative mt-6 aspect-[2/1] w-full overflow-hidden rounded-xl border border-border shadow-sm md:hidden">
             <SanityFillImage image={page.image} sizes="100vw" priority />
           </div>
         )}
 
         {steps.length > 0 && (
-          <div className="mt-12 md:mt-16">
+          <div className="mt-6 tall:mt-12">
             {page?.stepsHeading && (
               <h2 className="text-left text-label-md uppercase tracking-widest text-secondary md:text-center md:text-headline-md md:normal-case md:tracking-normal md:text-primary">
                 {page.stepsHeading}
               </h2>
             )}
-            <ol className="mt-6 flex flex-col gap-6 md:mt-8 md:grid md:grid-cols-3 md:gap-gutter">
+            <ol className="mt-5 flex flex-col gap-5 md:mt-4 md:grid md:grid-cols-3 md:gap-gutter">
               {steps.map((step, index) => (
                 <li
                   key={step.title ?? index}
-                  className="flex gap-4 text-left md:flex-col md:items-start md:rounded-xl md:border md:border-border md:bg-card md:p-8 md:shadow-sm"
+                  className="flex gap-4 text-left md:flex-col md:items-start md:rounded-xl md:border md:border-border md:bg-card md:p-4 md:shadow-sm tall:p-8"
                 >
                   {/* One number, two treatments: a bordered circle reading "1"
                       on phones, the ghost "01" numeral of the desktop cards. */}
                   <span
                     aria-hidden="true"
-                    className="flex size-8 shrink-0 items-center justify-center rounded-full border border-secondary text-sm font-bold text-secondary md:size-auto md:rounded-none md:border-0 md:font-display md:text-display-lg md:leading-none md:text-secondary/30"
+                    className="flex size-8 shrink-0 items-center justify-center rounded-full border border-secondary text-sm font-bold text-secondary md:size-auto md:rounded-none md:border-0 md:font-display md:text-headline-lg md:leading-none md:text-secondary/30 tall:text-display-lg"
                   >
                     <span className="md:hidden">{index + 1}</span>
                     <span className="hidden md:inline">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   </span>
-                  <span className="flex flex-col gap-1 md:mt-4 md:gap-3">
+                  <span className="flex flex-col gap-1 md:mt-2 md:gap-2 tall:mt-4">
                     <span className="text-label-md font-semibold text-primary md:text-headline-md">
                       {step.title}
                     </span>
@@ -119,7 +119,7 @@ export default async function ThankYouPage() {
           </div>
         )}
 
-        <div className="mt-12 flex flex-col items-stretch justify-center gap-4 md:mt-16 md:flex-row md:items-center md:gap-6">
+        <div className="mt-8 flex flex-col items-stretch justify-center gap-3 md:mt-6 md:flex-row md:items-center md:gap-6 tall:mt-12">
           {primary?.label && (
             <Button asChild size="xl" className="md:min-w-50">
               <Link href={primary.href ?? "/"}>{primary.label}</Link>
@@ -152,7 +152,7 @@ export default async function ThankYouPage() {
         </div>
 
         {page?.urgentText && contact?.phone && (
-          <div className="mt-12 hidden items-center gap-4 rounded-xl bg-surface-high/60 p-6 md:inline-flex">
+          <div className="mt-5 hidden items-center gap-4 rounded-xl bg-surface-high/60 px-6 py-3 md:inline-flex tall:mt-10 tall:py-4">
             <Phone className="size-5 text-secondary" aria-hidden="true" />
             <p className="text-body-md text-foreground">
               {page.urgentText}{" "}
