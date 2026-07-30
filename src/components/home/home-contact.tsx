@@ -55,6 +55,7 @@ export function HomeContact({
             idPrefix="home-quote"
             submitLabel="Submit Request"
             interests={["hybrid", "timber", "laminate"]}
+            showAddress={false}
             className="mt-8"
           />
         </div>

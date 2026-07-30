@@ -248,6 +248,20 @@ export const NOT_FOUND_PAGE_QUERY = defineQuery(`
   }
 `);
 
+/** Read by /thank-you, where the quote form lands after a successful send. */
+export const QUOTE_SUCCESS_PAGE_QUERY = defineQuery(`
+  *[_id == "quoteSuccessPage"][0]{
+    heading,
+    description,
+    image ${IMG},
+    stepsHeading,
+    steps[]{ title, description },
+    actions[] ${LINK},
+    urgentText,
+    seo ${SEO}
+  }
+`);
+
 export const ABOUT_PAGE_QUERY = defineQuery(`
   *[_id == "aboutPage"][0]{
     hero ${HERO},

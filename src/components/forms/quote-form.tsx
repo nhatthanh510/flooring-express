@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, CircleCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -73,6 +74,9 @@ type QuoteFormProps = {
   defaultFlooring?: (typeof flooringInterests)[number];
   /** Home shows a compact form; contact shows the enquiry-type selector */
   showEnquiryType?: boolean;
+  /** Home also drops the address input — it is optional in the schema, and the
+      compact form submits it as empty. */
+  showAddress?: boolean;
   className?: string;
 };
 
@@ -83,17 +87,11 @@ export function QuoteForm({
   defaultEnquiry = "quote",
   defaultFlooring = "hybrid",
   showEnquiryType = false,
+  showAddress = true,
   className,
 }: QuoteFormProps) {
-  const [submitted, setSubmitted] = useState(false);
+  const router = useRouter();
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const successRef = useRef<HTMLDivElement>(null);
-
-  // The success panel replaces the form, so move focus to it — otherwise focus
-  // falls back to <body> and screen-reader users lose their place.
-  useEffect(() => {
-    if (submitted) successRef.current?.focus();
-  }, [submitted]);
 
   const {
     register,
@@ -121,39 +119,14 @@ export function QuoteForm({
     setSubmitError(null);
     const result = await submitQuote(values);
     if (result.ok) {
-      setSubmitted(true);
+      // The confirmation is a real page (/thank-you) rather than an inline
+      // swap: it survives a refresh, can be linked from the notification
+      // email, and gives the visitor somewhere to go next.
       reset();
+      router.push("/thank-you");
     } else {
       setSubmitError(result.error);
     }
-  }
-
-  if (submitted) {
-    return (
-      <div
-        ref={successRef}
-        role="status"
-        aria-live="polite"
-        tabIndex={-1}
-        className={cn(
-          "flex flex-col items-start gap-4 rounded-2xl border border-border bg-card p-8 md:p-12",
-          className,
-        )}
-      >
-        <CircleCheck className="size-10 text-secondary" aria-hidden="true" />
-        <h3 className="text-headline-md text-primary">
-          Thanks — your request is in.
-        </h3>
-        <p className="text-body-md text-muted-foreground">
-          One of our Hobart flooring specialists will get back to you within 24
-          hours with a detailed estimate. If it’s urgent, give us a call and
-          we’ll bring samples to you.
-        </p>
-        <Button variant="outline" size="lg" onClick={() => setSubmitted(false)}>
-          Send another request
-        </Button>
-      </div>
-    );
   }
 
   return (
@@ -290,6 +263,7 @@ export function QuoteForm({
           <FieldError errors={[errors.flooring]} />
         </FieldSet>
 
+        {showAddress && (
         <Field data-invalid={errors.address ? true : undefined}>
           <FieldLabel htmlFor={`${idPrefix}-address`}>
             Project Address
@@ -308,6 +282,7 @@ export function QuoteForm({
           />
           <FieldError errors={[errors.address]} />
         </Field>
+        )}
 
         {/* An open message box, deliberately — anything the visitor wants to
             say, optional. Only the "/ Address" part of the old label moved out,

@@ -15,6 +15,56 @@
 export declare const internalGroqTypeReferenceTo: unique symbol;
 
 // Source: schema.json
+export type QuoteSuccessPage = {
+  _id: string;
+  _type: "quoteSuccessPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  heading?: string;
+  description?: string;
+  image?: ImageWithAlt;
+  stepsHeading?: string;
+  steps?: Array<{
+    title?: string;
+    description?: string;
+    _type: "successStep";
+    _key: string;
+  }>;
+  actions?: Array<
+    {
+      _key: string;
+    } & Link
+  >;
+  urgentText?: string;
+  seo?: Seo;
+};
+
+export type Seo = {
+  _type: "seo";
+  metaTitle?: string;
+  metaDescription?: string;
+  ogEyebrow?: string;
+  ogDescription?: string;
+};
+
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
+export type ImageWithAlt = {
+  _type: "imageWithAlt";
+  asset?: SanityImageAssetReference;
+  media?: unknown;
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  alt?: string;
+  decorative?: boolean;
+};
+
 export type NotFoundPage = {
   _id: string;
   _type: "notFoundPage";
@@ -57,31 +107,6 @@ export type NotFoundPage = {
     >;
   };
   seo?: Seo;
-};
-
-export type Seo = {
-  _type: "seo";
-  metaTitle?: string;
-  metaDescription?: string;
-  ogEyebrow?: string;
-  ogDescription?: string;
-};
-
-export type SanityImageAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-};
-
-export type ImageWithAlt = {
-  _type: "imageWithAlt";
-  asset?: SanityImageAssetReference;
-  media?: unknown;
-  hotspot?: SanityImageHotspot;
-  crop?: SanityImageCrop;
-  alt?: string;
-  decorative?: boolean;
 };
 
 export type ContactPage = {
@@ -817,10 +842,11 @@ export type Geopoint = {
 };
 
 export type AllSanitySchemaTypes =
-  | NotFoundPage
+  | QuoteSuccessPage
   | Seo
   | SanityImageAssetReference
   | ImageWithAlt
+  | NotFoundPage
   | ContactPage
   | CtaBanner
   | ClosingBand
@@ -2302,6 +2328,48 @@ export type NOT_FOUND_PAGE_QUERY_RESULT =
           } | null;
         } | null;
       } | null;
+      icon: null;
+      heading: string | null;
+      description: string | null;
+      actions: Array<{
+        icon: null;
+        label: string | null;
+        href: string | null;
+      }> | null;
+      helpPanel: null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
+    }
+  | {
+      image: {
+        alt: string | null;
+        decorative: boolean | null;
+        hotspot: {
+          x: number | null;
+          y: number | null;
+        } | null;
+        crop: {
+          top: number | null;
+          bottom: number | null;
+          left: number | null;
+          right: number | null;
+        } | null;
+        asset: {
+          _id: string;
+          url: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+      } | null;
       icon:
         | "badge-check"
         | "cleaning"
@@ -2355,6 +2423,168 @@ export type NOT_FOUND_PAGE_QUERY_RESULT =
           href: string | null;
         }> | null;
       } | null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
+    }
+  | null;
+
+// Source: src/sanity/queries.ts
+// Variable: QUOTE_SUCCESS_PAGE_QUERY
+// Query: *[_id == "quoteSuccessPage"][0]{    heading,    description,    image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }},    stepsHeading,    steps[]{ title, description },    actions[] { label, href },    urgentText,    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }  }
+export type QUOTE_SUCCESS_PAGE_QUERY_RESULT =
+  | {
+      heading: null;
+      description: null;
+      image: null;
+      stepsHeading: null;
+      steps: null;
+      actions: null;
+      urgentText: null;
+      seo: null;
+    }
+  | {
+      heading: null;
+      description: null;
+      image: null;
+      stepsHeading: null;
+      steps: null;
+      actions: null;
+      urgentText: null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
+    }
+  | {
+      heading: null;
+      description: null;
+      image: {
+        alt: string | null;
+        decorative: boolean | null;
+        hotspot: {
+          x: number | null;
+          y: number | null;
+        } | null;
+        crop: {
+          top: number | null;
+          bottom: number | null;
+          left: number | null;
+          right: number | null;
+        } | null;
+        asset: {
+          _id: string;
+          url: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+      } | null;
+      stepsHeading: null;
+      steps: null;
+      actions: null;
+      urgentText: null;
+      seo: null;
+    }
+  | {
+      heading: null;
+      description: string | null;
+      image: null;
+      stepsHeading: null;
+      steps: null;
+      actions: null;
+      urgentText: null;
+      seo: null;
+    }
+  | {
+      heading: string | null;
+      description: string | null;
+      image: {
+        alt: string | null;
+        decorative: boolean | null;
+        hotspot: {
+          x: number | null;
+          y: number | null;
+        } | null;
+        crop: {
+          top: number | null;
+          bottom: number | null;
+          left: number | null;
+          right: number | null;
+        } | null;
+        asset: {
+          _id: string;
+          url: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+      } | null;
+      stepsHeading: null;
+      steps: null;
+      actions: Array<{
+        label: string | null;
+        href: string | null;
+      }> | null;
+      urgentText: null;
+      seo: {
+        metaTitle: string | null;
+        metaDescription: string | null;
+        ogEyebrow: string | null;
+        ogDescription: string | null;
+      } | null;
+    }
+  | {
+      heading: string | null;
+      description: string | null;
+      image: {
+        alt: string | null;
+        decorative: boolean | null;
+        hotspot: {
+          x: number | null;
+          y: number | null;
+        } | null;
+        crop: {
+          top: number | null;
+          bottom: number | null;
+          left: number | null;
+          right: number | null;
+        } | null;
+        asset: {
+          _id: string;
+          url: string | null;
+          metadata: {
+            lqip: string | null;
+            dimensions: {
+              width: number | null;
+              height: number | null;
+            } | null;
+          } | null;
+        } | null;
+      } | null;
+      stepsHeading: string | null;
+      steps: Array<{
+        title: string | null;
+        description: string | null;
+      }> | null;
+      actions: Array<{
+        label: string | null;
+        href: string | null;
+      }> | null;
+      urgentText: string | null;
       seo: {
         metaTitle: string | null;
         metaDescription: string | null;
@@ -3040,6 +3270,7 @@ declare module "@sanity/client" {
     '\n  *[_id == "servicesPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    comparisonHeading { eyebrow, title, description },\n    processHeading { eyebrow, title, description },\n    processFootnote,\n    cta {\n  title,\n  description,\n  primary { label, href },\n  secondary { label, href },\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n},\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': SERVICES_PAGE_QUERY_RESULT;
     '\n  *[_id == "galleryPage"][0]{ hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n}, cta {\n  title,\n  description,\n  primary { label, href },\n  secondary { label, href },\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n}, seo { metaTitle, metaDescription, ogEyebrow, ogDescription } }\n': GALLERY_PAGE_QUERY_RESULT;
     '\n  *[_id == "notFoundPage"][0]{\n    image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    icon,\n    heading,\n    description,\n    actions[] { icon, label, href },\n    helpPanel{ title, links[] { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': NOT_FOUND_PAGE_QUERY_RESULT;
+    '\n  *[_id == "quoteSuccessPage"][0]{\n    heading,\n    description,\n    image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    stepsHeading,\n    steps[]{ title, description },\n    actions[] { label, href },\n    urgentText,\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': QUOTE_SUCCESS_PAGE_QUERY_RESULT;
     '\n  *[_id == "aboutPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    stats[]{ icon, title, description, inverted },\n    missionStory{ eyebrow, title, body, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}, action { label, href } },\n    craftCards[]{ title, description, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    specTable{ heading, description, rows[]{ type, durability, idealFor, warranty } },\n    cta {\n  title,\n  description,\n  primary { label, href },\n  secondary { label, href },\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n},\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': ABOUT_PAGE_QUERY_RESULT;
     '\n  *[_id == "faqPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    searchPlaceholder,\n    supportCard{ title, description, emailLabel },\n    closingBand { title, description, actions[] { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': FAQ_PAGE_QUERY_RESULT;
     '\n  *[_id == "contactPage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    closingBand { title, description, actions[] { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': CONTACT_PAGE_QUERY_RESULT;

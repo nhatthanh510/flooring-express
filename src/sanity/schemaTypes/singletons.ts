@@ -498,6 +498,98 @@ export const notFoundPage = defineType({
   preview: { prepare: () => ({ title: "Not found page" }) },
 });
 
+/**
+ * The page a visitor lands on after the quote form submits (/thank-you).
+ *
+ * Not built on `pageSingleton`: no pageHero, and a marketing ctaBanner under a
+ * confirmation is the wrong note. Like the 404, one content set serves both
+ * breakpoints — the mockups differ in treatment (bento step cards on desktop,
+ * a numbered list with a photo divider on mobile) but not in substance.
+ *
+ * The phone number is deliberately absent: the urgent-help strip and the
+ * mobile Call button read it from Site settings → contact, so it can never
+ * drift from the number in the header, footer and structured data.
+ */
+export const quoteSuccessPage = defineType({
+  name: "quoteSuccessPage",
+  title: "Quote success page",
+  type: "document",
+  groups: [
+    { name: "content", title: "Content", default: true },
+    { name: "seo", title: "Search & social" },
+  ],
+  fields: [
+    defineField({
+      name: "heading",
+      type: "string",
+      group: "content",
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: "description",
+      type: "text",
+      rows: 3,
+      group: "content",
+      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: "image",
+      title: "Divider photo",
+      type: "imageWithAlt",
+      description:
+        "Shown between the message and the steps on phones only — desktop goes without, per the design.",
+      group: "content",
+    }),
+    defineField({
+      name: "stepsHeading",
+      type: "string",
+      description: 'e.g. "What Happens Next"',
+      group: "content",
+    }),
+    defineField({
+      name: "steps",
+      type: "array",
+      of: [
+        defineArrayMember({
+          type: "object",
+          name: "successStep",
+          fields: [
+            defineField({ name: "title", type: "string", validation: (r) => r.required() }),
+            defineField({
+              name: "description",
+              type: "text",
+              rows: 2,
+              validation: (r) => r.required(),
+            }),
+          ],
+          preview: { select: { title: "title", subtitle: "description" } },
+        }),
+      ],
+      description: "Numbered automatically in order. Three fills the desktop grid exactly.",
+      group: "content",
+      validation: (r) => r.max(3),
+    }),
+    defineField({
+      name: "actions",
+      type: "array",
+      of: [defineArrayMember({ type: "link" })],
+      description:
+        "The first renders solid, the second outlined. On phones only the first shows — a Call button using the business phone takes the second slot.",
+      group: "content",
+      validation: (r) => r.max(2),
+    }),
+    defineField({
+      name: "urgentText",
+      type: "string",
+      description:
+        'Lead-in for the phone strip, e.g. "Need urgent help?" — the number itself comes from Site settings.',
+      group: "content",
+    }),
+    defineField({ name: "seo", type: "seo", group: "seo" }),
+  ],
+  preview: { prepare: () => ({ title: "Quote success page" }) },
+});
+
 export const singletonTypes = [
   siteSettings,
   homePage,
@@ -507,6 +599,7 @@ export const singletonTypes = [
   faqPage,
   contactPage,
   notFoundPage,
+  quoteSuccessPage,
 ];
 
 /** Used by structure.ts and the migration script — one document each, fixed id. */
