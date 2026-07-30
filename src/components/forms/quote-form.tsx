@@ -37,6 +37,30 @@ const interestLabels: Record<(typeof flooringInterests)[number], string> = {
 
 const inputClass = "h-12 rounded-lg text-body-md";
 
+/**
+ * Which fields are required is a lead-quality decision, not a validation one:
+ * name/email to answer at all, and phone because the owner's notification
+ * email leads with "Call client now". Address and message are optional — an
+ * early-stage enquirer may not want to hand over an address yet, and the
+ * owner can always ask for it on the phone.
+ *
+ * The asterisk is aria-hidden: the inputs carry `aria-required`, so screen
+ * readers hear "required" instead of "star". The enquiry/flooring toggles
+ * always hold a selection and cannot be emptied, so they get no marker.
+ *
+ * `-ml-1`: FieldLabel lays its children out with `flex gap-2`, so without the
+ * pull-back the marker floats a full 8px from its label.
+ */
+const Req = () => (
+  <span aria-hidden="true" className="-ml-1 text-destructive">
+    *
+  </span>
+);
+
+const Optional = () => (
+  <span className="-ml-1 font-normal text-muted-foreground">(optional)</span>
+);
+
 type QuoteFormProps = {
   /** Distinguishes the two instances so field ids stay unique on the same page */
   idPrefix?: string;
@@ -85,6 +109,7 @@ export function QuoteForm({
       phone: "",
       enquiry: defaultEnquiry,
       flooring: defaultFlooring,
+      address: "",
       message: "",
     },
   });
@@ -174,11 +199,15 @@ export function QuoteForm({
 
         <div className="grid gap-5 sm:grid-cols-2">
           <Field data-invalid={errors.name ? true : undefined}>
-            <FieldLabel htmlFor={`${idPrefix}-name`}>Full Name</FieldLabel>
+            <FieldLabel htmlFor={`${idPrefix}-name`}>
+              Full Name
+              <Req />
+            </FieldLabel>
             <Input
               id={`${idPrefix}-name`}
               autoComplete="name"
               placeholder="John Doe"
+              aria-required
               aria-invalid={errors.name ? true : undefined}
               className={inputClass}
               {...register("name")}
@@ -187,13 +216,17 @@ export function QuoteForm({
           </Field>
 
           <Field data-invalid={errors.email ? true : undefined}>
-            <FieldLabel htmlFor={`${idPrefix}-email`}>Email Address</FieldLabel>
+            <FieldLabel htmlFor={`${idPrefix}-email`}>
+              Email Address
+              <Req />
+            </FieldLabel>
             <Input
               id={`${idPrefix}-email`}
               type="email"
               autoComplete="email"
               spellCheck={false}
               placeholder="john@example.com"
+              aria-required
               aria-invalid={errors.email ? true : undefined}
               className={inputClass}
               {...register("email")}
@@ -203,14 +236,18 @@ export function QuoteForm({
         </div>
 
         <Field data-invalid={errors.phone ? true : undefined}>
-          <FieldLabel htmlFor={`${idPrefix}-phone`}>Phone Number</FieldLabel>
+          <FieldLabel htmlFor={`${idPrefix}-phone`}>
+            Phone Number
+            <Req />
+          </FieldLabel>
           <Input
             id={`${idPrefix}-phone`}
             type="tel"
             inputMode="tel"
             autoComplete="tel"
             placeholder="0400 000 000"
-            aria-invalid={errors.phone ? true : undefined}
+            aria-required
+              aria-invalid={errors.phone ? true : undefined}
             className={inputClass}
             {...register("phone")}
           />
@@ -253,9 +290,32 @@ export function QuoteForm({
           <FieldError errors={[errors.flooring]} />
         </FieldSet>
 
+        <Field data-invalid={errors.address ? true : undefined}>
+          <FieldLabel htmlFor={`${idPrefix}-address`}>
+            Project Address
+            <Optional />
+          </FieldLabel>
+          <Input
+            id={`${idPrefix}-address`}
+            // `street-address` rather than `address-line1`: this is a single
+            // free-text field, so the browser should offer the whole address.
+            autoComplete="street-address"
+            placeholder="123 Sandy Bay Rd, Hobart TAS"
+            aria-required
+              aria-invalid={errors.address ? true : undefined}
+            className={inputClass}
+            {...register("address")}
+          />
+          <FieldError errors={[errors.address]} />
+        </Field>
+
+        {/* An open message box, deliberately — anything the visitor wants to
+            say, optional. Only the "/ Address" part of the old label moved out,
+            into the dedicated field above. */}
         <Field data-invalid={errors.message ? true : undefined}>
           <FieldLabel htmlFor={`${idPrefix}-message`}>
-            Message (Project Size / Address)
+            Message
+            <Optional />
           </FieldLabel>
           <Textarea
             id={`${idPrefix}-message`}

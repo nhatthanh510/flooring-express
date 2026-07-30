@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 
-import { enquiryCopy, quoteSchema } from "@/lib/schemas/quote";
+import { quoteNotification } from "@/lib/emails/quote-notification";
+import { quoteSchema } from "@/lib/schemas/quote";
 import { sanityFetch } from "@/sanity/lib/live";
 import { SITE_SETTINGS_QUERY } from "@/sanity/queries";
 
@@ -75,7 +76,10 @@ export async function POST(request: Request) {
     );
   }
 
-  const label = enquiryCopy[values.enquiry].label;
+  const { subject, html, text } = quoteNotification({
+    values,
+    businessName: settings?.name ?? "Flooring Express",
+  });
 
   try {
     const { error } = await new Resend(apiKey).emails.send({
@@ -84,18 +88,11 @@ export async function POST(request: Request) {
       // So hitting reply in the inbox answers the customer directly rather than
       // the no-reply sending address.
       replyTo: values.email,
-      subject: `${label}: ${values.name} — ${values.flooring} flooring`,
-      text: [
-        `Enquiry type: ${label}`,
-        `Flooring interest: ${values.flooring}`,
-        "",
-        `Name:  ${values.name}`,
-        `Email: ${values.email}`,
-        `Phone: ${values.phone}`,
-        "",
-        "Message:",
-        values.message?.trim() || "(none)",
-      ].join("\n"),
+      subject,
+      html,
+      // Sent alongside the HTML, not instead of it: clients that refuse HTML
+      // still get the whole enquiry rather than an empty message.
+      text,
     });
 
     if (error) {

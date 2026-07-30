@@ -95,6 +95,15 @@ export const quoteSchema = z.object({
   flooring: z.enum(flooringInterests, {
     message: "Choose the flooring you're interested in.",
   }),
+  // Optional, but not junk: an empty field is fine, a typed address has to be
+  // at least plausible. The owner can always ask on the phone.
+  address: z
+    .string()
+    .trim()
+    .min(5, "That address looks too short — or leave it empty.")
+    .max(200, "Please shorten the address.")
+    .optional()
+    .or(z.literal("")),
   message: z
     .string()
     .trim()
