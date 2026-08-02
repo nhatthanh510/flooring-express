@@ -2,9 +2,14 @@
 
 import { useEffect } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { imageProps, type SanityImage } from "@/sanity/lib/image";
 
@@ -55,12 +60,26 @@ export function GalleryLightbox({
   return (
     <Dialog open={open} onOpenChange={(next) => !next && onChange(null)}>
       <DialogContent
-        showCloseButton
-        className="max-w-none border-0 bg-transparent p-0 shadow-none sm:max-w-[min(92vw,1400px)]"
+        // Matches the gallery's video viewer — see the note there on why the
+        // default scrim and close button are both wrong for a media lightbox.
+        showCloseButton={false}
+        overlayClassName="bg-black/90 supports-backdrop-filter:backdrop-blur-sm"
+        className="max-w-none border-0 bg-transparent p-0 shadow-none ring-0 sm:max-w-[min(92vw,1400px)]"
       >
         <DialogTitle className="sr-only">
           {current?.alt || `Project photo ${(index ?? 0) + 1} of ${count}`}
         </DialogTitle>
+
+        <DialogClose asChild>
+          <Button
+            variant="ghost"
+            size="icon-lg"
+            aria-label="Close photo"
+            className="fixed right-4 top-4 z-50 size-12 rounded-full bg-white/10 text-white hover:bg-white/25 hover:text-white"
+          >
+            <X className="size-6" />
+          </Button>
+        </DialogClose>
 
         <div className="relative flex items-center justify-center">
           {props && (

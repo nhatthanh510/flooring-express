@@ -560,6 +560,7 @@ export type CaseStudy = {
       } & IconCard
     >;
   };
+  video?: ProjectVideo;
   gallery?: {
     heading?: string;
     images?: Array<
@@ -582,6 +583,19 @@ export type CaseStudy = {
   };
   seo?: Seo;
   order?: number;
+};
+
+export type ProjectVideo = {
+  _type: "projectVideo";
+  heading?: string;
+  description?: string;
+  url?: string;
+  file?: {
+    asset?: SanityFileAssetReference;
+    media?: unknown;
+    _type: "file";
+  };
+  poster?: ImageWithAlt;
 };
 
 export type Slug = {
@@ -869,6 +883,7 @@ export type AllSanitySchemaTypes =
   | CaseStudyReference
   | GalleryProject
   | CaseStudy
+  | ProjectVideo
   | Slug
   | FlooringService
   | SocialLink
@@ -1187,7 +1202,7 @@ export type CASE_STUDY_SLUGS_QUERY_RESULT = Array<{
 
 // Source: src/sanity/queries.ts
 // Variable: CASE_STUDY_QUERY
-// Query: *[_type == "caseStudy" && slug.current == $slug][0]{    "slug": slug.current,    "category": category->slug,    eyebrow,    title,    shortTitle,    summary,    order,    hero {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }},    meta[]{ label, value },    challenge{ heading, body, image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }} },    solution{ heading, body, image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }}, stats[]{ value, label } },    features{ heading, description, items[] { icon, title, description } },    specs{ heading, description, rows[]{ attribute, value } },    details{ heading, rows[]{ label, value } },    roadmap{ heading, description, steps[] { icon, title, description } },    gallery{ heading, images[] {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }} },    testimonial{ quote, name, role, image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }} },    cta{ heading, description, primary { label, href }, secondary { label, href } },    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }  }
+// Query: *[_type == "caseStudy" && slug.current == $slug][0]{    "slug": slug.current,    "category": category->slug,    eyebrow,    title,    shortTitle,    summary,    order,    hero {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }},    meta[]{ label, value },    challenge{ heading, body, image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }} },    solution{ heading, body, image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }}, stats[]{ value, label } },    features{ heading, description, items[] { icon, title, description } },    specs{ heading, description, rows[]{ attribute, value } },    details{ heading, rows[]{ label, value } },    roadmap{ heading, description, steps[] { icon, title, description } },    video{      heading,      description,      url,      file{ asset->{ url, mimeType } },      poster {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }}    },    gallery{ heading, images[] {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }} },    testimonial{ quote, name, role, image {  alt,  decorative,  hotspot { x, y },  crop { top, bottom, left, right },  asset->{    _id,    url,    metadata { lqip, dimensions { width, height } }  }} },    cta{ heading, description, primary { label, href }, secondary { label, href } },    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }  }
 export type CASE_STUDY_QUERY_RESULT = {
   slug: string | null;
   category: "hybrid" | "laminate" | "timber" | null;
@@ -1357,6 +1372,42 @@ export type CASE_STUDY_QUERY_RESULT = {
       title: string | null;
       description: string | null;
     }> | null;
+  } | null;
+  video: {
+    heading: string | null;
+    description: string | null;
+    url: string | null;
+    file: {
+      asset: {
+        url: string | null;
+        mimeType: string | null;
+      } | null;
+    } | null;
+    poster: {
+      alt: string | null;
+      decorative: boolean | null;
+      hotspot: {
+        x: number | null;
+        y: number | null;
+      } | null;
+      crop: {
+        top: number | null;
+        bottom: number | null;
+        left: number | null;
+        right: number | null;
+      } | null;
+      asset: {
+        _id: string;
+        url: string | null;
+        metadata: {
+          lqip: string | null;
+          dimensions: {
+            width: number | null;
+            height: number | null;
+          } | null;
+        } | null;
+      } | null;
+    } | null;
   } | null;
   gallery: {
     heading: string | null;
@@ -3263,7 +3314,7 @@ declare module "@sanity/client" {
     '\n  *[_type == "faq" && defined(group)] | order(order asc){ question, answer }\n': ALL_FAQS_QUERY_RESULT;
     '\n  *[_type == "galleryProject"] | order(order asc){\n    "slug": slug.current,\n    title,\n    subtitle,\n    "category": category->slug,\n    sector,\n    aspect,\n    image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    video{ asset->{ url, mimeType } },\n    "caseStudy": caseStudy->slug.current\n  }\n': GALLERY_PROJECTS_QUERY_RESULT;
     '\n  *[_type == "caseStudy" && defined(slug.current)]{ "slug": slug.current }\n': CASE_STUDY_SLUGS_QUERY_RESULT;
-    '\n  *[_type == "caseStudy" && slug.current == $slug][0]{\n    "slug": slug.current,\n    "category": category->slug,\n    eyebrow,\n    title,\n    shortTitle,\n    summary,\n    order,\n    hero {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    meta[]{ label, value },\n    challenge{ heading, body, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    solution{ heading, body, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}, stats[]{ value, label } },\n    features{ heading, description, items[] { icon, title, description } },\n    specs{ heading, description, rows[]{ attribute, value } },\n    details{ heading, rows[]{ label, value } },\n    roadmap{ heading, description, steps[] { icon, title, description } },\n    gallery{ heading, images[] {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    testimonial{ quote, name, role, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    cta{ heading, description, primary { label, href }, secondary { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': CASE_STUDY_QUERY_RESULT;
+    '\n  *[_type == "caseStudy" && slug.current == $slug][0]{\n    "slug": slug.current,\n    "category": category->slug,\n    eyebrow,\n    title,\n    shortTitle,\n    summary,\n    order,\n    hero {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n    meta[]{ label, value },\n    challenge{ heading, body, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    solution{ heading, body, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}, stats[]{ value, label } },\n    features{ heading, description, items[] { icon, title, description } },\n    specs{ heading, description, rows[]{ attribute, value } },\n    details{ heading, rows[]{ label, value } },\n    roadmap{ heading, description, steps[] { icon, title, description } },\n    video{\n      heading,\n      description,\n      url,\n      file{ asset->{ url, mimeType } },\n      poster {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n    },\n    gallery{ heading, images[] {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    testimonial{ quote, name, role, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n} },\n    cta{ heading, description, primary { label, href }, secondary { label, href } },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': CASE_STUDY_QUERY_RESULT;
     '\n  coalesce(\n    *[_type == "caseStudy" && order > $order] | order(order asc)[0],\n    *[_type == "caseStudy"] | order(order asc)[0]\n  ){\n    "slug": slug.current,\n    shortTitle,\n    eyebrow,\n    hero {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n  }\n': NEXT_CASE_STUDY_QUERY_RESULT;
     '\n  *[_type == "caseStudy" && slug.current == $slug][0]{ title, eyebrow, summary }\n': CASE_STUDY_OG_QUERY_RESULT;
     '\n  *[_id == "homePage"][0]{\n    hero {\n  eyebrow,\n  title,\n  description,\n  image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n  actions[] { label, href }\n},\n    servicesHeading { eyebrow, title, description },\n    qualityBand{\n      title,\n      description,\n      image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n},\n      statLabel,\n      points[] { icon, title, description }\n    },\n    galleryHeading{ eyebrow, title, link { label, href } },\n    bentoTiles[]{\n      span,\n      "project": project->{\n        title,\n        subtitle,\n        "slug": slug.current,\n        "category": category->slug,\n        "caseStudy": caseStudy->slug.current,\n        image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n      }\n    },\n    faqSection{ heading { eyebrow, title, description }, image {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}, link { label, href } },\n    contactSection{\n      formTitle,\n      formDescription,\n      title,\n      description,\n      channelLabels,\n      mapImage {\n  alt,\n  decorative,\n  hotspot { x, y },\n  crop { top, bottom, left, right },\n  asset->{\n    _id,\n    url,\n    metadata { lqip, dimensions { width, height } }\n  }\n}\n    },\n    seo { metaTitle, metaDescription, ogEyebrow, ogDescription }\n  }\n': HOME_PAGE_QUERY_RESULT;

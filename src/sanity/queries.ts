@@ -149,6 +149,13 @@ export const CASE_STUDY_QUERY = defineQuery(`
     specs{ heading, description, rows[]{ attribute, value } },
     details{ heading, rows[]{ label, value } },
     roadmap{ heading, description, steps[] ${ICON_CARD} },
+    video{
+      heading,
+      description,
+      url,
+      file{ asset->{ url, mimeType } },
+      poster ${IMG}
+    },
     gallery{ heading, images[] ${IMG} },
     testimonial{ quote, name, role, image ${IMG} },
     cta{ heading, description, primary ${LINK}, secondary ${LINK} },

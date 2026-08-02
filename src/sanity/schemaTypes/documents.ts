@@ -324,6 +324,14 @@ export const caseStudy = defineType({
       ],
     }),
     defineField({
+      name: "video",
+      title: "Project video",
+      type: "projectVideo",
+      description:
+        "Sits after the story and before the photo gallery. The gallery tile's short loop is a different thing — that one is silent, autoplaying and decorative; this is a video someone chooses to watch.",
+      group: "blocks",
+    }),
+    defineField({
       name: "gallery",
       type: "object",
       group: "blocks",

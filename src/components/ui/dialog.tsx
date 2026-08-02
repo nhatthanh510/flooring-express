@@ -51,13 +51,20 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  overlayClassName,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
+  /**
+   * Overrides the scrim. The default `bg-black/10` suits a confirm dialog,
+   * where the page behind should stay legible; a media viewer needs the
+   * opposite, and the overlay is otherwise unreachable from a caller.
+   */
+  overlayClassName?: string
 }) {
   return (
     <DialogPortal>
-      <DialogOverlay />
+      <DialogOverlay className={overlayClassName} />
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(

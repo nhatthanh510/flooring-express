@@ -14,6 +14,7 @@ import {
   CaseStudySpecs,
   CaseStudyTestimonial,
 } from "@/components/projects/case-study-sections";
+import { CaseStudyVideo } from "@/components/projects/case-study-video";
 import { sanityFetch } from "@/sanity/lib/live";
 import {
   CASE_STUDY_QUERY,
@@ -88,6 +89,7 @@ export default async function CaseStudyPage({
       <CaseStudyFeatures features={study.features} />
       <CaseStudySpecs specs={study.specs} />
       <CaseStudyDetails details={study.details} />
+      <CaseStudyVideo video={study.video} fallbackPoster={study.hero} />
       <CaseStudyGallery gallery={study.gallery} />
       <CaseStudyRoadmap roadmap={study.roadmap} />
       <CaseStudyTestimonial testimonial={study.testimonial} />

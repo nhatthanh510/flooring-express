@@ -34,9 +34,10 @@ export function ProjectVideo({
     if (!video) return;
 
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let visible = false;
 
     const sync = () => {
-      if (motion.matches) {
+      if (motion.matches || !visible) {
         video.pause();
         return;
       }
@@ -45,9 +46,29 @@ export function ProjectVideo({
       void video.play().catch(() => {});
     };
 
-    sync();
+    /**
+     * Nothing is fetched until the tile is near the viewport.
+     *
+     * `preload="none"` keeps the element from touching the network on load, and
+     * the first `play()` is what starts the download — so a gallery of twenty
+     * projects costs one request per clip the visitor actually scrolls to,
+     * rather than twenty on first paint. Clips also pause on the way out, which
+     * matters on a long grid where several would otherwise loop off-screen.
+     */
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+        sync();
+      },
+      { rootMargin: "200px" },
+    );
+    observer.observe(video);
+
     motion.addEventListener("change", sync);
-    return () => motion.removeEventListener("change", sync);
+    return () => {
+      observer.disconnect();
+      motion.removeEventListener("change", sync);
+    };
   }, []);
 
   return (
@@ -57,7 +78,7 @@ export function ProjectVideo({
       muted
       loop
       playsInline
-      preload="metadata"
+      preload="none"
       // Decorative: the tile's heading and the photo's alt text already carry
       // the meaning, and the clip has no audio or narrative of its own.
       aria-hidden="true"

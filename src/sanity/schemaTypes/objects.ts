@@ -1,6 +1,7 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 import { iconKeys } from "@/lib/icons";
+import { parseVideoUrl, videoProviderLabels } from "@/lib/video";
 import {
   fileSizeWarning,
   imageQualityError,
@@ -381,6 +382,81 @@ export const socialLink = defineType({
   preview: { select: { title: "label", subtitle: "href" } },
 });
 
+/**
+ * A watchable project video on a case study page.
+ *
+ * Two sources, because they answer different problems. A hosted link (YouTube,
+ * Vimeo) costs the site nothing — the provider pays for the bandwidth and the
+ * adaptive encoding — and is right for anything longer than a few seconds. An
+ * uploaded file keeps the video inside Sanity with no third party involved,
+ * which suits a short clip where an embed's player chrome would be heavier than
+ * the footage. Exactly one, enforced below: two sources and the page would have
+ * to guess which one the editor meant.
+ *
+ * Either way the player is a *facade* on the front end — the poster image and a
+ * play button, with nothing loaded from the provider until someone clicks. A
+ * page with an eagerly-embedded YouTube iframe pays roughly a megabyte of
+ * player JavaScript whether or not the video is ever watched.
+ */
+export const projectVideo = defineType({
+  name: "projectVideo",
+  title: "Project video",
+  type: "object",
+  fields: [
+    defineField({
+      name: "heading",
+      type: "string",
+      description: 'e.g. "Watch the installation"',
+    }),
+    defineField({ name: "description", type: "text", rows: 2 }),
+    defineField({
+      name: "url",
+      title: "Video link",
+      type: "string",
+      description: `Paste a ${videoProviderLabels.join(" or ")} link. Best for anything longer than a few seconds — the video is served by them, so it costs this site no bandwidth and adapts to the visitor's connection.`,
+      validation: (rule) =>
+        rule.custom((value?: string) => {
+          if (!value) return true;
+          return (
+            parseVideoUrl(value) !== null ||
+            `Not a ${videoProviderLabels.join(" or ")} link this site can play. Copy the address from the browser bar on the video's own page.`
+          );
+        }),
+    }),
+    defineField({
+      name: "file",
+      title: "Or upload a file",
+      type: "file",
+      options: { accept: "video/mp4,video/webm" },
+      description:
+        "Only for short clips. This one is served by this site, so keep it under ~20 MB — a large upload is slow for every visitor who presses play. MP4 (H.264) plays everywhere; WebM is smaller but not supported on older Safari.",
+    }),
+    defineField({
+      name: "poster",
+      title: "Cover image",
+      type: "imageWithAlt",
+      description:
+        "What visitors see before they press play. Leave empty and the project's hero photo is used instead.",
+    }),
+  ],
+  validation: (rule) =>
+    rule.custom((value?: { url?: string; file?: unknown }) => {
+      if (!value) return true;
+      // A bare heading with no video is the half-filled state, not a section.
+      if (!value.url && !value.file) {
+        return "Add a video link or upload a file, or clear this section entirely.";
+      }
+      if (value.url && value.file) {
+        return "Use a link or an upload, not both — clear whichever you do not want.";
+      }
+      return true;
+    }),
+  preview: {
+    select: { title: "heading", media: "poster" },
+    prepare: ({ title, media }) => ({ title: title || "Project video", media }),
+  },
+});
+
 export const objectTypes = [
   imageWithAlt,
   link,
@@ -397,4 +473,5 @@ export const objectTypes = [
   openingHoursRow,
   footerColumn,
   socialLink,
+  projectVideo,
 ];
