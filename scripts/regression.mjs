@@ -34,12 +34,19 @@ ok(!(await page.getByText("View Case Study").count()), "no leftover 'View Case S
 // --- 3. Gallery filter deep links --------------------------------------------
 for (const [cat, n] of [["hybrid", 2], ["timber", 2], ["laminate", 2]]) {
   await page.goto(`${B}/gallery?category=${cat}`, { waitUntil: "networkidle" });
-  const count = await page.locator("figure").count();
-  ok(count === n, `filter ?category=${cat} shows ${count} (expected ${n})`);
+  // All six figures stay in the DOM so crawlers see every project; the active
+  // filter hides non-matches with CSS. Visibility is the contract, not count.
+  const visible = await page.locator("figure:visible").count();
+  const inDom = await page.locator("figure").count();
+  ok(visible === n, `filter ?category=${cat} shows ${visible} visible (expected ${n})`);
+  ok(inDom === 6, `filter ?category=${cat} keeps all ${inDom}/6 in the DOM for crawlers`);
 }
 
 // --- 4. Quote form: validation + success --------------------------------------
 await page.goto(B + "/contact", { waitUntil: "networkidle" });
+await page.route("**/api/quote", (r) =>
+  r.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }),
+);
 await page.getByRole("button", { name: /Send Quote Request/i }).click();
 await page.waitForTimeout(400);
 ok(await page.getByText(/Please enter your full name/i).count() > 0, "empty submit shows inline errors");
@@ -47,8 +54,13 @@ await page.locator("#contact-quote-name").fill("Jane Smith");
 await page.locator("#contact-quote-email").fill("jane@example.com");
 await page.locator("#contact-quote-phone").fill("0400 111 222");
 await page.getByRole("button", { name: /Send Quote Request/i }).click();
-await page.waitForTimeout(1800);
-ok(await page.getByText(/your request is in/i).count() > 0, "valid submit shows success panel");
+// Delivery is stubbed above: the suite must pass without Resend credentials
+// and must never send real mail. What it verifies is ours — validation, the
+// payload reaching the API, and the redirect to the confirmation page.
+await page.waitForURL("**/thank-you", { timeout: 10000 }).catch(() => {});
+ok(page.url().includes("/thank-you"), `valid submit lands on /thank-you (${page.url()})`);
+await page.unroute("**/api/quote");
+
 
 // --- 5. Plank comparison toggle ------------------------------------------------
 await page.goto(B + "/services", { waitUntil: "networkidle" });

@@ -1,6 +1,12 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 import { iconKeys } from "@/lib/icons";
+import {
+  fileSizeWarning,
+  imageQualityError,
+  imageQualityWarning,
+  parseImageRef,
+} from "@/sanity/lib/image-quality";
 
 const iconList = iconKeys.map((value) => ({ value, title: value }));
 
@@ -16,7 +22,36 @@ export const imageWithAlt = defineType({
   name: "imageWithAlt",
   title: "Image",
   type: "image",
-  options: { hotspot: true },
+  description:
+    "Upload the original photo — ideally 1400px wide or more, as JPG or WebP. Small or heavily compressed images look sharp here in the Studio but soft on a big screen.",
+  options: {
+    hotspot: true,
+    // Keeps the file picker to photo formats; Sanity converts HEIC on upload.
+    accept: "image/jpeg,image/png,image/webp,image/avif,image/heic",
+  },
+  validation: (rule) => [
+    // Dimensions and format are read off the asset _ref (image-<hash>-WxH-fmt),
+    // so these run instantly with no API call.
+    rule.custom((value?: { asset?: { _ref?: string } }) => {
+      const info = parseImageRef(value?.asset?._ref);
+      if (!info) return true;
+      return imageQualityError(info) ?? true;
+    }),
+    rule.warning().custom((value?: { asset?: { _ref?: string } }) => {
+      const info = parseImageRef(value?.asset?._ref);
+      if (!info) return true;
+      return imageQualityWarning(info) ?? true;
+    }),
+    // Size is not in the _ref, so this one asks the API for the asset document.
+    rule.warning().custom(async (value: { asset?: { _ref?: string } } | undefined, context) => {
+      const ref = value?.asset?._ref;
+      if (!ref) return true;
+      const size = await context
+        .getClient({ apiVersion: "2026-07-29" })
+        .fetch<number | null>(`*[_id == $id][0].size`, { id: ref });
+      return fileSizeWarning(size) ?? true;
+    }),
+  ],
   fields: [
     defineField({
       name: "alt",
