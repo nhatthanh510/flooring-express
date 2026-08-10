@@ -185,13 +185,6 @@ const galleryProjectBase = defineType({
       description:
         "A short, silent clip that plays on a loop in place of the photo. The photo above is still required: it is the poster frame, what search engines index, and what shows while the video loads or if it fails. Keep it under ~10 MB and a few seconds long: it downloads on every visit to the gallery. MP4 (H.264) plays everywhere; WebM is smaller but not supported on older Safari.",
     }),
-    defineField({
-      name: "caseStudy",
-      type: "reference",
-      to: [{ type: "caseStudy" }],
-      description: "Legacy link, superseded by the Detail page tab.",
-      hidden: true,
-    }),
     orderField,
   ],
   orderings: [{ name: "order", title: "Sort order", by: [{ field: "order", direction: "asc" }] }],
@@ -213,7 +206,13 @@ const galleryProjectBase = defineType({
  * the only one with a roadmap. The rendering components already handle every
  * block being absent, so optionality here is load-bearing, not laziness.
  */
-export const caseStudy = defineType({
+/**
+ * NOT a registered document type any more — the standalone case study was
+ * folded into `galleryProject` (see below), and the finalize script deleted
+ * every document of this type. The definition survives purely as the source
+ * of the detail-page field definitions that `galleryProject` maps over.
+ */
+const caseStudy = defineType({
   name: "caseStudy",
   title: "Case study",
   type: "document",
@@ -539,46 +538,9 @@ export const galleryProject = {
   ],
 };
 
-/**
- * Demo reference documents: the same shape as the real types, under their own
- * `_type`. That is the whole hiding mechanism — every site query selects
- * `_type == "galleryProject"` / `"caseStudy"`, so these can never render
- * publicly, on any deployed version, published or not. They exist purely as
- * fully-worked examples in the Studio.
- */
-const demoOverride = <T extends { fields: Array<{ name: string }> }>(
-  definition: T,
-  name: string,
-  title: string,
-) => ({
-  ...definition,
-  name,
-  title,
-  fields: definition.fields.map((field) =>
-    // The demo project's case-study link points at the demo case study type.
-    field.name === "caseStudy"
-      ? { ...field, to: [{ type: "demoCaseStudy" }] }
-      : field,
-  ),
-});
-
-export const demoGalleryProject = demoOverride(
-  galleryProject,
-  "demoGalleryProject",
-  "Demo gallery example",
-);
-export const demoCaseStudy = demoOverride(
-  caseStudy,
-  "demoCaseStudy",
-  "Demo case study example",
-);
-
 export const documentTypes = [
   flooringService,
   galleryProject,
-  caseStudy,
-  demoGalleryProject,
-  demoCaseStudy,
   faqGroup,
   faq,
   processStep,

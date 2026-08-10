@@ -121,7 +121,7 @@ export const ALL_FAQS_QUERY = defineQuery(`
 // ---------------------------------------------------------------------------
 
 export const GALLERY_PROJECTS_QUERY = defineQuery(`
-  *[_type == "galleryProject" && demo != true && hidden != true] | order(coalesce(order, 9999) asc){
+  *[_type == "galleryProject" && hidden != true] | order(coalesce(order, 9999) asc){
     "slug": slug.current,
     title,
     subtitle,
@@ -135,11 +135,11 @@ export const GALLERY_PROJECTS_QUERY = defineQuery(`
 `);
 
 export const CASE_STUDY_SLUGS_QUERY = defineQuery(`
-  *[_type == "galleryProject" && demo != true && hidden != true && ${HAS_DETAIL} && defined(slug.current)]{ "slug": slug.current }
+  *[_type == "galleryProject" && hidden != true && ${HAS_DETAIL} && defined(slug.current)]{ "slug": slug.current }
 `);
 
 export const CASE_STUDY_QUERY = defineQuery(`
-  *[_type == "galleryProject" && demo != true && hidden != true && ${HAS_DETAIL} && slug.current == $slug][0]{
+  *[_type == "galleryProject" && hidden != true && ${HAS_DETAIL} && slug.current == $slug][0]{
     "slug": slug.current,
     "category": category->slug,
     eyebrow,
@@ -175,8 +175,8 @@ export const CASE_STUDY_QUERY = defineQuery(`
  */
 export const NEXT_CASE_STUDY_QUERY = defineQuery(`
   coalesce(
-    *[_type == "galleryProject" && demo != true && hidden != true && ${HAS_DETAIL} && coalesce(order, 9999) > $order] | order(coalesce(order, 9999) asc)[0],
-    *[_type == "galleryProject" && demo != true && hidden != true && ${HAS_DETAIL}] | order(coalesce(order, 9999) asc)[0]
+    *[_type == "galleryProject" && hidden != true && ${HAS_DETAIL} && coalesce(order, 9999) > $order] | order(coalesce(order, 9999) asc)[0],
+    *[_type == "galleryProject" && hidden != true && ${HAS_DETAIL}] | order(coalesce(order, 9999) asc)[0]
   ){
     "slug": slug.current,
     "shortTitle": title,
@@ -187,7 +187,7 @@ export const NEXT_CASE_STUDY_QUERY = defineQuery(`
 
 /** Title/eyebrow/summary only, for the per-study OG card. */
 export const CASE_STUDY_OG_QUERY = defineQuery(`
-  *[_type == "caseStudy" && demo != true && hidden != true && slug.current == $slug][0]{ title, eyebrow, summary }
+  *[_type == "galleryProject" && hidden != true && slug.current == $slug][0]{ "title": coalesce(headline, title), eyebrow, summary }
 `);
 
 // ---------------------------------------------------------------------------
@@ -213,7 +213,7 @@ export const HOME_PAGE_QUERY = defineQuery(`
         subtitle,
         "slug": slug.current,
         "category": category->slug,
-        "caseStudy": caseStudy->slug.current,
+        "caseStudy": select(${HAS_DETAIL} && hidden != true => slug.current),
         image ${IMG}
       }
     },
@@ -308,7 +308,7 @@ export const CONTACT_PAGE_QUERY = defineQuery(`
 /** Everything sitemap.ts needs, in one round trip. */
 export const SITEMAP_QUERY = defineQuery(`
   {
-    "caseStudies": *[_type == "galleryProject" && demo != true && hidden != true && ${HAS_DETAIL} && defined(slug.current)]{ "slug": slug.current },
+    "caseStudies": *[_type == "galleryProject" && hidden != true && ${HAS_DETAIL} && defined(slug.current)]{ "slug": slug.current },
     "navItems": *[_id == "siteSettings"][0].navItems[]{ href }
   }
 `);
