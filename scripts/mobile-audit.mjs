@@ -3,8 +3,14 @@
 //   pnpm dev  &&  pnpm mobile-audit        (override host with BASE=)
 import { chromium } from "playwright";
 const B = process.env.BASE ?? "http://localhost:3000";
-const ROUTES = ["/", "/services", "/gallery", "/faq", "/about", "/contact",
-  "/gallery/classic-tasmanian-timber", "/gallery/contemporary-hybrid-oak", "/gallery/zenith-commercial-laminate"];
+// Static pages plus whatever the sitemap declares (case studies come and go
+// with content), plus the 404 — it renders real chrome worth auditing too.
+const B0 = process.env.BASE ?? "http://localhost:3000";
+const sitemap = await fetch(`${B0}/sitemap.xml`).then((r) => r.text()).catch(() => "");
+const fromSitemap = [...sitemap.matchAll(/<loc>[^<]*?(\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)<\/loc>/g)]
+  .map((m) => m[1]);
+const ROUTES = [...new Set(["/", "/services", "/gallery", "/faq", "/about", "/contact",
+  ...fromSitemap, "/this-page-does-not-exist"])];
 const br = await chromium.launch();
 const ctx = await br.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 const page = await ctx.newPage();

@@ -24,22 +24,35 @@ for (const h of [...hrefs].filter(Boolean)) {
 }
 
 // --- 2. Gallery card click reaches the case study -----------------------------
-await page.goto(B + "/gallery", { waitUntil: "networkidle" });
-const before = page.url();
-await page.getByRole("link", { name: /View the Sandy Bay Modern case study/i }).click();
-await page.waitForURL("**/gallery/contemporary-hybrid-oak", { timeout: 15000 }).catch(() => {});
-ok(page.url().includes("contemporary-hybrid-oak"), `gallery card click ${before} -> ${page.url()}`);
+await page.goto(B + "/gallery", { waitUntil: "load" });
+await page.waitForSelector("figure", { state: "attached" });
+// Content-driven: tiles only link out when their project has a case study, so
+// the test follows whatever the dataset holds instead of naming a document.
+const caseLinks = page.locator('figure a[href^="/gallery/"]');
+if (await caseLinks.count()) {
+  const href = await caseLinks.first().getAttribute("href");
+  await caseLinks.first().click();
+  await page.waitForURL(`**${href}`, { timeout: 15000 }).catch(() => {});
+  ok(page.url().includes(href), `gallery card click -> ${page.url()}`);
+} else {
+  ok((await page.locator("figure").count()) > 0, "gallery renders tiles (no case-study links in content)");
+}
 ok(!(await page.getByText("View Case Study").count()), "no leftover 'View Case Study' pill");
 
 // --- 3. Gallery filter deep links --------------------------------------------
-for (const [cat, n] of [["hybrid", 2], ["timber", 2], ["laminate", 2]]) {
-  await page.goto(`${B}/gallery?category=${cat}`, { waitUntil: "networkidle" });
-  // All six figures stay in the DOM so crawlers see every project; the active
-  // filter hides non-matches with CSS. Visibility is the contract, not count.
-  const visible = await page.locator("figure:visible").count();
+// Expectations come from the page's own data-category attributes, so the test
+// follows the content instead of breaking every time a project is added in
+// the Studio. The invariants are the mechanism: every card stays in the DOM
+// for crawlers, and exactly the matching ones are visible.
+for (const cat of ["hybrid", "timber", "laminate"]) {
+  await page.goto(`${B}/gallery?category=${cat}`, { waitUntil: "load" });
+  await page.waitForSelector("figure", { state: "attached" });
   const inDom = await page.locator("figure").count();
-  ok(visible === n, `filter ?category=${cat} shows ${visible} visible (expected ${n})`);
-  ok(inDom === 6, `filter ?category=${cat} keeps all ${inDom}/6 in the DOM for crawlers`);
+  const matching = await page.locator(`figure[data-category="${cat}"]`).count();
+  const visible = await page.locator("figure:visible").count();
+  ok(matching > 0, `filter ?category=${cat} has ${matching} matching projects in content`);
+  ok(visible === matching, `filter ?category=${cat} shows ${visible} visible (content has ${matching})`);
+  ok(inDom > visible, `filter ?category=${cat} keeps all ${inDom} cards in the DOM for crawlers`);
 }
 
 // --- 4. Quote form: validation + success --------------------------------------
@@ -154,7 +167,8 @@ const bento = await page.evaluate(() =>
   })));
 const tiles = bento.filter(b => b.img);
 ok(tiles.length === 4, `home portfolio has ${tiles.length} clickable tiles (expected 4)`);
-await page.goto(B + "/gallery", { waitUntil: "networkidle" });
+await page.goto(B + "/gallery", { waitUntil: "load" });
+await page.waitForSelector("figure", { state: "attached" });
 const galleryImgs = await page.evaluate(() =>
   [...document.querySelectorAll("figure img")].map(i => decodeURIComponent(i.getAttribute("src"))));
 const shared = tiles.filter(t => galleryImgs.some(g => g.includes(

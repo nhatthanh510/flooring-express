@@ -148,7 +148,7 @@ export function NotFoundContent({
                 <Link
                   key={`${link.href}-${index}`}
                   href={link.href ?? "/"}
-                  className="text-label-sm text-secondary underline-offset-4 hover:underline"
+                  className="inline-flex min-h-11 items-center px-2 text-label-sm text-secondary underline-offset-4 hover:underline"
                 >
                   {link.label}
                 </Link>
