@@ -36,6 +36,10 @@ const client = createClient({
   apiVersion: process.env.NEXT_PUBLIC_SANITY_API_VERSION ?? "2026-07-29",
   token,
   useCdn: false,
+  // "raw", not the default "published": the demo reference documents live as
+  // drafts, and the published perspective silently filters them out of the
+  // export no matter what the GROQ asks for.
+  perspective: "raw",
 });
 
 const readNdjson = (file) =>
@@ -48,8 +52,11 @@ const readNdjson = (file) =>
 const isSystem = (type) => type?.startsWith("system.") || type?.startsWith("sanity.");
 
 async function exportDataset() {
+  // Drafts are included deliberately: the demo reference documents live as
+  // drafts (visible in the Studio, never rendered on the site), and a seed
+  // that dropped them would silently lose them on the next import.
   const docs = await client.fetch(
-    `*[!(_type match "sanity.*") && !(_type match "system.*") && !(_id in path("drafts.**"))] | order(_type asc, _id asc)`,
+    `*[!(_type match "sanity.*") && !(_type match "system.*")] | order(_type asc, _id asc)`,
   );
   const assets = await client.fetch(
     `*[_type match "sanity.*Asset"]{ _id, _type, originalFilename, url, mimeType }`,

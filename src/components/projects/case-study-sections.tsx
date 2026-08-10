@@ -30,15 +30,19 @@ export function CaseStudyHero({ study }: { study: CaseStudy }) {
           className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
         />
         <div className="relative flex max-w-3xl flex-col items-start gap-4 p-6 sm:p-8 md:p-12">
-          <span className="rounded-full bg-accent px-4 py-1.5 text-label-sm uppercase text-accent-foreground">
-            {study.eyebrow}
-          </span>
+          {study.eyebrow && (
+            <span className="rounded-full bg-accent px-4 py-1.5 text-label-sm uppercase text-accent-foreground">
+              {study.eyebrow}
+            </span>
+          )}
           <h1 className="text-balance text-headline-lg-mobile text-white md:text-display-lg">
             {study.title}
           </h1>
-          <p className="max-w-2xl text-pretty text-body-lg text-white/85">
-            {study.summary}
-          </p>
+          {study.summary && (
+            <p className="max-w-2xl text-pretty text-body-lg text-white/85">
+              {study.summary}
+            </p>
+          )}
         </div>
       </div>
     </section>

@@ -41,6 +41,12 @@ const ICON_CARD = /* groq */ `{ icon, title, description }`;
 
 const ICON_LINK = /* groq */ `{ icon, label, href }`;
 
+/**
+ * A project has a detail page when any of its Detail-page tab is filled. This
+ * one expression is the whole tile-links-or-not rule.
+ */
+const HAS_DETAIL = /* groq */ `(defined(challenge) || defined(summary) || defined(headline) || defined(gallery) || defined(hero))`;
+
 // ---------------------------------------------------------------------------
 // Site-wide
 // ---------------------------------------------------------------------------
@@ -115,7 +121,7 @@ export const ALL_FAQS_QUERY = defineQuery(`
 // ---------------------------------------------------------------------------
 
 export const GALLERY_PROJECTS_QUERY = defineQuery(`
-  *[_type == "galleryProject"] | order(order asc){
+  *[_type == "galleryProject" && demo != true && hidden != true] | order(coalesce(order, 9999) asc){
     "slug": slug.current,
     title,
     subtitle,
@@ -124,25 +130,24 @@ export const GALLERY_PROJECTS_QUERY = defineQuery(`
     aspect,
     image ${IMG},
     video{ asset->{ url, mimeType } },
-    "caseStudy": caseStudy->slug.current
+    "caseStudy": select(${HAS_DETAIL} => slug.current)
   }
 `);
 
 export const CASE_STUDY_SLUGS_QUERY = defineQuery(`
-  *[_type == "caseStudy" && defined(slug.current)]{ "slug": slug.current }
+  *[_type == "galleryProject" && demo != true && hidden != true && ${HAS_DETAIL} && defined(slug.current)]{ "slug": slug.current }
 `);
 
 export const CASE_STUDY_QUERY = defineQuery(`
-  *[_type == "caseStudy" && slug.current == $slug][0]{
+  *[_type == "galleryProject" && demo != true && hidden != true && ${HAS_DETAIL} && slug.current == $slug][0]{
     "slug": slug.current,
     "category": category->slug,
     eyebrow,
-    title,
-    shortTitle,
+    "title": coalesce(headline, title),
+    "shortTitle": title,
     summary,
     order,
-    hero ${IMG},
-    sampleBlocks,
+    "hero": coalesce(hero, image) ${IMG},
     meta[]{ label, value },
     challenge{ heading, body, image ${IMG} },
     solution{ heading, body, image ${IMG}, stats[]{ value, label } },
@@ -150,7 +155,7 @@ export const CASE_STUDY_QUERY = defineQuery(`
     specs{ heading, description, rows[]{ attribute, value } },
     details{ heading, rows[]{ label, value } },
     roadmap{ heading, description, steps[] ${ICON_CARD} },
-    video{
+    "video": detailVideo{
       heading,
       description,
       url,
@@ -170,19 +175,19 @@ export const CASE_STUDY_QUERY = defineQuery(`
  */
 export const NEXT_CASE_STUDY_QUERY = defineQuery(`
   coalesce(
-    *[_type == "caseStudy" && order > $order] | order(order asc)[0],
-    *[_type == "caseStudy"] | order(order asc)[0]
+    *[_type == "galleryProject" && demo != true && hidden != true && ${HAS_DETAIL} && coalesce(order, 9999) > $order] | order(coalesce(order, 9999) asc)[0],
+    *[_type == "galleryProject" && demo != true && hidden != true && ${HAS_DETAIL}] | order(coalesce(order, 9999) asc)[0]
   ){
     "slug": slug.current,
-    shortTitle,
+    "shortTitle": title,
     eyebrow,
-    hero ${IMG}
+    "hero": coalesce(hero, image) ${IMG}
   }
 `);
 
 /** Title/eyebrow/summary only, for the per-study OG card. */
 export const CASE_STUDY_OG_QUERY = defineQuery(`
-  *[_type == "caseStudy" && slug.current == $slug][0]{ title, eyebrow, summary }
+  *[_type == "caseStudy" && demo != true && hidden != true && slug.current == $slug][0]{ title, eyebrow, summary }
 `);
 
 // ---------------------------------------------------------------------------
@@ -303,7 +308,7 @@ export const CONTACT_PAGE_QUERY = defineQuery(`
 /** Everything sitemap.ts needs, in one round trip. */
 export const SITEMAP_QUERY = defineQuery(`
   {
-    "caseStudies": *[_type == "caseStudy" && defined(slug.current)]{ "slug": slug.current },
+    "caseStudies": *[_type == "galleryProject" && demo != true && hidden != true && ${HAS_DETAIL} && defined(slug.current)]{ "slug": slug.current },
     "navItems": *[_id == "siteSettings"][0].navItems[]{ href }
   }
 `);

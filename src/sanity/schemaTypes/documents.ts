@@ -8,8 +8,7 @@ const orderField = defineField({
   name: "order",
   title: "Sort order",
   type: "number",
-  description: "Lowest first. Controls the order this appears on the site.",
-  validation: (rule) => rule.required(),
+  description: "Lowest first; leave empty to sort last. Controls the order this appears on the site.",
 });
 
 /**
@@ -119,24 +118,37 @@ export const flooringService = defineType({
   preview: { select: { title: "name", subtitle: "descriptor", media: "image" } },
 });
 
-/** A tile in the gallery masonry. Three of the six lead to a full case study. */
-export const galleryProject = defineType({
+/**
+ * Base tile definition. The exported `galleryProject` below extends this with
+ * the detail-page fields, so one document carries both the masonry tile and
+ * its own detail page — no separate case-study document, no second slug.
+ */
+const galleryProjectBase = defineType({
   name: "galleryProject",
   title: "Gallery project",
   type: "document",
   fields: [
+    defineField({ name: "title", type: "string", validation: (rule) => rule.required() }),
+    // Below title, not above: "Generate" fills the slug FROM the title, so the
+    // form has to read top-to-bottom or the button does nothing.
     defineField({
       name: "slug",
       type: "slug",
       options: { source: "title", maxLength: 96 },
       validation: (rule) => rule.required(),
     }),
-    defineField({ name: "title", type: "string", validation: (rule) => rule.required() }),
+    defineField({
+      name: "hidden",
+      title: "Hide from website",
+      type: "boolean",
+      description:
+        "Keeps this document in the Studio without showing it anywhere on the public site. For demo references and work-in-progress.",
+      initialValue: false,
+    }),
     defineField({
       name: "subtitle",
       type: "string",
       description: 'Shown under the title in the overlay, e.g. "Hybrid Flooring"',
-      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "category",
@@ -154,7 +166,7 @@ export const galleryProject = defineType({
           { value: "Commercial", title: "Commercial" },
         ],
       },
-      validation: (rule) => rule.required(),
+      initialValue: "Residential",
     }),
     defineField({
       name: "aspect",
@@ -162,7 +174,7 @@ export const galleryProject = defineType({
       type: "string",
       description: "Drives the masonry rhythm. Vary these so the grid doesn't read as a plain table.",
       options: { list: aspectOptions.map(({ value, title }) => ({ value, title })) },
-      validation: (rule) => rule.required(),
+      initialValue: "aspect-[4/3]",
     }),
     defineField({ name: "image", type: "imageWithAlt", validation: (rule) => rule.required() }),
     defineField({
@@ -177,13 +189,20 @@ export const galleryProject = defineType({
       name: "caseStudy",
       type: "reference",
       to: [{ type: "caseStudy" }],
-      description:
-        "Optional. With one, the tile links to the full case study; without, it links to the filtered gallery.",
+      description: "Legacy link, superseded by the Detail page tab.",
+      hidden: true,
     }),
     orderField,
   ],
   orderings: [{ name: "order", title: "Sort order", by: [{ field: "order", direction: "asc" }] }],
-  preview: { select: { title: "title", subtitle: "subtitle", media: "image" } },
+  preview: {
+    select: { title: "title", subtitle: "subtitle", media: "image", hidden: "hidden" },
+    prepare: ({ title, subtitle, media, hidden }) => ({
+      title,
+      subtitle: hidden ? `HIDDEN FROM SITE · ${subtitle ?? ""}` : subtitle,
+      media,
+    }),
+  },
 });
 
 /**
@@ -204,12 +223,33 @@ export const caseStudy = defineType({
     { name: "seo", title: "Search & social" },
   ],
   fields: [
+    defineField({ name: "title", type: "string", group: "content", validation: (r) => r.required() }),
+    // Below the titles it generates from — above them, the Generate button had
+    // nothing to read and silently did nothing.
     defineField({
       name: "slug",
       type: "slug",
-      options: { source: "shortTitle", maxLength: 96 },
+      options: {
+        source: (doc) => (doc.shortTitle as string) || (doc.title as string) || "",
+        maxLength: 96,
+      },
       group: "content",
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "hidden",
+      title: "Hide from website",
+      type: "boolean",
+      description:
+        "Keeps this document in the Studio without showing it anywhere on the public site. For demo references and work-in-progress.",
+      initialValue: false,
+      group: "content",
+    }),
+    defineField({
+      name: "shortTitle",
+      type: "string",
+      description: 'Used by gallery cards and the "next project" link.',
+      group: "content",
     }),
     defineField({
       name: "category",
@@ -218,17 +258,9 @@ export const caseStudy = defineType({
       group: "content",
       validation: (rule) => rule.required(),
     }),
-    defineField({ name: "eyebrow", type: "string", group: "content", validation: (r) => r.required() }),
-    defineField({ name: "title", type: "string", group: "content", validation: (r) => r.required() }),
-    defineField({
-      name: "shortTitle",
-      type: "string",
-      description: 'Used by gallery cards and the "next project" link.',
-      group: "content",
-      validation: (rule) => rule.required(),
-    }),
-    defineField({ name: "summary", type: "text", rows: 3, group: "content", validation: (r) => r.required() }),
-    defineField({ name: "hero", type: "imageWithAlt", group: "content", validation: (r) => r.required() }),
+    defineField({ name: "eyebrow", type: "string", group: "content" }),
+    defineField({ name: "summary", type: "text", rows: 3, group: "content" }),
+    defineField({ name: "hero", type: "imageWithAlt", group: "content" }),
 
     defineField({
       name: "meta",
@@ -246,7 +278,6 @@ export const caseStudy = defineType({
         defineField({ name: "body", type: "text", rows: 6, validation: (r) => r.required() }),
         defineField({ name: "image", type: "imageWithAlt" }),
       ],
-      validation: (rule) => rule.required(),
     }),
     defineField({
       name: "solution",
@@ -262,15 +293,6 @@ export const caseStudy = defineType({
           of: [defineArrayMember({ type: "statChip" })],
         }),
       ],
-    }),
-    defineField({
-      name: "sampleBlocks",
-      title: "Show sample blocks (demo)",
-      type: "boolean",
-      group: "blocks",
-      description:
-        "DEMO DATA: the optional blocks below (features, specs, details, roadmap, testimonial) were filled with generated sample content to demonstrate the full page design. They are typical product information, not facts recorded about this job. Turn this off to hide them from visitors while keeping everything here for reference; replace with real details when you have them.",
-      initialValue: true,
     }),
     defineField({
       name: "features",
@@ -377,11 +399,18 @@ export const caseStudy = defineType({
       ],
     }),
 
-    defineField({ name: "seo", type: "seo", group: "seo", validation: (r) => r.required() }),
+    defineField({ name: "seo", type: "seo", group: "seo" }),
     { ...orderField, group: "content" },
   ],
   orderings: [{ name: "order", title: "Sort order", by: [{ field: "order", direction: "asc" }] }],
-  preview: { select: { title: "shortTitle", subtitle: "eyebrow", media: "hero" } },
+  preview: {
+    select: { title: "title", short: "shortTitle", subtitle: "eyebrow", media: "hero", hidden: "hidden" },
+    prepare: ({ title, short, subtitle, media, hidden }) => ({
+      title: short ?? title,
+      subtitle: hidden ? `HIDDEN FROM SITE · ${subtitle ?? ""}` : subtitle,
+      media,
+    }),
+  },
 });
 
 export const faqGroup = defineType({
@@ -452,10 +481,104 @@ export const processStep = defineType({
   preview: { select: { title: "title", subtitle: "number" } },
 });
 
+/**
+ * The one project document: tile fields plus an optional detail page.
+ *
+ * The detail fields are the case-study fields, reused verbatim so the
+ * rendering components keep working unchanged. Fill any of the Detail page
+ * tab and the tile starts linking to /gallery/<slug>; leave the tab empty and
+ * the tile is picture-only. The old standalone caseStudy type remains only
+ * for the currently deployed build and is retired by the finalize script.
+ */
+const DETAIL_FIELD_NAMES = [
+  "eyebrow",
+  "summary",
+  "hero",
+  "meta",
+  "challenge",
+  "solution",
+  "features",
+  "specs",
+  "details",
+  "roadmap",
+  "video",
+  "gallery",
+  "testimonial",
+  "cta",
+  "seo",
+];
+
+export const galleryProject = {
+  ...galleryProjectBase,
+  groups: [
+    { name: "tile", title: "Gallery tile", default: true },
+    { name: "detail", title: "Detail page" },
+    { name: "seo", title: "Search & social" },
+  ],
+  fields: [
+    ...galleryProjectBase.fields.map((field) => ({ ...field, group: "tile" })),
+    defineField({
+      name: "headline",
+      title: "Detail page headline",
+      type: "string",
+      description:
+        'Optional bigger headline for the detail page, e.g. "Bringing a Cottage Back, Board by Board". Falls back to the project title.',
+      group: "detail",
+    }),
+    ...caseStudy.fields
+      .filter((field) => DETAIL_FIELD_NAMES.includes(field.name))
+      .map((field) => ({
+        ...field,
+        // The tile already has a `video` (the looping clip); the detail page's
+        // watchable video block needs its own name.
+        ...(field.name === "video"
+          ? { name: "detailVideo", title: "Detail page video" }
+          : {}),
+        group: field.name === "seo" ? "seo" : "detail",
+      })),
+  ],
+};
+
+/**
+ * Demo reference documents: the same shape as the real types, under their own
+ * `_type`. That is the whole hiding mechanism — every site query selects
+ * `_type == "galleryProject"` / `"caseStudy"`, so these can never render
+ * publicly, on any deployed version, published or not. They exist purely as
+ * fully-worked examples in the Studio.
+ */
+const demoOverride = <T extends { fields: Array<{ name: string }> }>(
+  definition: T,
+  name: string,
+  title: string,
+) => ({
+  ...definition,
+  name,
+  title,
+  fields: definition.fields.map((field) =>
+    // The demo project's case-study link points at the demo case study type.
+    field.name === "caseStudy"
+      ? { ...field, to: [{ type: "demoCaseStudy" }] }
+      : field,
+  ),
+});
+
+export const demoGalleryProject = demoOverride(
+  galleryProject,
+  "demoGalleryProject",
+  "Demo gallery example",
+);
+export const demoCaseStudy = demoOverride(
+  caseStudy,
+  "demoCaseStudy",
+  "Demo case study example",
+);
+
 export const documentTypes = [
   flooringService,
   galleryProject,
   caseStudy,
+  demoGalleryProject,
+  demoCaseStudy,
   faqGroup,
   faq,
   processStep,

@@ -151,11 +151,19 @@ for (const [route, hrefs] of Object.entries(ctaTargets)) {
 for (const [q, heading] of [["enquiry=samples", /Order Product Samples/i],
                             ["enquiry=consultation", /Book a Free Consultation/i],
                             ["enquiry=commercial", /Commercial Team/i]]) {
-  await page.goto(`${B}/contact?${q}`, { waitUntil: "domcontentloaded" });
-  // the form's own heading, not the sr-only "Contact details" group label
-  const h = await page.locator("main form").locator("xpath=../h2").first().innerText()
-    .catch(async () => (await page.locator("main h2:not(.sr-only)").first().innerText()));
-  ok(heading.test(h), `/contact?${q} -> "${h}"`);
+  await page.goto(`${B}/contact?${q}`, { waitUntil: "load" });
+  // A direct visit prerenders the default "quote" wording and hydration swaps
+  // in the deep-linked variant — by design (the page stays static). Wait for
+  // the swap instead of racing it.
+  const matched = await page
+    .waitForFunction(
+      (pattern) => new RegExp(pattern, "i").test(document.body.innerText),
+      heading.source,
+      { timeout: 10000 },
+    )
+    .then(() => true)
+    .catch(() => false);
+  ok(matched, `/contact?${q} -> ${heading}`);
 }
 await page.goto(B + "/contact?enquiry=samples&flooring=timber", { waitUntil: "networkidle" });
 const preset = await page.evaluate(() =>

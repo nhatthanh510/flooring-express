@@ -43,8 +43,31 @@ export const structure: StructureResolver = (S) =>
       S.divider(),
 
       S.documentTypeListItem("flooringService").title("Flooring services"),
-      S.documentTypeListItem("galleryProject").title("Gallery projects"),
-      S.documentTypeListItem("caseStudy").title("Case studies"),
+      // Real and demo documents in ONE list each — a separate "demo" section
+      // proved confusing. Demo entries carry "Demo:" titles and the hidden
+      // preview badge instead. The "+" button creates the real type only.
+      S.listItem()
+        .title("Gallery projects")
+        .id("galleryProjects")
+        .child(
+          S.documentList()
+            .title("Gallery projects")
+            .apiVersion("2026-07-29")
+            .filter('_type in ["galleryProject", "demoGalleryProject"]')
+            .defaultOrdering([{ field: "order", direction: "asc" }])
+            .initialValueTemplates([S.initialValueTemplateItem("galleryProject")]),
+        ),
+      S.listItem()
+        .title("Case studies")
+        .id("caseStudies")
+        .child(
+          S.documentList()
+            .title("Case studies")
+            .apiVersion("2026-07-29")
+            .filter('_type in ["caseStudy", "demoCaseStudy"]')
+            .defaultOrdering([{ field: "order", direction: "asc" }])
+            .initialValueTemplates([S.initialValueTemplateItem("caseStudy")]),
+        ),
 
       S.divider(),
 
