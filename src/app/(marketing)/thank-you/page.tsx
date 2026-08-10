@@ -66,7 +66,7 @@ export default async function ThankYouPage() {
         </div>
 
         <h1 className="text-balance text-headline-lg-mobile text-primary md:text-headline-lg tall:text-display-lg">
-          {page?.heading ?? "Thank you — your request is in."}
+          {page?.heading ?? "Thank you! Your request is in."}
         </h1>
         <p className="mx-auto mt-2 max-w-2xl text-pretty text-body-md text-muted-foreground md:mt-4 md:text-body-lg">
           {page?.description ??

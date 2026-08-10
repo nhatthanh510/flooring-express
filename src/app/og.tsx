@@ -103,7 +103,7 @@ export async function OgImage({
           {settings?.name}
         </div>
         <div style={{ fontSize: 26, color: "#96908b" }}>
-          {`Hybrid · Laminate · Timber — ${settings?.contact?.locality ?? ""}`}
+          {`Hybrid · Laminate · Timber · ${settings?.contact?.locality ?? ""}`}
         </div>
       </div>
     </div>,

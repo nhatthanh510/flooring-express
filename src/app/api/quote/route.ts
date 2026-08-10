@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     // Loud on the server, vague to the client: a misconfigured deploy is an
     // operator problem, and the visitor can still phone.
     console.error(
-      "[quote] RESEND_API_KEY or RESEND_FROM is not set — enquiry not delivered.",
+      "[quote] RESEND_API_KEY or RESEND_FROM is not set; enquiry not delivered.",
     );
     return Response.json(
       { ok: false, error: "Sorry, we couldn't send that just now." },
@@ -68,7 +68,7 @@ export async function POST(request: Request) {
 
   if (!to) {
     console.error(
-      "[quote] Neither siteSettings.notificationEmail nor contact.email is set — nowhere to send.",
+      "[quote] Neither siteSettings.notificationEmail nor contact.email is set; nowhere to send.",
     );
     return Response.json(
       { ok: false, error: "Sorry, we couldn't send that just now." },

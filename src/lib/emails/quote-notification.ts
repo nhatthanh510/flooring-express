@@ -106,7 +106,7 @@ export function quoteNotification({
     timeZone: "Australia/Hobart",
   }).format(new Date());
 
-  const subject = `${copy.label}: ${values.name} — ${flooring} flooring`;
+  const subject = `${copy.label}: ${values.name} - ${flooring} flooring`;
 
   const html = `<!doctype html>
 <html lang="en"><head>

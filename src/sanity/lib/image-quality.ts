@@ -42,7 +42,7 @@ export function parseImageRef(
 export function imageQualityError(info: ImageRefInfo): string | null {
   if (info.width < MIN_WIDTH || info.height < MIN_HEIGHT) {
     return (
-      `This image is ${info.width}×${info.height}px — too small to display sharply. ` +
+      `This image is ${info.width}×${info.height}px, which is too small to display sharply. ` +
       `Please upload the original photo at ${MIN_WIDTH}×${MIN_HEIGHT}px or larger ` +
       `(not a thumbnail or a screenshot of it).`
     );
@@ -54,14 +54,14 @@ export function imageQualityError(info: ImageRefInfo): string | null {
 export function imageQualityWarning(info: ImageRefInfo): string | null {
   if (info.width < SOFT_MIN_WIDTH) {
     return (
-      `${info.width}px wide may look soft in full-width sections — aim for ` +
+      `${info.width}px wide may look soft in full-width sections; aim for ` +
       `${SOFT_MIN_WIDTH}px+ from the original photo. Fine to ignore if this ` +
       `image only ever appears small (an avatar, a little tile).`
     );
   }
   if (info.format === "png") {
     return (
-      "PNG is meant for graphics and makes photo files 5–10× larger than " +
+      "PNG is meant for graphics and makes photo files 5 to 10 times larger than " +
       "needed. For photos, upload the JPG (or WebP/HEIC) straight from the " +
       "camera instead."
     );
@@ -74,7 +74,7 @@ export function fileSizeWarning(bytes: number | null | undefined): string | null
     return (
       `This file is ${(bytes / (1024 * 1024)).toFixed(1)} MB. Visitors get an ` +
       "optimized copy either way, but originals this large slow the Studio " +
-      "down — export at high JPG quality instead of maximum."
+      "down; export at high JPG quality instead of maximum."
     );
   }
   return null;

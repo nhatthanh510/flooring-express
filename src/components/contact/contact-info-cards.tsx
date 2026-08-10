@@ -44,8 +44,10 @@ export function ContactInfoCards({ settings }: { settings: SiteSettings }) {
         >
           {contact?.phone}
         </a>
+        {/* From Site settings, like every other business fact here — this was
+            the one hardcoded line in the card and drifted from the real hours. */}
         <p className="text-label-md text-muted-foreground">
-          Mon&ndash;Fri, 8am&ndash;6pm
+          {settings.hoursSummary}
         </p>
       </CardShell>
 

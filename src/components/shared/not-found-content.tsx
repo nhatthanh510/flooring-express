@@ -15,7 +15,7 @@ import type { NOT_FOUND_PAGE_QUERY_RESULT } from "@/sanity/types";
  * failure than a slightly generic sentence.
  */
 const FALLBACK = {
-  heading: "404 — Page not found",
+  heading: "404 - Page not found",
   description:
     "The page you're looking for has been moved, removed, or never existed. Let's get you back on solid ground.",
 } as const;

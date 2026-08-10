@@ -10,7 +10,7 @@ import type { Metadata, Viewport } from "next";
  * `sanity` package, which must not enter the server graph (see ./[[...tool]]/studio.tsx).
  */
 export const metadata: Metadata = {
-  title: "Flooring Express — Studio",
+  title: "Flooring Express Studio",
   referrer: "same-origin",
   robots: "noindex",
 };

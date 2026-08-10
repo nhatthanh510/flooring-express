@@ -32,7 +32,7 @@ export default function AppError({
   return (
     <ErrorState
       title="We're having trouble loading the site"
-      description="Our content service isn't responding. This is on our end and is usually brief — please try again in a moment."
+      description="Our content service isn't responding. This is on our end and is usually brief, so please try again in a moment."
       digest={error.digest}
       retry={unstable_retry}
     />

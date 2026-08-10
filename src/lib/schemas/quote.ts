@@ -45,7 +45,7 @@ export const enquiryCopy: Record<
     label: "Consultation",
     heading: "Book a Free Consultation",
     description:
-      "We'll visit your property, laser-measure the space and talk through the options — no obligation, no charge.",
+      "We'll visit your property, laser-measure the space and talk through the options, with no obligation and no charge.",
     submit: "Book Consultation",
   },
   commercial: {
@@ -77,7 +77,7 @@ export const quoteSchema = z.object({
     .string()
     .trim()
     .min(2, "Please enter your full name.")
-    .max(80, "That name is a little long — please shorten it."),
+    .max(80, "That name is a little long. Please shorten it."),
   email: z
     .string()
     .trim()
@@ -100,7 +100,7 @@ export const quoteSchema = z.object({
   address: z
     .string()
     .trim()
-    .min(5, "That address looks too short — or leave it empty.")
+    .min(5, "That address looks too short. Add more detail, or leave it empty.")
     .max(200, "Please shorten the address.")
     .optional()
     .or(z.literal("")),

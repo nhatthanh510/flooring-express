@@ -73,7 +73,7 @@ export const siteSettings = defineType({
       group: "contact",
       fields: [
         defineField({ name: "phone", type: "string", description: 'As displayed, e.g. "(03) 6200 0000"', validation: (r) => r.required() }),
-        defineField({ name: "phoneHref", type: "string", description: 'Dial link, e.g. "tel:+61362000000"', validation: (r) => r.required() }),
+        defineField({ name: "phoneHref", type: "string", description: 'Dial link with no spaces, e.g. "tel:+61415679386"', validation: (r) => r.required() }),
         defineField({ name: "email", type: "string", validation: (r) => r.required().email() }),
         defineField({ name: "street", type: "string", validation: (r) => r.required() }),
         defineField({ name: "locality", type: "string", description: "Suburb or city", validation: (r) => r.required() }),
@@ -88,7 +88,7 @@ export const siteSettings = defineType({
       title: "Where quote enquiries are sent",
       type: "string",
       description:
-        "Private — never shown on the site. Quote-form submissions are emailed here; a Gmail address is fine. Leave empty and they go to the public Email address above instead, which is also the one printed on the contact page, in the footer and in the site's structured data.",
+        "Private: never shown on the site. Quote-form submissions are emailed here; a Gmail address is fine. Leave empty and they go to the public Email address above instead, which is also the one printed on the contact page, in the footer and in the site's structured data.",
       group: "contact",
       validation: (r) => r.email(),
     }),
@@ -112,7 +112,7 @@ export const siteSettings = defineType({
       type: "array",
       of: [defineArrayMember({ type: "string" })],
       description:
-        'Schema.org format, one per line — e.g. "Mo-Fr 08:00-18:00". Must be kept in step with the hours table above; search engines read this one.',
+        'Schema.org format, one per line, e.g. "Mo-Fr 08:00-18:00". Must be kept in step with the hours table above; search engines read this one.',
       group: "contact",
       options: { layout: "tags" },
       validation: (r) => r.required().min(1),
@@ -140,7 +140,7 @@ export const siteSettings = defineType({
       title: "Header button",
       type: "link",
       description:
-        'The button at the right of the header, and the full-width one at the bottom of the mobile menu — e.g. "Free Quote" → /contact. Clear it to remove the button from both.',
+        'The button at the right of the header, and the full-width one at the bottom of the mobile menu, e.g. "Free Quote" → /contact. Clear it to remove the button from both.',
       group: "navigation",
     }),
     defineField({
@@ -437,7 +437,7 @@ export const notFoundPage = defineType({
       title: "Backdrop photo",
       type: "imageWithAlt",
       description:
-        'Framed with the "404" numeral over it on phones, and faded behind the copy on desktop. A calm, uncluttered interior works best — busy photos fight the text.',
+        'Framed with the "404" numeral over it on phones, and faded behind the copy on desktop. A calm, uncluttered interior works best; busy photos fight the text.',
       group: "content",
     }),
     defineField({
@@ -452,7 +452,7 @@ export const notFoundPage = defineType({
     defineField({
       name: "heading",
       type: "string",
-      description: 'The headline, e.g. "404 — Page not found".',
+      description: 'The headline, e.g. "404 - Page not found".',
       group: "content",
       validation: (r) => r.required(),
     }),
@@ -537,7 +537,7 @@ export const quoteSuccessPage = defineType({
       title: "Divider photo",
       type: "imageWithAlt",
       description:
-        "Shown between the message and the steps on phones only — desktop goes without, per the design.",
+        "Shown between the message and the steps on phones only; desktop goes without, per the design.",
       group: "content",
     }),
     defineField({
@@ -574,7 +574,7 @@ export const quoteSuccessPage = defineType({
       type: "array",
       of: [defineArrayMember({ type: "link" })],
       description:
-        "The first renders solid, the second outlined. On phones only the first shows — a Call button using the business phone takes the second slot.",
+        "The first renders solid, the second outlined. On phones only the first shows; a Call button using the business phone takes the second slot.",
       group: "content",
       validation: (r) => r.max(2),
     }),
@@ -582,7 +582,7 @@ export const quoteSuccessPage = defineType({
       name: "urgentText",
       type: "string",
       description:
-        'Lead-in for the phone strip, e.g. "Need urgent help?" — the number itself comes from Site settings.',
+        'Lead-in for the phone strip, e.g. "Need urgent help?"; the number itself comes from Site settings.',
       group: "content",
     }),
     defineField({ name: "seo", type: "seo", group: "seo" }),

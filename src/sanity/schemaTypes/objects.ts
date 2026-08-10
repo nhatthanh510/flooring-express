@@ -24,7 +24,7 @@ export const imageWithAlt = defineType({
   title: "Image",
   type: "image",
   description:
-    "Upload the original photo — ideally 1400px wide or more, as JPG or WebP. Small or heavily compressed images look sharp here in the Studio but soft on a big screen.",
+    "Upload the original photo, ideally 1400px wide or more, as JPG or WebP. Small or heavily compressed images look sharp here in the Studio but soft on a big screen.",
   options: {
     hotspot: true,
     // Keeps the file picker to photo formats; Sanity converts HEIC on upload.
@@ -72,7 +72,7 @@ export const imageWithAlt = defineType({
       title: "Decorative only",
       type: "boolean",
       description:
-        "Purely visual — a texture or pattern that carries no information. Hidden from screen readers.",
+        "Purely visual: a texture or pattern that carries no information. Hidden from screen readers.",
       initialValue: false,
     }),
   ],
@@ -324,7 +324,7 @@ export const openingHoursRow = defineType({
     defineField({
       name: "short",
       type: "string",
-      description: 'Narrow-column label, e.g. "Mon – Fri"',
+      description: 'Narrow-column label, e.g. "Mon - Fri"',
       validation: (r) => r.required(),
     }),
     defineField({
@@ -413,7 +413,7 @@ export const projectVideo = defineType({
       name: "url",
       title: "Video link",
       type: "string",
-      description: `Paste a ${videoProviderLabels.join(" or ")} link. Best for anything longer than a few seconds — the video is served by them, so it costs this site no bandwidth and adapts to the visitor's connection.`,
+      description: `Paste a ${videoProviderLabels.join(" or ")} link. Best for anything longer than a few seconds: the video is served by them, so it costs this site no bandwidth and adapts to the visitor's connection.`,
       validation: (rule) =>
         rule.custom((value?: string) => {
           if (!value) return true;
@@ -429,7 +429,7 @@ export const projectVideo = defineType({
       type: "file",
       options: { accept: "video/mp4,video/webm" },
       description:
-        "Only for short clips. This one is served by this site, so keep it under ~20 MB — a large upload is slow for every visitor who presses play. MP4 (H.264) plays everywhere; WebM is smaller but not supported on older Safari.",
+        "Only for short clips. This one is served by this site, so keep it under ~20 MB; a large upload is slow for every visitor who presses play. MP4 (H.264) plays everywhere; WebM is smaller but not supported on older Safari.",
     }),
     defineField({
       name: "poster",
@@ -447,7 +447,7 @@ export const projectVideo = defineType({
         return "Add a video link or upload a file, or clear this section entirely.";
       }
       if (value.url && value.file) {
-        return "Use a link or an upload, not both — clear whichever you do not want.";
+        return "Use a link or an upload, not both; clear whichever you do not want.";
       }
       return true;
     }),

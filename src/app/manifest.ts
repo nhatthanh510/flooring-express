@@ -10,7 +10,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
   });
 
   return {
-    name: `${settings?.legalName ?? ""} — ${settings?.tagline ?? ""}`,
+    name: `${settings?.legalName ?? ""} | ${settings?.tagline ?? ""}`,
     short_name: settings?.name ?? "",
     description: settings?.description ?? "",
     start_url: "/",

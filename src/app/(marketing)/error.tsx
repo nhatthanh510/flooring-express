@@ -38,7 +38,7 @@ export default function MarketingError({
   return (
     <ErrorState
       title="Something went wrong"
-      description="This page didn't load properly. It's usually temporary — try again, or head back and take another route."
+      description="This page didn't load properly. It's usually temporary. Try again, or head back and take another route."
       digest={error.digest}
       retry={unstable_retry}
     />

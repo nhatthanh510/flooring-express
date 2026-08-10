@@ -4,7 +4,7 @@ import { SERVICES_PAGE_QUERY } from "@/sanity/queries";
 
 export const size = ogSize;
 export const contentType = "image/png";
-export const alt = "Premium Flooring for Modern Living — Flooring Express Hobart";
+export const alt = "Premium Flooring for Modern Living | Flooring Express Hobart";
 
 export default async function Image() {
   const { data } = await sanityFetch({ query: SERVICES_PAGE_QUERY, stega: false });

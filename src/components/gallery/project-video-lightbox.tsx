@@ -95,7 +95,7 @@ export function ProjectVideoLightboxProvider({
           className="inset-0 left-0 top-0 flex h-dvh w-screen max-w-none translate-x-0 translate-y-0 flex-col items-center justify-center gap-4 rounded-none border-0 bg-transparent p-4 shadow-none ring-0 sm:max-w-none"
         >
           <DialogTitle className="sr-only">
-            {current ? `${current.title} — project video` : "Project video"}
+            {current ? `${current.title} project video` : "Project video"}
           </DialogTitle>
 
           <DialogClose asChild>

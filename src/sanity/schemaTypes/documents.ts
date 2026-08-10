@@ -171,7 +171,7 @@ export const galleryProject = defineType({
       type: "file",
       options: { accept: "video/mp4,video/webm" },
       description:
-        "A short, silent clip that plays on a loop in place of the photo. The photo above is still required — it is the poster frame, what search engines index, and what shows while the video loads or if it fails. Keep it under ~10 MB and a few seconds long: it downloads on every visit to the gallery. MP4 (H.264) plays everywhere; WebM is smaller but not supported on older Safari.",
+        "A short, silent clip that plays on a loop in place of the photo. The photo above is still required: it is the poster frame, what search engines index, and what shows while the video loads or if it fails. Keep it under ~10 MB and a few seconds long: it downloads on every visit to the gallery. MP4 (H.264) plays everywhere; WebM is smaller but not supported on older Safari.",
     }),
     defineField({
       name: "caseStudy",
@@ -328,7 +328,7 @@ export const caseStudy = defineType({
       title: "Project video",
       type: "projectVideo",
       description:
-        "Sits after the story and before the photo gallery. The gallery tile's short loop is a different thing — that one is silent, autoplaying and decorative; this is a video someone chooses to watch.",
+        "Sits after the story and before the photo gallery. The gallery tile's short loop is a different thing; that one is silent, autoplaying and decorative; this is a video someone chooses to watch.",
       group: "blocks",
     }),
     defineField({
@@ -432,7 +432,7 @@ export const processStep = defineType({
     defineField({
       name: "number",
       type: "string",
-      description: 'Display label, e.g. "01" — kept as text so the leading zero survives.',
+      description: 'Display label, e.g. "01", kept as text so the leading zero survives.',
       validation: (rule) => rule.required(),
     }),
     defineField({ name: "title", type: "string", validation: (rule) => rule.required() }),

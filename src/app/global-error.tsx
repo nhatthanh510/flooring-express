@@ -64,7 +64,7 @@ export default function GlobalError({
             color: "#4d4540",
           }}
         >
-          The site failed to load. Please try again — if it keeps happening,
+          The site failed to load. Please try again. If it keeps happening,
           call us and we&rsquo;ll help you directly.
         </p>
 

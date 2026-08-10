@@ -295,7 +295,7 @@ export function QuoteForm({
           <Textarea
             id={`${idPrefix}-message`}
             rows={4}
-            placeholder="Tell us about your project — approximate size, current flooring, suburb…"
+            placeholder="Tell us about your project: approximate size, current flooring, suburb…"
             aria-invalid={errors.message ? true : undefined}
             className="min-h-32 rounded-lg px-4 py-3 text-body-md"
             {...register("message")}
