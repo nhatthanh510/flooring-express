@@ -81,18 +81,39 @@ export default async function CaseStudyPage({
     params: { order: study.order ?? 0 },
   });
 
+  // Demo-phase gating. Some optional blocks hold generated sample content, not
+  // recorded facts about the job; the Studio toggle lets the owner pull those
+  // off the public page while keeping them editable as reference. `false`
+  // hides, anything else shows — real documents without the flag are
+  // unaffected. While shown, a short note says what they are.
+  const showSampleBlocks = study.sampleBlocks !== false;
+
   return (
     <>
       <CaseStudyHero study={study} />
       <CaseStudyMeta items={study.meta} />
       <CaseStudyNarrative study={study} />
-      <CaseStudyFeatures features={study.features} />
-      <CaseStudySpecs specs={study.specs} />
-      <CaseStudyDetails details={study.details} />
+      {study.sampleBlocks === true && (
+        <p className="container-page pt-10 text-center text-label-md text-muted-foreground">
+          The sections below show sample product data for demonstration. Ask us
+          for the specifics of your own project.
+        </p>
+      )}
+      {showSampleBlocks && (
+        <>
+          <CaseStudyFeatures features={study.features} />
+          <CaseStudySpecs specs={study.specs} />
+          <CaseStudyDetails details={study.details} />
+        </>
+      )}
       <CaseStudyVideo video={study.video} fallbackPoster={study.hero} />
       <CaseStudyGallery gallery={study.gallery} />
-      <CaseStudyRoadmap roadmap={study.roadmap} />
-      <CaseStudyTestimonial testimonial={study.testimonial} />
+      {showSampleBlocks && (
+        <>
+          <CaseStudyRoadmap roadmap={study.roadmap} />
+          <CaseStudyTestimonial testimonial={study.testimonial} />
+        </>
+      )}
       <CaseStudyNext next={next} />
       <CaseStudyCta cta={study.cta} />
     </>

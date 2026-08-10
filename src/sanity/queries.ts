@@ -142,6 +142,7 @@ export const CASE_STUDY_QUERY = defineQuery(`
     summary,
     order,
     hero ${IMG},
+    sampleBlocks,
     meta[]{ label, value },
     challenge{ heading, body, image ${IMG} },
     solution{ heading, body, image ${IMG}, stats[]{ value, label } },

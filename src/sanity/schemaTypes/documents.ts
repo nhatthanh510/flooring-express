@@ -264,6 +264,15 @@ export const caseStudy = defineType({
       ],
     }),
     defineField({
+      name: "sampleBlocks",
+      title: "Show sample blocks (demo)",
+      type: "boolean",
+      group: "blocks",
+      description:
+        "DEMO DATA: the optional blocks below (features, specs, details, roadmap, testimonial) were filled with generated sample content to demonstrate the full page design. They are typical product information, not facts recorded about this job. Turn this off to hide them from visitors while keeping everything here for reference; replace with real details when you have them.",
+      initialValue: true,
+    }),
+    defineField({
       name: "features",
       type: "object",
       group: "blocks",

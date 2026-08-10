@@ -110,8 +110,13 @@ const footer = await page.evaluate(() => {
 });
 ok(JSON.stringify(footer.headings) === JSON.stringify(["Flooring Solutions", "Quick Links", "Contact"]),
    `footer headings ${footer.headings.join(" | ")}`);
-ok(/6200 0000/.test(document_text) && /flooringexpress\.com\.au/.test(document_text) && /Collins Street/.test(document_text),
-   "footer carries phone, email and address");
+// Shape, not values: the owner edits these in the Studio, and the suite must
+// not fail because the business got a real phone number.
+const hasPhone = /(\(0\d\)\s?\d{4}\s?\d{4})|(04\d{2}\s?\d{3}\s?\d{3})/.test(document_text);
+const hasEmail = /[\w.+-]+@[\w-]+\.[\w.]{2,}/.test(document_text);
+const hasStreet = /\d+\s+[A-Za-z ]+(Street|St|Road|Rd|Avenue|Ave|Drive|Dr|Court|Ct|Place|Pl)\b/.test(document_text);
+ok(hasPhone && hasEmail && hasStreet,
+   `footer carries phone (${hasPhone}), email (${hasEmail}) and address (${hasStreet})`);
 ok(footer.socials === 1, `footer has ${footer.socials} social icon (expected 1)`);
 ok(footer.copyrightCentered === "center", "copyright row centred");
 ok(footer.cols === 4, `footer grid has ${footer.cols} columns (expected 4)`);
