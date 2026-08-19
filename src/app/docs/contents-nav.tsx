@@ -37,7 +37,7 @@ export function ContentsNav({
       aria-label="Contents"
       className="flex flex-col gap-2 border-r border-border pr-4"
     >
-      <h2 className="mb-2 text-headline-md text-primary">Contents</h2>
+      <h2 className="mb-4 text-headline-md text-primary">Contents</h2>
       {items.map(([id, label]) => (
         <a
           key={id}

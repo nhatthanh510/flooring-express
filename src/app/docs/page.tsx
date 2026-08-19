@@ -4,13 +4,14 @@ import {
   ArrowLeft,
   BookOpen,
   CircleAlert,
+  CircleHelp,
+  Clock,
   ExternalLink,
-  FolderOpen,
-  Globe,
+  ImagePlus,
   Lightbulb,
-  LogIn,
-  MousePointerClick,
-  Send,
+  Link2,
+  ListOrdered,
+  Phone,
 } from "lucide-react";
 
 import { Link } from "@/components/shared/link";
@@ -111,15 +112,15 @@ function Section({
   );
 }
 
-/** One numbered step of the walkthrough: a surface-low card, few words, one screenshot. */
+/** One numbered step of the walkthrough: a surface-low card, few words, one
+ *  screenshot. The mockup's cards lead with a single glyph before the title —
+ *  here that glyph is the step number. */
 function Step({
   number,
-  icon: Icon,
   title,
   children,
 }: {
   number: number;
-  icon: IconType;
   title: string;
   children: React.ReactNode;
 }) {
@@ -132,7 +133,6 @@ function Step({
         >
           {number}
         </span>
-        <Icon className="size-6 shrink-0 text-secondary" aria-hidden={true} />
         {title}
       </h3>
       {children}
@@ -140,10 +140,20 @@ function Step({
   );
 }
 
-/** A short reference card for one everyday task. */
-function Task({ title, children }: { title: string; children: React.ReactNode }) {
+/** A short reference card for one everyday task: top icon, heading, text,
+ *  per the mockup's two-column grid cards. */
+function Task({
+  icon: Icon,
+  title,
+  children,
+}: {
+  icon: IconType;
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex flex-col gap-2 rounded border border-border bg-background p-5 transition-shadow hover:shadow-ambient">
+      <Icon className="mb-1 size-7 text-secondary" aria-hidden={true} />
       <h3 className="font-display text-lg font-semibold text-primary">
         {title}
       </h3>
@@ -238,7 +248,9 @@ export default function DocsPage() {
       {/* Standalone "Admin Portal" header, per the mockup — this page does
           not share the marketing chrome. */}
       <header className="sticky top-0 z-50 border-b border-border bg-background">
-        <div className="mx-auto flex w-full items-center justify-between px-margin-mobile py-4 md:px-margin-desktop">
+        {/* Same max-width and gutters as the content wrapper below, so the
+            wordmark left-aligns with the Contents sidebar at every width. */}
+        <div className="mx-auto flex w-full max-w-page items-center justify-between px-margin-mobile py-4 md:px-margin-desktop">
           <div className="flex items-center gap-4">
             <span className="text-headline-md font-bold text-primary">
               Flooring Express
@@ -283,8 +295,8 @@ export default function DocsPage() {
               anything takes about a minute.
             </p>
 
-            <div className="mt-2 flex flex-col gap-5">
-              <Step number={1} icon={Globe} title="Go to the Studio">
+            <div className="mt-6 flex flex-col gap-5 md:mt-10">
+              <Step number={1} title="Go to the Studio">
                 <p className={prose}>
                   The <strong>Studio</strong> is the website’s control panel.
                   It lives at this address, so <strong>bookmark it</strong>:
@@ -312,7 +324,7 @@ export default function DocsPage() {
                 />
               </Step>
 
-              <Step number={2} icon={LogIn} title="Sign in, or ask for access">
+              <Step number={2} title="Sign in, or ask for access">
                 <p className={prose}>
                   Press <strong>Google</strong> and pick your usual email
                   account. The account is free.
@@ -336,7 +348,7 @@ export default function DocsPage() {
                 </ProTip>
               </Step>
 
-              <Step number={3} icon={FolderOpen} title="Have a look around">
+              <Step number={3} title="Have a look around">
                 <p className={prose}>
                   After signing in, you land on the content page. Everything on
                   the website lives in these folders. None of it is “in the
@@ -370,11 +382,7 @@ export default function DocsPage() {
                 </ProTip>
               </Step>
 
-              <Step
-                number={4}
-                icon={MousePointerClick}
-                title="Change something"
-              >
+              <Step number={4} title="Change something">
                 <p className={prose}>
                   You don’t need to hunt through folders. Press{" "}
                   <strong>Presentation</strong> at the top of the Studio:
@@ -401,7 +409,7 @@ export default function DocsPage() {
                 </ol>
               </Step>
 
-              <Step number={5} icon={Send} title="Press Publish">
+              <Step number={5} title="Press Publish">
                 <p className={prose}>
                   When you’re happy, press <strong>Publish</strong>{" "}
                   (bottom-right corner). Your change is live on the website
@@ -435,7 +443,7 @@ export default function DocsPage() {
               always ends the same way: <strong>press Publish</strong>.
             </p>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <Task title="Change the phone number">
+              <Task icon={Phone} title="Change the phone number">
                 <p>
                   <Path steps={["Site settings", "Contact & hours"]} />
                 </p>
@@ -447,7 +455,7 @@ export default function DocsPage() {
                 </p>
               </Task>
 
-              <Task title="Change opening hours">
+              <Task icon={Clock} title="Change opening hours">
                 <p>
                   <Path steps={["Site settings", "Contact & hours"]} />
                 </p>
@@ -457,7 +465,7 @@ export default function DocsPage() {
                 </p>
               </Task>
 
-              <Task title="Add a photo to the gallery">
+              <Task icon={ImagePlus} title="Add a photo to the gallery">
                 <p>
                   <Path steps={["Gallery projects", "+ Create"]} />
                 </p>
@@ -467,7 +475,7 @@ export default function DocsPage() {
                 </p>
               </Task>
 
-              <Task title="Add a question to the FAQ">
+              <Task icon={CircleHelp} title="Add a question to the FAQ">
                 <p>
                   <Path steps={["FAQs", "+ Create"]} />
                 </p>
@@ -478,7 +486,7 @@ export default function DocsPage() {
                 </p>
               </Task>
 
-              <Task title="Change the menu or footer links">
+              <Task icon={Link2} title="Change the menu or footer links">
                 <p>
                   <Path steps={["Site settings", "Navigation"]} />
                 </p>
@@ -489,7 +497,7 @@ export default function DocsPage() {
                 </p>
               </Task>
 
-              <Task title="Put things in a different order">
+              <Task icon={ListOrdered} title="Put things in a different order">
                 <p>
                   Everything in a list has a <strong>Sort order</strong>{" "}
                   number, and the lowest shows first. Leave gaps (10, 20, 30)
