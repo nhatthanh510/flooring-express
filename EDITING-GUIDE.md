@@ -3,6 +3,12 @@
 A guide for whoever keeps the Flooring Express site up to date. No technical
 knowledge needed — if you can use Gmail, you can use this.
 
+> **Maintainers:** this guide is also published on the site itself at `/docs`
+> (source: `src/app/docs/page.tsx`), with an extra onboarding
+> section covering invitations and account creation, and real Studio
+> screenshots captured by `pnpm docs-screenshots`. If you change one, change
+> the other.
+
 ---
 
 ## 1. Getting in

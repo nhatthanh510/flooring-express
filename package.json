@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "typegen": "sanity schema extract --force && sanity typegen generate",
     "screenshots": "node scripts/screenshots.mjs",
+    "docs-screenshots": "node --env-file=.env scripts/docs-screenshots.mjs",
     "regression": "node scripts/regression.mjs",
     "mobile-audit": "node scripts/mobile-audit.mjs",
     "perf-audit": "node scripts/perf-audit.mjs",
